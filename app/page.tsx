@@ -595,36 +595,43 @@ export default function Home() {
   }
 
   // Generate campaign chart data
+  // Shape: linear ramp → first peak (~11 campaigns) → soft plateau → second higher peak (~24) → slow decline
   const campaignChartData = useMemo(() => {
     const points = []
     const avgCampRev = industry.campaignRPR * engagedListSize
-    for (let campaigns = 1; campaigns <= 30; campaigns++) {
-      // Linear growth up to 15 campaigns, then plateau
-      const growthFactor = campaigns <= 15 ? campaigns : 15 + (campaigns - 15) * 0.2
-      const revenue = growthFactor * avgCampRev
-      points.push({ campaigns, revenue })
+    const basePeak = 11 * avgCampRev
+    for (let c = 0; c <= 30; c++) {
+      let factor
+      if (c <= 11) {
+        factor = c / 11                                        // linear ramp to peak 1
+      } else if (c <= 17) {
+        const t = (c - 11) / 6
+        factor = 1.0 - 0.08 * Math.sin(t * Math.PI)          // soft plateau / slight dip between peaks
+      } else if (c <= 24) {
+        const t = (c - 17) / 7
+        factor = 0.96 + 0.26 * t                              // second rise to peak 2 (~1.22x peak1)
+      } else {
+        factor = 1.22 - 0.018 * (c - 24)                     // diminishing returns beyond 25
+      }
+      points.push({ campaigns: c, revenue: factor * basePeak })
     }
     return points
   }, [industry, engagedListSize])
 
   // Generate flow chart data
+  // Shape: near-linear for first 6 flows, then parabolic slowdown (diminishing returns)
   const flowChartData = useMemo(() => {
     const points = []
     const flowRPRMonthly = industry.flowRPR * 0.015
-    const maxFlowRevenue = 20 * flowRPRMonthly * engagedListSize // Max potential at 20 flows
-    
-    for (let flows = 1; flows <= 30; flows++) {
-      // Steep growth for first 10 flows (50% of FLOW revenue), then diminishing returns
-      let revenueFactor
-      if (flows <= 10) {
-        revenueFactor = flows / 20 // Gets to 50% at flow 10
+    const maxFlowRevenue = 20 * flowRPRMonthly * engagedListSize
+    for (let f = 0; f <= 30; f++) {
+      let factor
+      if (f <= 6) {
+        factor = (f / 6) * 0.55                               // near-linear: 0 → 55% at flow 6
       } else {
-        // Diminishing returns after 10 flows
-        const additionalFlows = flows - 10
-        revenueFactor = 0.5 + (0.5 * (1 - Math.exp(-additionalFlows / 10)))
+        factor = 0.55 + 0.45 * (1 - Math.exp(-(f - 6) / 7)) // parabolic slowdown after flow 6
       }
-      const revenue = revenueFactor * maxFlowRevenue
-      points.push({ flows, revenue })
+      points.push({ flows: f, revenue: factor * maxFlowRevenue })
     }
     return points
   }, [industry, engagedListSize])
@@ -1012,175 +1019,153 @@ export default function Home() {
 
             {/* Campaign Revenue Chart */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 📈 Campaign Volume vs Revenue
               </h2>
-              <div className="relative h-64 mb-4">
-                <svg className="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
-                  {/* Grid lines */}
-                  {[0, 1, 2, 3, 4].map(i => (
-                    <line
-                      key={i}
-                      x1="0"
-                      y1={i * 50}
-                      x2="400"
-                      y2={i * 50}
-                      stroke="#e5e7eb"
-                      strokeWidth="1"
-                    />
-                  ))}
-                  
-                  {/* Campaign revenue curve */}
-                  <polyline
-                    points={campaignChartData.map((point, i) => {
-                      const x = (i / (campaignChartData.length - 1)) * 400
-                      const maxRevenue = Math.max(...campaignChartData.map(p => p.revenue))
-                      const y = 200 - (point.revenue / maxRevenue) * 180
-                      return `${x},${y}`
-                    }).join(' ')}
-                    fill="none"
-                    stroke="#3b82f6"
-                    strokeWidth="3"
-                  />
-                  
-                  {/* Current position marker */}
-                  {(() => {
-                    const currentPoint = campaignChartData[campaignsPerMonth - 1]
-                    const x = ((campaignsPerMonth - 1) / (campaignChartData.length - 1)) * 400
-                    const maxRevenue = Math.max(...campaignChartData.map(p => p.revenue))
-                    const y = 200 - (currentPoint.revenue / maxRevenue) * 180
-                    return (
-                      <>
-                        <circle cx={x} cy={y} r="6" fill="#ef4444" stroke="white" strokeWidth="2" />
-                        <text x={x} y={y - 15} textAnchor="middle" fill="#ef4444" fontSize="12" fontWeight="bold">
-                          You are here
-                        </text>
-                      </>
-                    )
-                  })()}
-                </svg>
-                
-                {/* Y-axis labels */}
-                <div className="absolute left-0 top-0 bottom-0 w-20 flex flex-col justify-between text-xs text-gray-600 pr-2 text-right">
-                  {[4, 3, 2, 1, 0].map(i => {
-                    const maxRevenue = Math.max(...campaignChartData.map(p => p.revenue))
-                    const value = (maxRevenue * i) / 4
-                    return (
-                      <div key={i}>{formatCurrency(value)}</div>
-                    )
-                  })}
-                </div>
-                
-                {/* X-axis labels */}
-                <div className="absolute bottom-0 left-20 right-0 flex justify-between text-xs text-gray-600 mt-2">
-                  <span>1</span>
-                  <span>10</span>
-                  <span>15</span>
-                  <span>20</span>
-                  <span>30</span>
-                </div>
-              </div>
-              
-              <div className="text-center mt-6 mb-2">
-                <div className="text-sm font-medium text-gray-700">Campaigns per Month</div>
-              </div>
-              
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+              {(() => {
+                const PAD_L = 68, PAD_R = 14, PAD_T = 46, PAD_B = 36
+                const W = 440, H = 240
+                const CW = W - PAD_L - PAD_R
+                const CH = H - PAD_T - PAD_B
+                const maxRev = Math.max(...campaignChartData.map(p => p.revenue))
+                const toX = (c: number) => PAD_L + (c / 30) * CW
+                const toY = (rev: number) => PAD_T + CH - (rev / maxRev) * CH
+                const linePath = campaignChartData.map((p, i) =>
+                  `${i === 0 ? 'M' : 'L'}${toX(p.campaigns).toFixed(1)},${toY(p.revenue).toFixed(1)}`
+                ).join(' ')
+                const areaPath = linePath + ` L${toX(30).toFixed(1)},${(PAD_T + CH).toFixed(1)} L${toX(0).toFixed(1)},${(PAD_T + CH).toFixed(1)} Z`
+                const cur = Math.min(campaignsPerMonth, 30)
+                const curX = toX(cur)
+                const curY = toY(campaignChartData[cur]?.revenue ?? 0)
+                const yLevels = [1, 0.75, 0.5, 0.25, 0]
+                const xTicks = [0, 6, 12, 18, 24, 30]
+                const p1x1 = toX(9), p1x2 = toX(13)
+                const p2x1 = toX(19), p2x2 = toX(26)
+                return (
+                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: '260px' }}>
+                    <defs>
+                      <linearGradient id="campGrad" x1="0" y1={PAD_T} x2="0" y2={PAD_T + CH} gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.45" />
+                        <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.02" />
+                      </linearGradient>
+                    </defs>
+                    {/* Peak zone highlights */}
+                    <rect x={p1x1} y={PAD_T} width={p1x2 - p1x1} height={CH} fill="#10b981" opacity="0.12" rx="2" />
+                    <rect x={p2x1} y={PAD_T} width={p2x2 - p2x1} height={CH} fill="#2563eb" opacity="0.1" rx="2" />
+                    {/* Horizontal grid lines */}
+                    {yLevels.map((f, i) => (
+                      <line key={i} x1={PAD_L} y1={toY(f * maxRev)} x2={PAD_L + CW} y2={toY(f * maxRev)} stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4,4" />
+                    ))}
+                    {/* Chart border */}
+                    <rect x={PAD_L} y={PAD_T} width={CW} height={CH} fill="none" stroke="#d1d5db" strokeWidth="1" />
+                    {/* Area gradient fill */}
+                    <path d={areaPath} fill="url(#campGrad)" />
+                    {/* Line curve */}
+                    <path d={linePath} fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    {/* Peak zone top labels */}
+                    <text x={(p1x1 + p1x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#059669" fontSize="10" fontWeight="700">Peak 1</text>
+                    <text x={(p1x1 + p1x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#059669" fontSize="9">10–12/mo</text>
+                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#1d4ed8" fontSize="10" fontWeight="700">Peak 2</text>
+                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#1d4ed8" fontSize="9">20–25/mo</text>
+                    {/* Y-axis labels */}
+                    {yLevels.map((f, i) => (
+                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#9ca3af" fontSize="10">{formatCurrency(f * maxRev)}</text>
+                    ))}
+                    {/* X-axis ticks + labels */}
+                    {xTicks.map(v => (
+                      <g key={v}>
+                        <line x1={toX(v)} y1={PAD_T + CH} x2={toX(v)} y2={PAD_T + CH + 4} stroke="#9ca3af" strokeWidth="1" />
+                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#9ca3af" fontSize="10">{v}</text>
+                      </g>
+                    ))}
+                    {/* X-axis title */}
+                    <text x={PAD_L + CW / 2} y={H - 3} textAnchor="middle" fill="#6b7280" fontSize="11" fontWeight="500">Campaigns per Month</text>
+                    {/* Current position */}
+                    <line x1={curX} y1={PAD_T} x2={curX} y2={PAD_T + CH} stroke="#ef4444" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.65" />
+                    <circle cx={curX} cy={curY} r="6" fill="#ef4444" stroke="white" strokeWidth="2.5" />
+                    <text x={cur > 25 ? curX - 9 : curX + 9} y={Math.max(curY - 7, PAD_T + 13)} textAnchor={cur > 25 ? 'end' : 'start'} fill="#ef4444" fontSize="10" fontWeight="700">You</text>
+                  </svg>
+                )
+              })()}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
                 <p className="text-xs text-gray-700">
-                  <span className="font-semibold">* Linear scaling pattern:</span> Campaign revenue grows linearly 
-                  up to 10-15 campaigns/month for most brands, then plateaus. Some brands peak at 25-30 campaigns. 
-                  Only testing and actually sending that volume can show what works for your brand.
+                  <span className="font-semibold text-blue-700">Two performance peaks:</span> Most brands hit a first revenue peak at <strong>10–12 campaigns/month</strong> — the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong>second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new creative, not just higher frequency.
                 </p>
               </div>
             </div>
 
             {/* Flow Revenue Chart */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">
                 ⚙️ Flow Count vs Revenue
               </h2>
-              <div className="relative h-64 mb-4">
-                <svg className="w-full h-full" viewBox="0 0 400 200" preserveAspectRatio="none">
-                  {/* Grid lines */}
-                  {[0, 1, 2, 3, 4].map(i => (
-                    <line
-                      key={i}
-                      x1="0"
-                      y1={i * 50}
-                      x2="400"
-                      y2={i * 50}
-                      stroke="#e5e7eb"
-                      strokeWidth="1"
-                    />
-                  ))}
-                  
-                  {/* Flow revenue curve */}
-                  <polyline
-                    points={flowChartData.map((point, i) => {
-                      const x = (i / (flowChartData.length - 1)) * 400
-                      const maxRevenue = Math.max(...flowChartData.map(p => p.revenue))
-                      const y = 200 - (point.revenue / maxRevenue) * 180
-                      return `${x},${y}`
-                    }).join(' ')}
-                    fill="none"
-                    stroke="#8b5cf6"
-                    strokeWidth="3"
-                  />
-                  
-                  {/* Shaded area for first 10 flows (50% of revenue) */}
-                  <text x="130" y="100" fill="#8b5cf6" fontSize="14" fontWeight="bold" opacity="0.3">
-                    ~50% of revenue
-                  </text>
-                  <line x1="133" y1="0" x2="133" y2="200" stroke="#8b5cf6" strokeWidth="1" strokeDasharray="4" opacity="0.3" />
-                  
-                  {/* Current position marker */}
-                  {(() => {
-                    const currentPoint = flowChartData[numberOfFlows - 1]
-                    const x = ((numberOfFlows - 1) / (flowChartData.length - 1)) * 400
-                    const maxRevenue = Math.max(...flowChartData.map(p => p.revenue))
-                    const y = 200 - (currentPoint.revenue / maxRevenue) * 180
-                    return (
-                      <>
-                        <circle cx={x} cy={y} r="6" fill="#ef4444" stroke="white" strokeWidth="2" />
-                        <text x={x} y={y - 15} textAnchor="middle" fill="#ef4444" fontSize="12" fontWeight="bold">
-                          You are here
-                        </text>
-                      </>
-                    )
-                  })()}
-                </svg>
-                
-                {/* Y-axis labels */}
-                <div className="absolute left-0 top-0 bottom-0 w-20 flex flex-col justify-between text-xs text-gray-600 pr-2 text-right">
-                  {[4, 3, 2, 1, 0].map(i => {
-                    const maxRevenue = Math.max(...flowChartData.map(p => p.revenue))
-                    const value = (maxRevenue * i) / 4
-                    return (
-                      <div key={i}>{formatCurrency(value)}</div>
-                    )
-                  })}
-                </div>
-                
-                {/* X-axis labels */}
-                <div className="absolute bottom-0 left-20 right-0 flex justify-between text-xs text-gray-600 mt-2">
-                  <span>1</span>
-                  <span>5</span>
-                  <span>10</span>
-                  <span>15</span>
-                  <span>20</span>
-                  <span>30</span>
-                </div>
-              </div>
-              
-              <div className="text-center mt-6 mb-2">
-                <div className="text-sm font-medium text-gray-700">Number of Active Flows</div>
-              </div>
-              
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mt-4">
+              {(() => {
+                const PAD_L = 68, PAD_R = 14, PAD_T = 36, PAD_B = 36
+                const W = 440, H = 240
+                const CW = W - PAD_L - PAD_R
+                const CH = H - PAD_T - PAD_B
+                const maxRev = Math.max(...flowChartData.map(p => p.revenue))
+                const toX = (f: number) => PAD_L + (f / 30) * CW
+                const toY = (rev: number) => PAD_T + CH - (rev / maxRev) * CH
+                const linePath = flowChartData.map((p, i) =>
+                  `${i === 0 ? 'M' : 'L'}${toX(p.flows).toFixed(1)},${toY(p.revenue).toFixed(1)}`
+                ).join(' ')
+                const areaPath = linePath + ` L${toX(30).toFixed(1)},${(PAD_T + CH).toFixed(1)} L${toX(0).toFixed(1)},${(PAD_T + CH).toFixed(1)} Z`
+                const cur = Math.min(numberOfFlows, 30)
+                const curX = toX(cur)
+                const curY = toY(flowChartData[cur]?.revenue ?? 0)
+                const yLevels = [1, 0.75, 0.5, 0.25, 0]
+                const xTicks = [0, 6, 12, 18, 24, 30]
+                const phaseX = toX(6)
+                return (
+                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: '260px' }}>
+                    <defs>
+                      <linearGradient id="flowGrad" x1="0" y1={PAD_T} x2="0" y2={PAD_T + CH} gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.45" />
+                        <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.02" />
+                      </linearGradient>
+                    </defs>
+                    {/* Phase backgrounds */}
+                    <rect x={PAD_L} y={PAD_T} width={phaseX - PAD_L} height={CH} fill="#8b5cf6" opacity="0.1" rx="2" />
+                    <rect x={phaseX} y={PAD_T} width={PAD_L + CW - phaseX} height={CH} fill="#6366f1" opacity="0.04" rx="2" />
+                    {/* Horizontal grid lines */}
+                    {yLevels.map((f, i) => (
+                      <line key={i} x1={PAD_L} y1={toY(f * maxRev)} x2={PAD_L + CW} y2={toY(f * maxRev)} stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4,4" />
+                    ))}
+                    {/* Chart border */}
+                    <rect x={PAD_L} y={PAD_T} width={CW} height={CH} fill="none" stroke="#d1d5db" strokeWidth="1" />
+                    {/* Phase divider */}
+                    <line x1={phaseX} y1={PAD_T} x2={phaseX} y2={PAD_T + CH} stroke="#8b5cf6" strokeWidth="1.5" strokeDasharray="4,3" opacity="0.4" />
+                    {/* Area gradient fill */}
+                    <path d={areaPath} fill="url(#flowGrad)" />
+                    {/* Line curve */}
+                    <path d={linePath} fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    {/* Phase labels */}
+                    <text x={(PAD_L + phaseX) / 2} y={PAD_T - 8} textAnchor="middle" fill="#7c3aed" fontSize="10" fontWeight="700">Linear</text>
+                    <text x={(phaseX + PAD_L + CW) / 2} y={PAD_T - 8} textAnchor="middle" fill="#6366f1" fontSize="10" fontWeight="700">Diminishing Returns</text>
+                    {/* Y-axis labels */}
+                    {yLevels.map((f, i) => (
+                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#9ca3af" fontSize="10">{formatCurrency(f * maxRev)}</text>
+                    ))}
+                    {/* X-axis ticks + labels */}
+                    {xTicks.map(v => (
+                      <g key={v}>
+                        <line x1={toX(v)} y1={PAD_T + CH} x2={toX(v)} y2={PAD_T + CH + 4} stroke="#9ca3af" strokeWidth="1" />
+                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#9ca3af" fontSize="10">{v}</text>
+                      </g>
+                    ))}
+                    {/* X-axis title */}
+                    <text x={PAD_L + CW / 2} y={H - 3} textAnchor="middle" fill="#6b7280" fontSize="11" fontWeight="500">Number of Active Flows</text>
+                    {/* Current position */}
+                    <line x1={curX} y1={PAD_T} x2={curX} y2={PAD_T + CH} stroke="#ef4444" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.65" />
+                    <circle cx={curX} cy={curY} r="6" fill="#ef4444" stroke="white" strokeWidth="2.5" />
+                    <text x={cur > 25 ? curX - 9 : curX + 9} y={Math.max(curY - 7, PAD_T + 13)} textAnchor={cur > 25 ? 'end' : 'start'} fill="#ef4444" fontSize="10" fontWeight="700">You</text>
+                  </svg>
+                )
+              })()}
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mt-3">
                 <p className="text-xs text-gray-700">
-                  <span className="font-semibold">* Diminishing returns pattern:</span> The first 5-10 fundamental 
-                  flows generate ~50% of total flow revenue. After 10 flows, each additional flow produces less 
-                  incremental revenue. Only testing can show the optimal flow count for your brand.
+                  <span className="font-semibold text-purple-700">Linear then parabolic:</span> The first <strong>6 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset) grow revenue almost linearly — each adds meaningful, predictable value. After flow 6, the curve flattens: each new flow still contributes, but progressively less. Flows 7–30 are about fine-tuning and incremental gains, not step-change growth.
                 </p>
               </div>
             </div>
