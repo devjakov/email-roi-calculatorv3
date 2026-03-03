@@ -619,17 +619,17 @@ export default function Home() {
   }, [industry, engagedListSize])
 
   // Generate flow chart data
-  // Shape: near-linear for first 6 flows, then parabolic slowdown (diminishing returns)
+  // Shape: near-linear for first 8 flows (40% of revenue), then parabolic slowdown for flows 9-30 (remaining 60%)
   const flowChartData = useMemo(() => {
     const points = []
     const flowRPRMonthly = industry.flowRPR * 0.015
     const maxFlowRevenue = 20 * flowRPRMonthly * engagedListSize
     for (let f = 0; f <= 30; f++) {
       let factor
-      if (f <= 6) {
-        factor = (f / 6) * 0.55                               // near-linear: 0 → 55% at flow 6
+      if (f <= 8) {
+        factor = (f / 8) * 0.40                               // near-linear: 0 → 40% at flow 8
       } else {
-        factor = 0.55 + 0.45 * (1 - Math.exp(-(f - 6) / 7)) // parabolic slowdown after flow 6
+        factor = 0.40 + 0.60 * (1 - Math.exp(-(f - 8) / 8)) // parabolic curve unlocking the other 60%
       }
       points.push({ flows: f, revenue: factor * maxFlowRevenue })
     }
@@ -1089,7 +1089,7 @@ export default function Home() {
               })()}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
                 <p className="text-xs text-gray-700">
-                  <span className="font-semibold text-blue-700">Two performance peaks:</span> Most brands hit a first revenue peak at <strong>10–12 campaigns/month</strong> — the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong>second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new creative, not just higher frequency.
+                  <span className="font-semibold text-blue-700">Two performance peaks:</span> Most brands hit a first revenue peak at <strong>10–12 campaigns/month</strong> — the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong>second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new offers, not just higher frequency.
                 </p>
               </div>
             </div>
@@ -1116,7 +1116,7 @@ export default function Home() {
                 const curY = toY(flowChartData[cur]?.revenue ?? 0)
                 const yLevels = [1, 0.75, 0.5, 0.25, 0]
                 const xTicks = [0, 6, 12, 18, 24, 30]
-                const phaseX = toX(6)
+                const phaseX = toX(8)
                 return (
                   <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: '260px' }}>
                     <defs>
@@ -1141,8 +1141,8 @@ export default function Home() {
                     {/* Line curve */}
                     <path d={linePath} fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     {/* Phase labels */}
-                    <text x={(PAD_L + phaseX) / 2} y={PAD_T - 8} textAnchor="middle" fill="#7c3aed" fontSize="10" fontWeight="700">Linear</text>
-                    <text x={(phaseX + PAD_L + CW) / 2} y={PAD_T - 8} textAnchor="middle" fill="#6366f1" fontSize="10" fontWeight="700">Diminishing Returns</text>
+                    <text x={(PAD_L + phaseX) / 2} y={PAD_T - 8} textAnchor="middle" fill="#7c3aed" fontSize="10" fontWeight="700">Core 40%</text>
+                    <text x={(phaseX + PAD_L + CW) / 2} y={PAD_T - 8} textAnchor="middle" fill="#6366f1" fontSize="10" fontWeight="700">Hidden Revenue — 60% Most Brands Miss</text>
                     {/* Y-axis labels */}
                     {yLevels.map((f, i) => (
                       <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#9ca3af" fontSize="10">{formatCurrency(f * maxRev)}</text>
@@ -1165,7 +1165,7 @@ export default function Home() {
               })()}
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mt-3">
                 <p className="text-xs text-gray-700">
-                  <span className="font-semibold text-purple-700">Linear then parabolic:</span> The first <strong>6 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset) grow revenue almost linearly — each adds meaningful, predictable value. After flow 6, the curve flattens: each new flow still contributes, but progressively less. Flows 7–30 are about fine-tuning and incremental gains, not step-change growth.
+                  <span className="font-semibold text-purple-700">40% from the first 8 flows. 60% from going further.</span> The first <strong>8 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset, and a couple more) build your foundation linearly — each one adds predictable, meaningful revenue. But that only unlocks <strong>40% of what email can do</strong>. The other 60% is hidden revenue that 90% of brands never touch. Top performers keep building flows because that's where true retention lives: cross-sell sequences, upsell flows, different offers for non-buyers, segment-specific win-backs, re-engagement for lapsed customers. Email is uniquely suited for this because you can test different offers with different segments at near-zero cost — no ad spend, no risk.
                 </p>
               </div>
             </div>
