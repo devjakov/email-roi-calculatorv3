@@ -349,8 +349,30 @@ function getKlaviyoPrice(profiles: number): number {
 }
 
 /**
+ * LAST-TOUCH ATTRIBUTION CORRECTION
+ *
+ * Klaviyo uses last-touch attribution, meaning any purchase where the customer
+ * clicked an email within the attribution window is credited to email — even if
+ * the customer would have purchased anyway (e.g., via a welcome flow).
+ *
+ * Industry estimate: ~20% of Klaviyo-reported email revenue is "would have happened
+ * anyway" revenue. Removing it gives a more honest picture of email's true lift.
+ *
+ * Impact on the dashboard:
+ *   - incrementalEmailRevenue = totalEmailRevenue × 80%  (truly new revenue)
+ *   - trueNewTotalRevenue     = businessRevenue + incrementalEmailRevenue
+ *   - emailAttributedPercent  = incrementalEmailRevenue / trueNewTotalRevenue
+ *
+ * Example: $400k business + $400k Klaviyo email revenue
+ *   → incrementalEmailRevenue = $320k
+ *   → trueNewTotalRevenue     = $720k   (not $800k)
+ *   → emailAttributedPercent  = 44.4%  (not 99.1%)
+ */
+const LAST_TOUCH_OVERLAP_RATE = 0.20
+
+/**
  * MAIN CALCULATOR COMPONENT
- * 
+ *
  * This component manages all state and calculations for the ROI calculator
  * Built with React hooks for reactive updates
  */
@@ -490,10 +512,18 @@ export default function Home() {
     // ========== TOTAL EMAIL REVENUE ==========
     const totalEmailRevenue = campaignRevenue + flowRevenue
     const totalEmailRPR = totalEmailRevenue / engagedListSize
-    
-    // Email as % of total business revenue (capped at 100%)
-    const emailPercentOfRevenue = Math.min((totalEmailRevenue / totalMonthlyRevenue) * 100, 100)
-    
+
+    // ========== ATTRIBUTION-CORRECTED REVENUE ==========
+    // Apply 20% last-touch discount: purchases that would have occurred without email
+    const incrementalEmailRevenue = totalEmailRevenue * (1 - LAST_TOUCH_OVERLAP_RATE)
+    const lastTouchRevenue = totalEmailRevenue * LAST_TOUCH_OVERLAP_RATE
+    // True total = what the business had PLUS what email genuinely added
+    const trueNewTotalRevenue = totalMonthlyRevenue + incrementalEmailRevenue
+    // Email-attributed % calculated off the correct combined total
+    const emailAttributedPercent = trueNewTotalRevenue > 0
+      ? (incrementalEmailRevenue / trueNewTotalRevenue) * 100
+      : 0
+
     // ========== COSTS ==========
     const totalEmailCost = monthlyRetainer + klaviyoCost
     
@@ -525,7 +555,10 @@ export default function Home() {
       totalFlowRPR,
       totalEmailRevenue,
       totalEmailRPR,
-      emailPercentOfRevenue,
+      incrementalEmailRevenue,
+      lastTouchRevenue,
+      trueNewTotalRevenue,
+      emailAttributedPercent,
       totalEmailCost,
       grossROI,
       emailGrossProfit,
@@ -569,7 +602,9 @@ export default function Home() {
       const grossProf = totalRev * (grossMargin / 100)
       const netProf = grossProf - cost
       const netROI = netProf / cost
-      const emailPercent = Math.min((totalRev / totalMonthlyRevenue) * 100, 100)
+      const incrementalRev = totalRev * (1 - LAST_TOUCH_OVERLAP_RATE)
+      const combinedTotal = totalMonthlyRevenue + incrementalRev
+      const emailPercent = combinedTotal > 0 ? (incrementalRev / combinedTotal) * 100 : 0
 
       return {
         ...scenario,
@@ -987,11 +1022,40 @@ export default function Home() {
                   </div>
                 </div>
 
+                {/* Total Revenue with green email-contribution bar */}
                 <div className="bg-white/10 rounded-lg p-4 backdrop-blur col-span-2">
-                  <div className="text-sm opacity-90 mb-1">Total Email Revenue</div>
-                  <div className="text-3xl font-bold">{formatCurrency(calculations.totalEmailRevenue)}/mo</div>
-                  <div className="text-xs opacity-75 mt-1">
-                    ${formatNumber(calculations.totalEmailRPR, 2)} total RPR • {formatNumber(calculations.emailPercentOfRevenue, 1)}% email-attributed revenue
+                  <div className="flex justify-between items-baseline mb-1">
+                    <div className="text-sm opacity-90">Total Monthly Revenue</div>
+                    <div className="text-xs opacity-60 italic">business + email</div>
+                  </div>
+                  <div className="text-3xl font-bold mb-3">
+                    {formatCurrency(calculations.trueNewTotalRevenue)}
+                  </div>
+
+                  {/* Stacked bar: base revenue (white/translucent) + email increment (green gradient) */}
+                  {(() => {
+                    const baseW = (totalMonthlyRevenue / calculations.trueNewTotalRevenue) * 100
+                    const emailW = (calculations.incrementalEmailRevenue / calculations.trueNewTotalRevenue) * 100
+                    return (
+                      <div className="flex rounded-lg overflow-hidden h-8 mb-2" style={{ gap: '2px' }}>
+                        <div
+                          className="bg-white/20 flex items-center justify-center text-xs font-semibold overflow-hidden whitespace-nowrap px-2 shrink-0"
+                          style={{ width: `${Math.max(baseW, 18)}%` }}
+                        >
+                          Base {formatNumber(baseW, 0)}%
+                        </div>
+                        <div
+                          className="flex-1 bg-gradient-to-r from-green-400 via-emerald-400 to-green-300 flex items-center justify-center text-xs font-bold text-emerald-900 overflow-hidden whitespace-nowrap px-2"
+                        >
+                          +{formatCurrency(calculations.incrementalEmailRevenue)} email&nbsp;·&nbsp;{formatNumber(calculations.emailAttributedPercent, 1)}% of total*
+                        </div>
+                      </div>
+                    )
+                  })()}
+
+                  <div className="flex justify-between text-xs opacity-70 mt-1">
+                    <span>Business base: {formatCurrency(totalMonthlyRevenue)}</span>
+                    <span>Klaviyo gross: {formatCurrency(calculations.totalEmailRevenue)}</span>
                   </div>
                 </div>
 
@@ -1325,6 +1389,14 @@ export default function Home() {
         <div className="mt-12 text-center text-sm text-gray-500">
           <p>Based on Klaviyo benchmarks from 325B+ emails • RPR = Revenue Per Recipient</p>
           <p className="mt-2">Profit ROI accounts for gross margins. Revenue ROI is typically 4-5x higher.</p>
+          <p className="mt-3 text-xs text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            * <strong>Last-touch attribution note:</strong> Klaviyo attributes a purchase to email whenever a customer clicks
+            an email within the attribution window — even if they would have purchased without it. Approximately 20% of
+            Klaviyo-reported email revenue falls into this category (most commonly attributed to welcome flows, where a
+            new customer was already intending to buy). The dashboard deducts this 20% and adds only the remaining 80%
+            (truly incremental revenue) on top of your base business revenue to calculate the correct total and
+            email-attributed percentage.
+          </p>
         </div>
       </div>
     </main>
