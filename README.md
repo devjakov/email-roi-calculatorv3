@@ -312,20 +312,6 @@ npm run build
 
 ---
 
-## 🔮 Future Enhancements
-
-Potential additions:
-- [ ] SMS revenue calculator
-- [ ] A/B test impact estimator
-- [ ] Seasonal revenue forecasting
-- [ ] Custom industry benchmarks upload
-- [ ] PDF report generation
-- [ ] Multi-brand comparison
-- [ ] Historical performance tracking
-- [ ] Integration with actual Klaviyo data (API)
-
----
-
 ## 🤝 Contributing
 
 This is a private tool for Mars Copywriting. For changes or suggestions, use Claude Code connected to this repo.
