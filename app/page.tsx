@@ -92,6 +92,139 @@ const KLAVIYO_PRICING = [
   { profiles: 500000, price: 4900 }
 ]
 
+// Klaviyo Flow Benchmarks based on Annual Revenue and AOV
+// Source: https://help.klaviyo.com/hc/en-us/articles/115005084927
+const FLOW_BENCHMARKS = {
+  // $0-1M annual revenue
+  '0-1m': {
+    abandonedCart: [
+      { aovMin: 0, aovMax: 28, rpr25: 0.13, rpr75: 0.81 },
+      { aovMin: 28, aovMax: 37, rpr25: 0.34, rpr75: 1.28 },
+      { aovMin: 37, aovMax: 44, rpr25: 0.49, rpr75: 1.62 },
+      { aovMin: 44, aovMax: 83, rpr25: 0.86, rpr75: 2.91 },
+      { aovMin: 83, aovMax: 112, rpr25: 1.76, rpr75: 5.32 },
+      { aovMin: 112, aovMax: 163, rpr25: 2.69, rpr75: 8.90 },
+      { aovMin: 163, aovMax: 291, rpr25: 4.30, rpr75: 13.75 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 7.77, rpr75: 43.51 }
+    ],
+    welcome: [
+      { aovMin: 0, aovMax: 28, rpr25: 0.03, rpr75: 0.56 },
+      { aovMin: 28, aovMax: 37, rpr25: 0.07, rpr75: 1.03 },
+      { aovMin: 37, aovMax: 44, rpr25: 0.09, rpr75: 1.25 },
+      { aovMin: 44, aovMax: 83, rpr25: 0.17, rpr75: 1.95 },
+      { aovMin: 83, aovMax: 112, rpr25: 0.44, rpr75: 3.60 },
+      { aovMin: 112, aovMax: 163, rpr25: 0.48, rpr75: 5.10 },
+      { aovMin: 163, aovMax: 291, rpr25: 0.47, rpr75: 6.97 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 0.32, rpr75: 11.50 }
+    ],
+    postPurchase: [
+      { aovMin: 0, aovMax: 28, rpr25: 0.00, rpr75: 0.16 },
+      { aovMin: 28, aovMax: 37, rpr25: 0.02, rpr75: 0.20 },
+      { aovMin: 37, aovMax: 44, rpr25: 0.03, rpr75: 0.27 },
+      { aovMin: 44, aovMax: 83, rpr25: 0.05, rpr75: 0.44 },
+      { aovMin: 83, aovMax: 112, rpr25: 0.13, rpr75: 0.97 },
+      { aovMin: 112, aovMax: 163, rpr25: 0.20, rpr75: 1.39 },
+      { aovMin: 163, aovMax: 291, rpr25: 0.09, rpr75: 1.92 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 0.05, rpr75: 7.24 }
+    ]
+  },
+  // $1M-5M annual revenue
+  '1m-5m': {
+    abandonedCart: [
+      { aovMin: 0, aovMax: 28, rpr25: 0.20, rpr75: 0.73 },
+      { aovMin: 28, aovMax: 37, rpr25: 0.30, rpr75: 1.13 },
+      { aovMin: 37, aovMax: 44, rpr25: 0.71, rpr75: 1.68 },
+      { aovMin: 44, aovMax: 83, rpr25: 1.12, rpr75: 3.03 },
+      { aovMin: 83, aovMax: 112, rpr25: 2.39, rpr75: 5.86 },
+      { aovMin: 112, aovMax: 163, rpr25: 3.86, rpr75: 8.63 },
+      { aovMin: 163, aovMax: 291, rpr25: 6.00, rpr75: 16.40 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 13.97, rpr75: 60.48 }
+    ],
+    welcome: [
+      { aovMin: 0, aovMax: 28, rpr25: 0.06, rpr75: 0.57 },
+      { aovMin: 28, aovMax: 37, rpr25: 0.15, rpr75: 1.31 },
+      { aovMin: 37, aovMax: 44, rpr25: 0.29, rpr75: 1.73 },
+      { aovMin: 44, aovMax: 83, rpr25: 0.35, rpr75: 2.53 },
+      { aovMin: 83, aovMax: 112, rpr25: 0.51, rpr75: 3.93 },
+      { aovMin: 112, aovMax: 163, rpr25: 1.15, rpr75: 8.39 },
+      { aovMin: 163, aovMax: 291, rpr25: 1.20, rpr75: 8.44 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 1.47, rpr75: 15.72 }
+    ],
+    postPurchase: [
+      { aovMin: 0, aovMax: 28, rpr25: 0.03, rpr75: 0.10 },
+      { aovMin: 28, aovMax: 37, rpr25: 0.05, rpr75: 0.18 },
+      { aovMin: 37, aovMax: 44, rpr25: 0.06, rpr75: 0.23 },
+      { aovMin: 44, aovMax: 83, rpr25: 0.11, rpr75: 0.44 },
+      { aovMin: 83, aovMax: 112, rpr25: 0.24, rpr75: 0.72 },
+      { aovMin: 112, aovMax: 163, rpr25: 0.29, rpr75: 1.30 },
+      { aovMin: 163, aovMax: 291, rpr25: 0.38, rpr75: 1.73 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 1.27, rpr75: 7.58 }
+    ]
+  },
+  // $5M-20M annual revenue
+  '5m-20m': {
+    abandonedCart: [
+      { aovMin: 44, aovMax: 83, rpr25: 1.30, rpr75: 2.88 },
+      { aovMin: 83, aovMax: 112, rpr25: 3.03, rpr75: 5.07 },
+      { aovMin: 112, aovMax: 163, rpr25: 4.52, rpr75: 8.13 },
+      { aovMin: 163, aovMax: 291, rpr25: 6.00, rpr75: 13.58 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 15.74, rpr75: 51.07 }
+    ],
+    welcome: [
+      { aovMin: 44, aovMax: 83, rpr25: 0.60, rpr75: 2.19 },
+      { aovMin: 83, aovMax: 112, rpr25: 0.94, rpr75: 4.55 },
+      { aovMin: 112, aovMax: 163, rpr25: 1.94, rpr75: 6.23 },
+      { aovMin: 163, aovMax: 291, rpr25: 1.58, rpr75: 10.40 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 1.80, rpr75: 11.23 }
+    ],
+    postPurchase: [
+      { aovMin: 44, aovMax: 83, rpr25: 0.18, rpr75: 0.45 },
+      { aovMin: 83, aovMax: 112, rpr25: 0.28, rpr75: 0.85 },
+      { aovMin: 163, aovMax: 291, rpr25: 0.54, rpr75: 2.03 },
+      { aovMin: 291, aovMax: Infinity, rpr25: 1.01, rpr75: 6.77 }
+    ]
+  }
+}
+
+function getFlowRPR(annualRevenue: number, aov: number): { abandonedCart: number, welcome: number, postPurchase: number, browseAbandonment: number } {
+  // Determine revenue bracket and position within bracket (0.0 to 1.0)
+  let bracket: '0-1m' | '1m-5m' | '5m-20m'
+  let bracketPosition = 0
+  
+  if (annualRevenue < 1000000) {
+    bracket = '0-1m'
+    // Scale from 0% to 100% of the bracket
+    bracketPosition = annualRevenue / 1000000
+  } else if (annualRevenue < 5000000) {
+    bracket = '1m-5m'
+    // Scale from 0% to 100% within $1M-5M range
+    bracketPosition = (annualRevenue - 1000000) / 4000000
+  } else {
+    bracket = '5m-20m'
+    // Scale from 0% to 100% within $5M-20M range
+    bracketPosition = Math.min((annualRevenue - 5000000) / 15000000, 1.0)
+  }
+  
+  const benchmarks = FLOW_BENCHMARKS[bracket]
+  
+  // Find matching AOV range for each flow type and scale based on position
+  const findRPR = (flowData: any[]) => {
+    const match = flowData.find(range => aov >= range.aovMin && aov < range.aovMax)
+    if (!match) return 0
+    
+    // Scale linearly from 25th percentile (bottom) to 75th percentile (top)
+    // based on position within revenue bracket
+    return match.rpr25 + (bracketPosition * (match.rpr75 - match.rpr25))
+  }
+  
+  return {
+    abandonedCart: findRPR(benchmarks.abandonedCart),
+    welcome: findRPR(benchmarks.welcome),
+    postPurchase: findRPR(benchmarks.postPurchase),
+    browseAbandonment: findRPR(benchmarks.abandonedCart) * 0.3 // Estimate: ~30% of abandoned cart
+  }
+}
+
 function getKlaviyoPrice(profiles: number): number {
   for (let i = 0; i < KLAVIYO_PRICING.length; i++) {
     if (profiles <= KLAVIYO_PRICING[i].profiles) {
@@ -111,6 +244,7 @@ export default function Home() {
   const [monthlyRetainer, setMonthlyRetainer] = useState(5000)
   const [grossMargin, setGrossMargin] = useState(50)
   const [totalMonthlyRevenue, setTotalMonthlyRevenue] = useState(1280000)
+  const [averageOrderValue, setAverageOrderValue] = useState(95)
   
   // Traffic-based calculator
   const [monthlyTraffic, setMonthlyTraffic] = useState(300000)
@@ -128,6 +262,10 @@ export default function Home() {
   const industry = INDUSTRY_BENCHMARKS[selectedIndustry]
   const klaviyoCost = getKlaviyoPrice(emailListSize)
 
+  // Calculate annual revenue and get flow RPR benchmarks
+  const annualRevenue = totalMonthlyRevenue * 12
+  const flowRPRBenchmarks = getFlowRPR(annualRevenue, averageOrderValue)
+
   // Calculate new subscribers from traffic
   const newSubscribersPerMonth = Math.round(monthlyTraffic * (popupConversionRate / 100))
 
@@ -142,24 +280,26 @@ export default function Home() {
     const campaignRevenue = campaignsPerMonth * avgCampaignRev
     const campaignRPR = avgCampaignRev / engagedListSize
     
-    // Flow revenue - ONLY from new subscribers entering flows
-    // Flow RPR from benchmarks is cumulative. For monthly, we need to divide significantly
-    // Flows typically generate 4-6x campaigns revenue, not 50x
-    const defaultFlowRPR = industry.flowRPR * 0.015 // Only 1.5% of the benchmark RPR per month
-    const flowRPRMonthly = useManualFlowRPR ? manualFlowRPR : defaultFlowRPR
+    // Flow revenue - Based on Klaviyo benchmarks
+    // Total RPR = sum of individual flow RPRs
+    const totalFlowRPR = flowRPRBenchmarks.abandonedCart + 
+                         flowRPRBenchmarks.welcome + 
+                         flowRPRBenchmarks.postPurchase + 
+                         flowRPRBenchmarks.browseAbandonment
     
-    // First 5-10 flows generate ~50% of flow revenue
-    let flowRevenueFactor = 0
-    if (numberOfFlows <= 10) {
-      flowRevenueFactor = numberOfFlows / 20 // 50% at flow 10
+    // Apply diminishing returns based on # of flows
+    // Assume 4 core flows (cart, welcome, post-purchase, browse)
+    // Each additional flow adds less value
+    let flowEfficiency = 1.0
+    if (numberOfFlows > 4) {
+      const extraFlows = numberOfFlows - 4
+      flowEfficiency = 1.0 + (extraFlows * 0.15) // Each extra flow adds 15% more
     } else {
-      const additionalFlows = numberOfFlows - 10
-      flowRevenueFactor = 0.5 + (0.5 * (1 - Math.exp(-additionalFlows / 10)))
+      flowEfficiency = numberOfFlows / 4 // If less than 4, scale down proportionally
     }
     
-    // Flow revenue = new subscribers × flow RPR × campaign multiplier
-    const maxFlowRevenue = 20 * flowRPRMonthly * newSubscribersPerMonth * campaignMultiplier
-    const flowRevenue = flowRevenueFactor * maxFlowRevenue
+    // Flow revenue = new subscribers × total RPR × efficiency × campaign multiplier
+    const flowRevenue = newSubscribersPerMonth * totalFlowRPR * flowEfficiency * campaignMultiplier
     const flowRPR = flowRevenue / newSubscribersPerMonth
     
     // Total email revenue
@@ -184,7 +324,7 @@ export default function Home() {
       avgCampaignRev,
       flowRevenue,
       flowRPR,
-      flowRPRMonthly,
+      totalFlowRPR,
       totalEmailRevenue,
       totalEmailRPR,
       emailPercentOfRevenue,
@@ -195,9 +335,11 @@ export default function Home() {
       netROI,
       klaviyoCost,
       campaignMultiplier,
-      newSubscribersPerMonth
+      newSubscribersPerMonth,
+      annualRevenue,
+      flowRPRBenchmarks
     }
-  }, [selectedIndustry, engagedListSize, campaignsPerMonth, numberOfFlows, monthlyRetainer, grossMargin, totalMonthlyRevenue, industry, klaviyoCost, useManualCampaignRev, manualAvgCampaignRev, useManualFlowRPR, manualFlowRPR, newSubscribersPerMonth])
+  }, [selectedIndustry, engagedListSize, campaignsPerMonth, numberOfFlows, monthlyRetainer, grossMargin, totalMonthlyRevenue, industry, klaviyoCost, useManualCampaignRev, manualAvgCampaignRev, newSubscribersPerMonth, flowRPRBenchmarks, annualRevenue])
 
   // Calculate scenarios
   const scenarioData = useMemo(() => {
@@ -377,6 +519,31 @@ export default function Home() {
                       onChange={(e) => setTotalMonthlyRevenue(Number(e.target.value))}
                       className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg"
                     />
+                  </div>
+                  <div className="mt-2 text-xs text-gray-600">
+                    Annual: {formatCurrency(calculations.annualRevenue)}
+                    <span className="ml-2 font-semibold text-blue-600">
+                      ({calculations.annualRevenue < 1000000 ? '$0-1M' : calculations.annualRevenue < 5000000 ? '$1M-5M' : '$5M-20M'} bracket)
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Average Order Value (AOV): {formatCurrency(averageOrderValue)}
+                  </label>
+                  <input
+                    type="range"
+                    min="20"
+                    max="300"
+                    step="5"
+                    value={averageOrderValue}
+                    onChange={(e) => setAverageOrderValue(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>$20</span>
+                    <span>$300</span>
                   </div>
                 </div>
 
@@ -580,44 +747,6 @@ export default function Home() {
                         </div>
                       )}
                     </div>
-
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <input
-                          type="checkbox"
-                          id="manualFlow"
-                          checked={useManualFlowRPR}
-                          onChange={(e) => {
-                            setUseManualFlowRPR(e.target.checked)
-                            if (e.target.checked && manualFlowRPR === 0) {
-                              setManualFlowRPR(calculations.flowRPRMonthly)
-                            }
-                          }}
-                          className="w-4 h-4"
-                        />
-                        <label htmlFor="manualFlow" className="text-sm font-medium text-gray-700">
-                          Set Monthly Flow RPR
-                        </label>
-                      </div>
-                      {useManualFlowRPR && (
-                        <div className="relative">
-                          <span className="absolute left-3 top-3 text-gray-500">$</span>
-                          <input
-                            type="number"
-                            step="0.001"
-                            value={manualFlowRPR}
-                            onChange={(e) => setManualFlowRPR(Number(e.target.value))}
-                            className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg"
-                            placeholder={`Default: $${formatNumber(calculations.flowRPRMonthly, 3)}`}
-                          />
-                        </div>
-                      )}
-                      {!useManualFlowRPR && (
-                        <div className="text-xs text-gray-500 ml-6">
-                          Default: ${formatNumber(industry.flowRPR * 0.015, 3)} RPR/month
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -628,7 +757,7 @@ export default function Home() {
           <div className="space-y-6">
             {/* Current Performance */}
             <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
-              <h2 className="text-2xl font-bold mb-6">📈 Your Current Performance</h2>
+              <h2 className="text-2xl font-bold mb-6">📈 Your Current Performance (Monthly)</h2>
               
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-white/10 rounded-lg p-4 backdrop-blur">
@@ -639,18 +768,25 @@ export default function Home() {
 
                 <div className="bg-white/10 rounded-lg p-4 backdrop-blur">
                   <div className="text-sm opacity-90 mb-1">Flow Revenue</div>
-                  <div className="text-sm opacity-75 mb-2">
-                    (from {calculations.newSubscribersPerMonth.toLocaleString()} new subs/mo)
+                  <div className="text-xs opacity-75 mb-2">
+                    (from {calculations.newSubscribersPerMonth.toLocaleString()} new subs/month)
                   </div>
-                  <div className="text-2xl font-bold">{formatCurrency(calculations.flowRevenue)}</div>
-                  <div className="text-xs opacity-75 mt-1">${formatNumber(calculations.flowRPR, 3)} RPR per new sub</div>
+                  <div className="text-2xl font-bold">{formatCurrency(calculations.flowRevenue)}/mo</div>
+                  <div className="text-xs opacity-75 mt-1">${formatNumber(calculations.flowRPR, 2)} RPR per new sub</div>
+                  <div className="text-xs opacity-75 mt-2 border-t border-white/20 pt-2">
+                    Based on Klaviyo benchmarks:
+                    <br/>• Cart: ${formatNumber(calculations.flowRPRBenchmarks.abandonedCart, 2)}
+                    <br/>• Welcome: ${formatNumber(calculations.flowRPRBenchmarks.welcome, 2)}
+                    <br/>• Post-Purchase: ${formatNumber(calculations.flowRPRBenchmarks.postPurchase, 2)}
+                    <br/>• Browse: ${formatNumber(calculations.flowRPRBenchmarks.browseAbandonment, 2)}
+                  </div>
                 </div>
 
                 <div className="bg-white/10 rounded-lg p-4 backdrop-blur col-span-2">
                   <div className="text-sm opacity-90 mb-1">Total Email Revenue</div>
-                  <div className="text-3xl font-bold">{formatCurrency(calculations.totalEmailRevenue)}</div>
+                  <div className="text-3xl font-bold">{formatCurrency(calculations.totalEmailRevenue)}/mo</div>
                   <div className="text-xs opacity-75 mt-1">
-                    ${formatNumber(calculations.totalEmailRPR, 2)} total RPR • {formatNumber(calculations.emailPercentOfRevenue, 1)}% of business
+                    ${formatNumber(calculations.totalEmailRPR, 2)} total RPR • {formatNumber(calculations.emailPercentOfRevenue, 1)}% email-attributed revenue
                   </div>
                 </div>
 
@@ -914,15 +1050,75 @@ export default function Home() {
                 ))}
               </div>
 
-              <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
-                <div className="font-semibold text-blue-900 mb-2">💡 Opportunity</div>
-                <div className="text-sm text-blue-800">
-                  Moving from <span className="font-semibold">{scenarioData[1].label}</span> to{' '}
-                  <span className="font-semibold">{scenarioData[3].label}</span> could add{' '}
-                  <span className="text-xl font-bold">
-                    {formatCurrency((scenarioData[3].netProfit - scenarioData[1].netProfit) * 12)}
-                  </span>{' '}
-                  in annual profit.
+              <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-lg p-5">
+                <div className="font-semibold text-blue-900 mb-3 text-lg">💡 Opportunity Analysis</div>
+                
+                {/* Comparison Grid */}
+                <div className="space-y-3 mb-4">
+                  <div className="bg-white rounded-lg p-3 border border-blue-200">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm text-gray-700">
+                        <span className="font-semibold text-red-700">90% of Brands</span> → <span className="font-semibold text-yellow-700">Your Current Setup</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-blue-900">
+                          +{formatCurrency((scenarioData[1].netProfit - scenarioData[0].netProfit) * 12)}
+                        </div>
+                        <div className="text-xs text-gray-600">annual profit gain</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-white rounded-lg p-3 border border-blue-200">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm text-gray-700">
+                        <span className="font-semibold text-red-700">90% of Brands</span> → <span className="font-semibold text-green-700">Best-in-Class (Top 1%)</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-green-900">
+                          +{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)}
+                        </div>
+                        <div className="text-xs text-gray-600">total opportunity</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mars Copywriting Timeline */}
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-4 text-white mt-4">
+                  <div className="font-bold text-lg mb-3">🚀 Mars Copywriting Timeline</div>
+                  
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-white/20 rounded-full px-3 py-1 font-bold text-xs whitespace-nowrap">14 Days</div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Initial Setup Complete</div>
+                        <div className="text-white/90 text-xs mt-1">
+                          Copywriting → Design → Your Approval. All deliverables implemented.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="bg-white/20 rounded-full px-3 py-1 font-bold text-xs whitespace-nowrap">1-2 Months</div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Good Performance Level</div>
+                        <div className="text-white/90 text-xs mt-1">
+                          Optimized campaigns, core flows dialed in, revenue accelerating.
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="bg-white/20 rounded-full px-3 py-1 font-bold text-xs whitespace-nowrap">3-6 Months</div>
+                      <div className="flex-1">
+                        <div className="font-semibold">Best-in-Class (Top 1%)</div>
+                        <div className="text-white/90 text-xs mt-1">
+                          Advanced segmentation, full flow suite, maximized email revenue.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
