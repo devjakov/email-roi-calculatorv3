@@ -1,8 +1,35 @@
+/**
+ * Email Marketing ROI Calculator - Main Component
+ * 
+ * Purpose: Calculate email marketing ROI for ecommerce brands using real Klaviyo benchmark data
+ * Built for: Mars Copywriting to demonstrate value to prospects
+ * 
+ * Key Features:
+ * - Real Klaviyo benchmarks from 325B+ emails
+ * - Traffic-based flow revenue calculation
+ * - Campaign multiplier effect (more campaigns = more flow triggers)
+ * - Linear scaling within revenue brackets
+ * - Interactive performance charts
+ * - Opportunity analysis with Mars Copywriting timeline
+ */
+
 'use client'
 
 import { useState, useMemo } from 'react'
 
-// Industry benchmark data from Klaviyo
+/**
+ * INDUSTRY BENCHMARKS
+ * 
+ * Campaign RPR (Revenue Per Recipient) from Klaviyo's dataset
+ * These represent average revenue generated per email sent for each industry
+ * 
+ * Flow RPR: Shown for reference but NOT used directly (we use AOV-based benchmarks instead)
+ * 
+ * Performance Tiers:
+ * - typical: What 90% of brands do (underperforming)
+ * - good: Solid performance (active brands)
+ * - best: Top 1% performers (optimized programs)
+ */
 const INDUSTRY_BENCHMARKS = {
   'health-beauty': {
     name: 'Health & Beauty',
@@ -70,7 +97,18 @@ const INDUSTRY_BENCHMARKS = {
   }
 }
 
-// Klaviyo pricing tiers
+/**
+ * KLAVIYO PRICING TIERS
+ * 
+ * Official Klaviyo pricing as of 2025
+ * Pricing is based on total profile count (email addresses in your account)
+ * 
+ * Used to calculate monthly Klaviyo cost in ROI calculations
+ * 
+ * Free tier: Up to 250 profiles
+ * Max tier shown: 500k profiles at $4,900/month
+ * For larger lists: Price scales proportionally
+ */
 const KLAVIYO_PRICING = [
   { profiles: 250, price: 0 },
   { profiles: 500, price: 20 },
@@ -92,10 +130,31 @@ const KLAVIYO_PRICING = [
   { profiles: 500000, price: 4900 }
 ]
 
-// Klaviyo Flow Benchmarks based on Annual Revenue and AOV
-// Source: https://help.klaviyo.com/hc/en-us/articles/115005084927
+/**
+ * KLAVIYO FLOW BENCHMARKS
+ * 
+ * Official benchmarks from Klaviyo based on:
+ * - Annual revenue bracket ($0-1M, $1M-5M, $5M-20M)
+ * - Average Order Value (AOV) ranges
+ * - Flow type (Abandoned Cart, Welcome Series, Post-Purchase)
+ * 
+ * Source: https://help.klaviyo.com/hc/en-us/articles/115005084927
+ * 
+ * Data structure:
+ * - rpr25: 25th percentile (bottom performers in bracket)
+ * - rpr75: 75th percentile (top performers in bracket)
+ * 
+ * How we use this:
+ * 1. Determine which revenue bracket the business is in
+ * 2. Find their position within that bracket (0-100%)
+ * 3. Find matching AOV range
+ * 4. Scale RPR linearly from rpr25 to rpr75 based on position
+ * 
+ * Example: $3M annual revenue in $1M-5M bracket = 50% through bracket
+ * RPR = rpr25 + (0.50 × (rpr75 - rpr25))
+ */
 const FLOW_BENCHMARKS = {
-  // $0-1M annual revenue
+  // $0-1M annual revenue bracket
   '0-1m': {
     abandonedCart: [
       { aovMin: 0, aovMax: 28, rpr25: 0.13, rpr75: 0.81 },
@@ -186,34 +245,71 @@ const FLOW_BENCHMARKS = {
   }
 }
 
+/**
+ * GET FLOW RPR - Core calculation function
+ * 
+ * Purpose: Get the correct flow RPR benchmarks and scale them based on business performance
+ * 
+ * How it works:
+ * 1. Determines which revenue bracket you're in ($0-1M, $1M-5M, or $5M-20M)
+ * 2. Calculates your position within that bracket (0% to 100%)
+ *    - 0% = just entered bracket (use 25th percentile RPR)
+ *    - 50% = middle of bracket (use median RPR)
+ *    - 100% = top of bracket (use 75th percentile RPR)
+ * 3. Finds the AOV range that matches your average order value
+ * 4. Linearly scales RPR from rpr25 to rpr75 based on position
+ * 5. Returns individual RPR values for each flow type
+ * 
+ * Why this matters:
+ * - A $10/month business gets low RPR (just starting out)
+ * - A $500k/month business gets high RPR (established & optimized)
+ * - Bigger businesses have better email programs = higher RPR
+ * 
+ * @param annualRevenue - Total annual business revenue (not just email)
+ * @param aov - Average order value ($)
+ * @returns Object with RPR values for each flow type
+ */
 function getFlowRPR(annualRevenue: number, aov: number): { abandonedCart: number, welcome: number, postPurchase: number, browseAbandonment: number } {
-  // Determine revenue bracket and position within bracket (0.0 to 1.0)
+  // Step 1: Determine revenue bracket and calculate position within it (0.0 to 1.0)
+  // Step 1: Determine revenue bracket and calculate position within it (0.0 to 1.0)
   let bracket: '0-1m' | '1m-5m' | '5m-20m'
   let bracketPosition = 0
   
   if (annualRevenue < 1000000) {
     bracket = '0-1m'
-    // Scale from 0% to 100% of the bracket
+    // Example: $500k annual = 50% through $0-1M bracket
     bracketPosition = annualRevenue / 1000000
   } else if (annualRevenue < 5000000) {
     bracket = '1m-5m'
-    // Scale from 0% to 100% within $1M-5M range
+    // Example: $3M annual = ($3M - $1M) / $4M = 50% through bracket
     bracketPosition = (annualRevenue - 1000000) / 4000000
   } else {
     bracket = '5m-20m'
-    // Scale from 0% to 100% within $5M-20M range
+    // Example: $12M annual = ($12M - $5M) / $15M = 46% through bracket
+    // Cap at 100% for revenues above $20M
     bracketPosition = Math.min((annualRevenue - 5000000) / 15000000, 1.0)
   }
   
+  // Step 2: Get benchmarks for this revenue bracket
   const benchmarks = FLOW_BENCHMARKS[bracket]
   
-  // Find matching AOV range for each flow type and scale based on position
+  // Step 3: Find matching AOV range and scale RPR based on bracket position
+  /**
+   * This function finds the correct AOV range and scales the RPR
+   * 
+   * Scaling formula: rpr25 + (position × (rpr75 - rpr25))
+   * 
+   * Example with AOV $95 in $1M-5M bracket at 50% position:
+   * - Abandoned Cart: rpr25=$2.39, rpr75=$5.86
+   * - Scaled RPR = $2.39 + (0.50 × ($5.86 - $2.39)) = $4.13
+   */
   const findRPR = (flowData: any[]) => {
+    // Find the AOV range that matches (e.g., AOV $95 matches $83-$112 range)
     const match = flowData.find(range => aov >= range.aovMin && aov < range.aovMax)
     if (!match) return 0
     
     // Scale linearly from 25th percentile (bottom) to 75th percentile (top)
-    // based on position within revenue bracket
+    // based on how far through the revenue bracket you are
     return match.rpr25 + (bracketPosition * (match.rpr75 - match.rpr25))
   }
   
@@ -221,75 +317,157 @@ function getFlowRPR(annualRevenue: number, aov: number): { abandonedCart: number
     abandonedCart: findRPR(benchmarks.abandonedCart),
     welcome: findRPR(benchmarks.welcome),
     postPurchase: findRPR(benchmarks.postPurchase),
-    browseAbandonment: findRPR(benchmarks.abandonedCart) * 0.3 // Estimate: ~30% of abandoned cart
+    // Browse abandonment estimated at 30% of abandoned cart RPR (no official Klaviyo data)
+    browseAbandonment: findRPR(benchmarks.abandonedCart) * 0.3
   }
 }
 
+/**
+ * GET KLAVIYO PRICE
+ * 
+ * Calculates monthly Klaviyo cost based on profile count
+ * Uses official 2025 Klaviyo pricing tiers
+ * 
+ * Logic:
+ * - Finds the first pricing tier that matches or exceeds profile count
+ * - For profiles above max tier (500k), extrapolates price linearly
+ * 
+ * @param profiles - Total number of email profiles in Klaviyo
+ * @returns Monthly Klaviyo cost in dollars
+ */
 function getKlaviyoPrice(profiles: number): number {
+  // Find matching tier
   for (let i = 0; i < KLAVIYO_PRICING.length; i++) {
     if (profiles <= KLAVIYO_PRICING[i].profiles) {
       return KLAVIYO_PRICING[i].price
     }
   }
+  // If above max tier, calculate proportionally
   const lastTier = KLAVIYO_PRICING[KLAVIYO_PRICING.length - 1]
   const pricePerProfile = lastTier.price / lastTier.profiles
   return Math.round(profiles * pricePerProfile)
 }
 
+/**
+ * MAIN CALCULATOR COMPONENT
+ * 
+ * This component manages all state and calculations for the ROI calculator
+ * Built with React hooks for reactive updates
+ */
 export default function Home() {
+  // ==================== STATE MANAGEMENT ====================
+  
+  // Industry selection (determines campaign RPR baseline)
   const [selectedIndustry, setSelectedIndustry] = useState<keyof typeof INDUSTRY_BENCHMARKS>('health-beauty')
-  const [emailListSize, setEmailListSize] = useState(150000)
-  const [campaignsPerMonth, setCampaignsPerMonth] = useState(8)
-  const [numberOfFlows, setNumberOfFlows] = useState(15)
-  const [monthlyRetainer, setMonthlyRetainer] = useState(5000)
-  const [grossMargin, setGrossMargin] = useState(50)
-  const [totalMonthlyRevenue, setTotalMonthlyRevenue] = useState(1280000)
-  const [averageOrderValue, setAverageOrderValue] = useState(95)
   
-  // Traffic-based calculator
-  const [monthlyTraffic, setMonthlyTraffic] = useState(300000)
-  const [popupConversionRate, setPopupConversionRate] = useState(2.5)
+  // Email list configuration
+  const [emailListSize, setEmailListSize] = useState(150000) // Total profiles in Klaviyo
+  const [campaignsPerMonth, setCampaignsPerMonth] = useState(8) // Email campaigns sent per month
+  const [numberOfFlows, setNumberOfFlows] = useState(15) // Active automated flows
   
-  // Manual override options
+  // Business metrics
+  const [monthlyRetainer, setMonthlyRetainer] = useState(5000) // Mars Copywriting fee
+  const [grossMargin, setGrossMargin] = useState(50) // Profit margin % (for net ROI calculation)
+  const [totalMonthlyRevenue, setTotalMonthlyRevenue] = useState(1280000) // Total business revenue
+  const [averageOrderValue, setAverageOrderValue] = useState(95) // AOV (determines flow RPR benchmarks)
+  
+  // Traffic-based calculator (NEW: Flow revenue = new subscribers × RPR)
+  const [monthlyTraffic, setMonthlyTraffic] = useState(300000) // Monthly website visitors
+  const [popupConversionRate, setPopupConversionRate] = useState(2.5) // Pop-up conversion % (1-20%)
+  
+  // Manual campaign override (optional - allows user to input actual campaign revenue)
   const [useManualCampaignRev, setUseManualCampaignRev] = useState(false)
   const [manualAvgCampaignRev, setManualAvgCampaignRev] = useState(0)
   const [useManualFlowRPR, setUseManualFlowRPR] = useState(false)
   const [manualFlowRPR, setManualFlowRPR] = useState(0)
   
-  // Engaged list (40% of total) - this is what we actually use for calculations
+  // ==================== DERIVED VALUES ====================
+  
+  /**
+   * ENGAGED LIST SIZE
+   * Only 30-40% of an email list is typically "engaged" (opened in last 90-240 days)
+   * We use 40% as the engaged segment for all revenue calculations
+   * This is the "true" list size that actually receives and opens emails
+   */
   const engagedListSize = Math.round(emailListSize * 0.4)
 
+  // Get industry benchmarks and Klaviyo pricing
   const industry = INDUSTRY_BENCHMARKS[selectedIndustry]
   const klaviyoCost = getKlaviyoPrice(emailListSize)
 
-  // Calculate annual revenue and get flow RPR benchmarks
+  // Calculate annual revenue (used for bracket determination) and get flow RPR benchmarks
   const annualRevenue = totalMonthlyRevenue * 12
   const flowRPRBenchmarks = getFlowRPR(annualRevenue, averageOrderValue)
 
-  // Calculate new subscribers from traffic
+  /**
+   * TRAFFIC TO SUBSCRIBERS CONVERSION
+   * Key insight: Flow revenue comes from NEW SUBSCRIBERS entering flows
+   * Formula: Monthly Traffic × Pop-up Conversion Rate = New Subscribers per Month
+   */
   const newSubscribersPerMonth = Math.round(monthlyTraffic * (popupConversionRate / 100))
 
-  // Calculate revenue based on benchmarks
+  /**
+   * ==================== MAIN CALCULATIONS ====================
+   * 
+   * This is the heart of the calculator where all revenue and ROI metrics are computed
+   * Uses React's useMemo for performance (only recalculates when dependencies change)
+   */
   const calculations = useMemo(() => {
-    // Campaign multiplier: 1.5% boost per campaign, capped at 25%
+    /**
+     * CAMPAIGN MULTIPLIER
+     * 
+     * More campaigns = more email engagement = more people re-triggering flows
+     * Formula: 1 + (campaigns × 0.015), capped at 1.25 (25% max boost)
+     * 
+     * Examples:
+     * - 5 campaigns = 1.075x multiplier (7.5% boost)
+     * - 10 campaigns = 1.15x multiplier (15% boost)
+     * - 15 campaigns = 1.225x multiplier (22.5% boost)
+     * - 17+ campaigns = 1.25x multiplier (25% boost - capped)
+     * 
+     * Why: More campaigns → More clicks → More cart abandons, browses, purchases → More flow triggers
+     */
     const campaignMultiplier = Math.min(1 + (campaignsPerMonth * 0.015), 1.25)
     
-    // Campaign revenue - using ENGAGED list
+    // ========== CAMPAIGN REVENUE ==========
+    /**
+     * Campaign revenue calculation (straightforward linear)
+     * 
+     * Formula: # of Campaigns × Campaign RPR × Engaged List Size
+     * 
+     * Uses engaged list (40% of total) because only engaged subscribers open emails
+     * Can be overridden manually if user has actual campaign revenue data
+     */
     const defaultAvgCampaignRev = industry.campaignRPR * engagedListSize
     const avgCampaignRev = useManualCampaignRev ? manualAvgCampaignRev : defaultAvgCampaignRev
     const campaignRevenue = campaignsPerMonth * avgCampaignRev
     const campaignRPR = avgCampaignRev / engagedListSize
     
-    // Flow revenue - Based on Klaviyo benchmarks
-    // Total RPR = sum of individual flow RPRs
+    // ========== FLOW REVENUE ==========
+    /**
+     * Flow revenue calculation (complex - based on Klaviyo benchmarks)
+     * 
+     * Step 1: Sum individual flow RPRs from Klaviyo benchmarks
+     * These are already scaled based on revenue bracket + AOV
+     */
     const totalFlowRPR = flowRPRBenchmarks.abandonedCart + 
                          flowRPRBenchmarks.welcome + 
                          flowRPRBenchmarks.postPurchase + 
                          flowRPRBenchmarks.browseAbandonment
     
-    // Apply diminishing returns based on # of flows
-    // Assume 4 core flows (cart, welcome, post-purchase, browse)
-    // Each additional flow adds less value
+    /**
+     * Step 2: Apply flow efficiency multiplier
+     * 
+     * Logic:
+     * - First 4 flows are "core" (cart, welcome, post-purchase, browse)
+     * - If you have < 4 flows: scale down proportionally
+     * - If you have > 4 flows: each additional flow adds 15% more revenue
+     * 
+     * Examples:
+     * - 2 flows = 0.50 efficiency (50% of full potential)
+     * - 4 flows = 1.00 efficiency (100% - all core flows)
+     * - 10 flows = 1.90 efficiency (190% - core + 6 extra @ 15% each)
+     */
     let flowEfficiency = 1.0
     if (numberOfFlows > 4) {
       const extraFlows = numberOfFlows - 4
@@ -298,26 +476,46 @@ export default function Home() {
       flowEfficiency = numberOfFlows / 4 // If less than 4, scale down proportionally
     }
     
-    // Flow revenue = new subscribers × total RPR × efficiency × campaign multiplier
+    /**
+     * Step 3: Calculate final flow revenue
+     * 
+     * Formula: New Subscribers × Total Flow RPR × Efficiency × Campaign Multiplier
+     * 
+     * Key insight: Flow revenue comes from NEW subscribers entering flows each month
+     * Campaign multiplier boosts this because more campaigns = more flow triggers
+     */
     const flowRevenue = newSubscribersPerMonth * totalFlowRPR * flowEfficiency * campaignMultiplier
     const flowRPR = flowRevenue / newSubscribersPerMonth
     
-    // Total email revenue
+    // ========== TOTAL EMAIL REVENUE ==========
     const totalEmailRevenue = campaignRevenue + flowRevenue
     const totalEmailRPR = totalEmailRevenue / engagedListSize
     
-    // Email as % of total revenue - cap at 100%
+    // Email as % of total business revenue (capped at 100%)
     const emailPercentOfRevenue = Math.min((totalEmailRevenue / totalMonthlyRevenue) * 100, 100)
     
-    // Costs
+    // ========== COSTS ==========
     const totalEmailCost = monthlyRetainer + klaviyoCost
     
-    // ROI calculations
+    // ========== ROI CALCULATIONS ==========
+    /**
+     * Two types of ROI:
+     * 
+     * 1. Gross ROI (revenue-based): Total Email Revenue / Total Costs
+     *    - Shows revenue multiple (e.g., 18x = $18 revenue per $1 spent)
+     *    - Useful but doesn't account for profit margins
+     * 
+     * 2. Net ROI (profit-based): Net Profit / Total Costs
+     *    - Accounts for gross margin (not all revenue is profit)
+     *    - More realistic measure of actual return
+     *    - This is what we prominently display to prospects
+     */
     const grossROI = totalEmailRevenue / totalEmailCost
     const emailGrossProfit = totalEmailRevenue * (grossMargin / 100)
     const netProfitFromEmail = emailGrossProfit - totalEmailCost
     const netROI = netProfitFromEmail / totalEmailCost
     
+    // Return all calculated values
     return {
       campaignRevenue,
       campaignRPR,
