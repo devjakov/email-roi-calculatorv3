@@ -417,8 +417,8 @@ function renderEmailHtml(md: string): string {
   html = html.replace(/<p>/g, '<p style="font-size:1rem;line-height:1.8;color:#1f2937;margin:1rem 0;text-align:center">')
   // Headings
   html = html
-    .replace(/<h1>/g, '<h1 style="font-size:1.6rem;font-weight:800;color:#111827;margin:1.75rem 0 0.75rem;text-align:center">')
-    .replace(/<h2>/g, '<h2 style="font-size:1.3rem;font-weight:700;color:#111827;margin:1.5rem 0 0.5rem;text-align:center">')
+    .replace(/<h1>/g, '<h1 style="font-size:2rem;font-weight:800;color:#111827;margin:1.75rem 0 0.75rem;text-align:center">')
+    .replace(/<h2>/g, '<h2 style="font-size:1.6rem;font-weight:700;color:#111827;margin:1.5rem 0 0.5rem;text-align:center">')
     .replace(/<h3>/g, '<h3 style="font-size:1.1rem;font-weight:700;color:#1f2937;margin:1.25rem 0 0.5rem;text-align:center">')
     .replace(/<h4>/g, '<h4 style="font-size:1rem;font-weight:700;color:#374151;margin:1rem 0 0.25rem;text-align:center">')
   // HR, strong
@@ -495,7 +495,13 @@ function Home() {
       .then(res => res.json().then(data => ({ ok: res.ok, data })))
       .then(({ ok, data }) => {
         if (!ok) throw new Error(data.error ?? 'Failed to load deliverables')
-        setProspectData(data as ProspectData)
+        const d = data as ProspectData
+        setProspectData(d)
+        // Auto-expand all cards on load
+        const campCount = splitMarkdownSections(d.campaigns_markdown).length
+        const flowCount = splitMarkdownSections(d.flows_markdown).length
+        setExpandedCampaigns(new Set(Array.from({ length: campCount }, (_, i) => i)))
+        setExpandedFlows(new Set(Array.from({ length: flowCount }, (_, i) => i)))
         setProspectLoading(false)
       })
       .catch(err => {
@@ -1049,7 +1055,7 @@ function Home() {
                           title={s.title}
                           content={s.content}
                           accentColor="purple"
-                          cardType="flow"
+                          cardType="campaign"
                           isOpen={expandedFlows.has(idx)}
                           onToggle={() => toggleFlow(idx)}
                         />
