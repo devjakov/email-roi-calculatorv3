@@ -399,6 +399,64 @@ function splitMarkdownSections(md: string): Array<{ title: string; content: stri
 marked.setOptions({ breaks: true, gfm: true })
 
 /**
+ * Render markdown as email-styled HTML.
+ * Center-aligned, big font, CTAs in [brackets] become blue buttons.
+ */
+function renderEmailHtml(md: string): string {
+  if (!md.trim()) return ''
+  let html = marked.parse(md) as string
+
+  // Standalone CTA paragraph: <p>[Shop Now — $48]</p> → blue button
+  html = html.replace(
+    /<p>\[([^\]]+)\]<\/p>/g,
+    '<p style="text-align:center;margin:1.5rem 0">' +
+    '<span style="display:inline-block;padding:0.75rem 2.25rem;background:#2563eb;color:#fff;font-weight:700;border-radius:0.5rem;font-size:1rem;letter-spacing:0.01em">$1</span>' +
+    '</p>'
+  )
+  // Remaining <p> tags
+  html = html.replace(/<p>/g, '<p style="font-size:1rem;line-height:1.8;color:#1f2937;margin:1rem 0;text-align:center">')
+  // Headings
+  html = html
+    .replace(/<h1>/g, '<h1 style="font-size:1.6rem;font-weight:800;color:#111827;margin:1.75rem 0 0.75rem;text-align:center">')
+    .replace(/<h2>/g, '<h2 style="font-size:1.3rem;font-weight:700;color:#111827;margin:1.5rem 0 0.5rem;text-align:center">')
+    .replace(/<h3>/g, '<h3 style="font-size:1.1rem;font-weight:700;color:#1f2937;margin:1.25rem 0 0.5rem;text-align:center">')
+    .replace(/<h4>/g, '<h4 style="font-size:1rem;font-weight:700;color:#374151;margin:1rem 0 0.25rem;text-align:center">')
+  // HR, strong
+  html = html
+    .replace(/<hr>/g, '<hr style="border:none;border-top:1px solid #e5e7eb;margin:1.75rem 0">')
+    .replace(/<strong>/g, '<strong style="font-weight:700;color:#111827">')
+  // Remaining inline [brackets] → bold blue
+  html = html.replace(/\[([^\]<>]+)\]/g, '<strong style="color:#2563eb;font-weight:700">[$1]</strong>')
+  // Lists (display:inline-block so they stay centred in the container)
+  html = html
+    .replace(/<ul>/g, '<ul style="list-style:disc;padding-left:1.5rem;margin:0.75rem auto;display:inline-block;text-align:left">')
+    .replace(/<ol>/g, '<ol style="list-style:decimal;padding-left:1.5rem;margin:0.75rem auto;display:inline-block;text-align:left">')
+    .replace(/<li>/g, '<li style="margin:0.4rem 0;font-size:1rem;color:#1f2937">')
+  return html
+}
+
+/**
+ * Render markdown as flow/automation-styled HTML.
+ * Left-aligned, document-like for step-by-step sequences.
+ */
+function renderFlowHtml(md: string): string {
+  if (!md.trim()) return ''
+  let html = marked.parse(md) as string
+  html = html
+    .replace(/<p>/g, '<p style="font-size:1rem;line-height:1.75;color:#1f2937;margin:0.875rem 0">')
+    .replace(/<h1>/g, '<h1 style="font-size:1.4rem;font-weight:800;color:#111827;margin:1.5rem 0 0.5rem">')
+    .replace(/<h2>/g, '<h2 style="font-size:1.2rem;font-weight:700;color:#111827;margin:1.25rem 0 0.5rem">')
+    .replace(/<h3>/g, '<h3 style="font-size:1.05rem;font-weight:700;color:#1f2937;margin:1rem 0 0.4rem">')
+    .replace(/<h4>/g, '<h4 style="font-size:1rem;font-weight:700;color:#374151;margin:0.75rem 0 0.25rem">')
+    .replace(/<hr>/g, '<hr style="border:none;border-top:1px solid #e5e7eb;margin:1.5rem 0">')
+    .replace(/<strong>/g, '<strong style="font-weight:700;color:#111827">')
+    .replace(/<ul>/g, '<ul style="list-style:disc;padding-left:1.5rem;margin:0.75rem 0">')
+    .replace(/<ol>/g, '<ol style="list-style:decimal;padding-left:1.5rem;margin:0.75rem 0">')
+    .replace(/<li>/g, '<li style="margin:0.4rem 0;font-size:1rem;color:#1f2937">')
+  return html
+}
+
+/**
  * MAIN CALCULATOR COMPONENT
  *
  * This component manages all state and calculations for the ROI calculator
@@ -785,14 +843,15 @@ function Home() {
   }, [industry, engagedListSize])
 
   // ==================== SECTION CARD COMPONENT ====================
-  // Reusable expandable card used for both campaigns and flows
   const SectionCard = ({
-    index, title, content, accentColor, isOpen, onToggle,
+    index, title, content, accentColor, cardType, isOpen, onToggle,
   }: {
     index: number; title: string; content: string
-    accentColor: 'blue' | 'purple'; isOpen: boolean; onToggle: () => void
+    accentColor: 'blue' | 'purple'; cardType: 'campaign' | 'flow'
+    isOpen: boolean; onToggle: () => void
   }) => {
     const bg = accentColor === 'blue' ? 'bg-blue-600' : 'bg-purple-600'
+    const html = cardType === 'campaign' ? renderEmailHtml(content) : renderFlowHtml(content)
     return (
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
         <button onClick={onToggle} className="w-full flex items-center justify-between px-6 py-4 text-left">
@@ -808,10 +867,8 @@ function Home() {
         </button>
         {isOpen && (
           <div
-            className="px-6 pb-6 border-t border-gray-100 pt-4 prose prose-sm max-w-none text-gray-700
-              [&_strong]:text-gray-900 [&_h1]:text-lg [&_h2]:text-base [&_h3]:text-sm
-              [&_hr]:my-4 [&_ul]:pl-5 [&_ol]:pl-5"
-            dangerouslySetInnerHTML={{ __html: marked.parse(content) as string }}
+            className={`border-t border-gray-100 pt-5 pb-6 ${cardType === 'campaign' ? 'px-8 text-center' : 'px-6'}`}
+            dangerouslySetInnerHTML={{ __html: html }}
           />
         )}
       </div>
@@ -916,14 +973,26 @@ function Home() {
             {prospectData && !prospectLoading && (() => {
               const campaignSections = splitMarkdownSections(prospectData.campaigns_markdown)
               const flowSections = splitMarkdownSections(prospectData.flows_markdown)
+              const allCampaignsOpen = campaignSections.length > 0 && expandedCampaigns.size === campaignSections.length
+              const allFlowsOpen = flowSections.length > 0 && expandedFlows.size === flowSections.length
               return (
                 <>
                   {/* Campaign Emails */}
                   <div className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                      <span className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl">📧</span>
-                      Campaign Emails ({campaignSections.length})
-                    </h2>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                        <span className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl">📧</span>
+                        Campaign Emails ({campaignSections.length})
+                      </h2>
+                      {campaignSections.length > 0 && (
+                        <button
+                          onClick={() => setExpandedCampaigns(allCampaignsOpen ? new Set() : new Set(campaignSections.map((_, i) => i)))}
+                          className="text-sm font-medium text-blue-600 hover:text-blue-800 px-3 py-1.5 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+                        >
+                          {allCampaignsOpen ? 'Collapse All' : 'Expand All'}
+                        </button>
+                      )}
+                    </div>
 
                     {isEditMode && <EditPanel field="campaigns" label="campaigns_markdown (col M)" />}
 
@@ -940,6 +1009,7 @@ function Home() {
                           title={s.title}
                           content={s.content}
                           accentColor="blue"
+                          cardType="campaign"
                           isOpen={expandedCampaigns.has(idx)}
                           onToggle={() => toggleCampaign(idx)}
                         />
@@ -949,10 +1019,20 @@ function Home() {
 
                   {/* Flow Automations */}
                   <div className="mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                      <span className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xl">⚙️</span>
-                      Flow Automations ({flowSections.length})
-                    </h2>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                        <span className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xl">⚙️</span>
+                        Flow Automations ({flowSections.length})
+                      </h2>
+                      {flowSections.length > 0 && (
+                        <button
+                          onClick={() => setExpandedFlows(allFlowsOpen ? new Set() : new Set(flowSections.map((_, i) => i)))}
+                          className="text-sm font-medium text-purple-600 hover:text-purple-800 px-3 py-1.5 border border-purple-200 rounded-lg hover:bg-purple-50 transition-colors"
+                        >
+                          {allFlowsOpen ? 'Collapse All' : 'Expand All'}
+                        </button>
+                      )}
+                    </div>
 
                     {isEditMode && <EditPanel field="flows" label="flows_markdown (col N)" />}
 
@@ -969,6 +1049,7 @@ function Home() {
                           title={s.title}
                           content={s.content}
                           accentColor="purple"
+                          cardType="flow"
                           isOpen={expandedFlows.has(idx)}
                           onToggle={() => toggleFlow(idx)}
                         />
