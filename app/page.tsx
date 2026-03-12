@@ -15,7 +15,7 @@
 
 'use client'
 
-import { useState, useMemo, useEffect, useCallback, useRef, Suspense } from 'react'
+import { useState, useMemo, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { marked } from 'marked'
 
@@ -374,28 +374,25 @@ const LAST_TOUCH_OVERLAP_RATE = 0.20
 
 // ==================== DELIVERABLES TYPES ====================
 
-interface CampaignDeliverable {
-  prospect: string
-  campaign_number: string
-  title: string
-  subject_line: string
-  body: string
-  status: string
-}
-
-interface FlowDeliverable {
-  prospect: string
-  flow_number: string
-  title: string
-  trigger: string
-  steps: string
-  status: string
-}
-
 interface ProspectData {
   prospect: string
-  campaigns: CampaignDeliverable[]
-  flows: FlowDeliverable[]
+  campaigns_markdown: string
+  flows_markdown: string
+  sheet_row: number
+}
+
+/** Split a markdown blob into named sections on ## headings */
+function splitMarkdownSections(md: string): Array<{ title: string; content: string }> {
+  if (!md.trim()) return []
+  // Split on lines that start with ## (section headers)
+  const parts = md.split(/\n(?=##\s)/)
+  return parts.map(part => {
+    const firstLine = part.match(/^##\s+(.+)/m)
+    const title = firstLine ? firstLine[1].trim() : part.slice(0, 60).trim()
+    // Remove the ## header line from content so it isn't doubled
+    const content = firstLine ? part.replace(/^##\s+.+\n?/, '').trim() : part.trim()
+    return { title, content }
+  }).filter(s => s.title || s.content)
 }
 
 // Configure marked for safe rendering
@@ -428,7 +425,7 @@ function Home() {
   const [prospectError, setProspectError] = useState<string | null>(null)
   const [expandedCampaigns, setExpandedCampaigns] = useState<Set<number>>(new Set())
   const [expandedFlows, setExpandedFlows] = useState<Set<number>>(new Set())
-  const [savingCell, setSavingCell] = useState<string | null>(null)
+  const [savingField, setSavingField] = useState<string | null>(null)
   const [activeSection, setActiveSection] = useState<'deliverables' | 'calculator'>('deliverables')
 
   // Fetch prospect data when slug changes
@@ -437,12 +434,10 @@ function Home() {
     setProspectLoading(true)
     setProspectError(null)
     fetch(`/api/prospect?name=${encodeURIComponent(prospectSlug)}`)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to load deliverables')
-        return res.json()
-      })
-      .then((data: ProspectData) => {
-        setProspectData(data)
+      .then(res => res.json().then(data => ({ ok: res.ok, data })))
+      .then(({ ok, data }) => {
+        if (!ok) throw new Error(data.error ?? 'Failed to load deliverables')
+        setProspectData(data as ProspectData)
         setProspectLoading(false)
       })
       .catch(err => {
@@ -452,7 +447,7 @@ function Home() {
   }, [prospectSlug])
 
   const prospectName = prospectSlug
-    ? prospectSlug.charAt(0).toUpperCase() + prospectSlug.slice(1)
+    ? prospectSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
     : ''
 
   const toggleCampaign = useCallback((n: number) => {
@@ -471,26 +466,29 @@ function Home() {
     })
   }, [])
 
-  // Save a single cell edit back to Google Sheets
-  const saveCell = useCallback(async (tab: string, row: number, column: string, value: string) => {
-    const cellId = `${tab}-${row}-${column}`
-    setSavingCell(cellId)
+  // Save campaigns_markdown or flows_markdown back to Google Sheets
+  const saveField = useCallback(async (field: 'campaigns' | 'flows', value: string) => {
+    if (!prospectData) return
+    setSavingField(field)
     try {
       const res = await fetch('/api/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: editKey, tab, row, column, value }),
+        body: JSON.stringify({ key: editKey, sheet_row: prospectData.sheet_row, field, value }),
       })
+      const data = await res.json()
       if (!res.ok) {
-        const data = await res.json()
         alert(`Save failed: ${data.error || 'Unknown error'}`)
+      } else {
+        // Update local state so UI reflects the change immediately
+        setProspectData(prev => prev ? { ...prev, [`${field}_markdown`]: value } : prev)
       }
     } catch {
       alert('Save failed: network error')
     } finally {
-      setSavingCell(null)
+      setSavingField(null)
     }
-  }, [editKey])
+  }, [editKey, prospectData])
 
   // ==================== STATE MANAGEMENT ====================
 
@@ -786,86 +784,73 @@ function Home() {
     return points
   }, [industry, engagedListSize])
 
-  // ==================== EDITABLE CELL COMPONENT ====================
-  const EditableCell = ({ value, onSave, className = '' }: { value: string; onSave: (v: string) => void; className?: string }) => {
-    const ref = useRef<HTMLDivElement>(null)
-    if (!isEditMode) return <span className={className}>{value}</span>
+  // ==================== SECTION CARD COMPONENT ====================
+  // Reusable expandable card used for both campaigns and flows
+  const SectionCard = ({
+    index, title, content, accentColor, isOpen, onToggle,
+  }: {
+    index: number; title: string; content: string
+    accentColor: 'blue' | 'purple'; isOpen: boolean; onToggle: () => void
+  }) => {
+    const bg = accentColor === 'blue' ? 'bg-blue-600' : 'bg-purple-600'
     return (
-      <div
-        ref={ref}
-        contentEditable
-        suppressContentEditableWarning
-        className={`${className} outline-none border-b-2 border-dashed border-blue-300 focus:border-blue-500 px-1`}
-        onBlur={() => {
-          const newVal = ref.current?.textContent ?? ''
-          if (newVal !== value) onSave(newVal)
-        }}
-        dangerouslySetInnerHTML={{ __html: value }}
-      />
-    )
-  }
-
-  // ==================== EDITABLE MARKDOWN CELL ====================
-  const EditableMarkdown = ({ value, onSave, cellId }: { value: string; onSave: (v: string) => void; cellId: string }) => {
-    const [editing, setEditing] = useState(false)
-    const [draft, setDraft] = useState(value)
-    const isSaving = savingCell === cellId
-
-    if (!isEditMode) {
-      return <div className="prose prose-sm max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: marked.parse(value) as string }} />
-    }
-
-    if (editing) {
-      return (
-        <div className="space-y-2">
-          <textarea
-            className="w-full min-h-[200px] p-3 border-2 border-blue-300 rounded-lg font-mono text-sm focus:border-blue-500 focus:outline-none"
-            value={draft}
-            onChange={e => setDraft(e.target.value)}
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={() => { onSave(draft); setEditing(false) }}
-              disabled={isSaving}
-              className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            >
-              {isSaving ? 'Saving...' : 'Save'}
-            </button>
-            <button
-              onClick={() => { setDraft(value); setEditing(false) }}
-              className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300"
-            >
-              Cancel
-            </button>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
+        <button onClick={onToggle} className="w-full flex items-center justify-between px-6 py-4 text-left">
+          <div className="flex items-center gap-4">
+            <div className={`w-8 h-8 ${bg} text-white rounded-lg flex items-center justify-center font-bold text-sm shrink-0`}>
+              {index}
+            </div>
+            <div className="font-semibold text-gray-900">{title}</div>
           </div>
-          <div className="text-xs text-gray-500">Preview:</div>
-          <div className="prose prose-sm max-w-none text-gray-700 bg-gray-50 rounded-lg p-3" dangerouslySetInnerHTML={{ __html: marked.parse(draft) as string }} />
-        </div>
-      )
-    }
-
-    return (
-      <div className="relative group">
-        <div className="prose prose-sm max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: marked.parse(value) as string }} />
-        <button
-          onClick={() => { setDraft(value); setEditing(true) }}
-          className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity px-2 py-1 bg-blue-600 text-white text-xs rounded-lg"
-        >
-          Edit
+          <svg className={`w-5 h-5 text-gray-400 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </button>
+        {isOpen && (
+          <div
+            className="px-6 pb-6 border-t border-gray-100 pt-4 prose prose-sm max-w-none text-gray-700
+              [&_strong]:text-gray-900 [&_h1]:text-lg [&_h2]:text-base [&_h3]:text-sm
+              [&_hr]:my-4 [&_ul]:pl-5 [&_ol]:pl-5"
+            dangerouslySetInnerHTML={{ __html: marked.parse(content) as string }}
+          />
+        )}
       </div>
     )
   }
 
-  // ==================== STATUS BADGE ====================
-  const StatusBadge = ({ status }: { status: string }) => {
-    const s = status?.toLowerCase().trim()
-    const colors = s === 'ready' || s === 'live'
-      ? 'bg-green-100 text-green-800'
-      : s === 'draft'
-        ? 'bg-yellow-100 text-yellow-800'
-        : 'bg-gray-100 text-gray-600'
-    return <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${colors}`}>{status || 'draft'}</span>
+  // ==================== FULL-BLOB EDIT PANEL ====================
+  // Shows a textarea for the entire campaigns or flows markdown blob
+  const EditPanel = ({ field, label }: { field: 'campaigns' | 'flows'; label: string }) => {
+    const current = field === 'campaigns'
+      ? (prospectData?.campaigns_markdown ?? '')
+      : (prospectData?.flows_markdown ?? '')
+    const [draft, setDraft] = useState(current)
+    const isSaving = savingField === field
+
+    return (
+      <div className="bg-orange-50 border-2 border-orange-300 rounded-xl p-6 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-bold text-orange-800">Editing: {label}</span>
+          <div className="flex gap-2">
+            <button
+              onClick={() => saveField(field, draft)}
+              disabled={isSaving}
+              className="px-4 py-1.5 bg-orange-600 text-white text-sm font-semibold rounded-lg hover:bg-orange-700 disabled:opacity-50"
+            >
+              {isSaving ? 'Saving to Sheet...' : 'Save to Sheet'}
+            </button>
+          </div>
+        </div>
+        <textarea
+          className="w-full min-h-[320px] p-3 border border-orange-300 rounded-lg font-mono text-xs focus:border-orange-500 focus:outline-none bg-white"
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+        />
+        <p className="text-xs text-orange-700 mt-2">
+          Use ## headings to create separate cards (e.g. <code>## Campaign 1: Welcome Offer</code>). Changes save to Google Sheets column {field === 'campaigns' ? 'M' : 'N'}.
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -910,7 +895,7 @@ function Home() {
               </h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 Here&apos;s what we&apos;d build for {prospectName} in the first 14 days.
-                8 campaign emails + 8 automated flows — ready to deploy.
+                Campaign emails + automated flows — ready to deploy.
               </p>
             </div>
 
@@ -925,174 +910,89 @@ function Home() {
             {prospectError && (
               <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
                 <p className="text-red-700 font-medium">{prospectError}</p>
-                <p className="text-red-600 text-sm mt-2">Make sure the Google Sheet is set up correctly.</p>
+                <p className="text-red-600 text-sm mt-2">Check that the prospect_id in column L exactly matches the URL param.</p>
               </div>
             )}
 
-            {prospectData && !prospectLoading && (
-              <>
-                {/* Campaign Emails */}
-                <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <span className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl">📧</span>
-                    Campaign Emails ({prospectData.campaigns.length})
-                  </h2>
-                  <div className="space-y-3">
-                    {prospectData.campaigns.length === 0 && (
-                      <p className="text-gray-500 text-center py-8">No campaigns found for this prospect.</p>
-                    )}
-                    {prospectData.campaigns
-                      .sort((a, b) => Number(a.campaign_number) - Number(b.campaign_number))
-                      .map((c, idx) => {
-                        const num = Number(c.campaign_number) || idx + 1
-                        const isOpen = expandedCampaigns.has(num)
-                        // Row in sheet: header is row 1, data starts at row 2
-                        const sheetRow = idx + 2
-                        return (
-                          <div key={num} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
-                            <button
-                              onClick={() => toggleCampaign(num)}
-                              className="w-full flex items-center justify-between px-6 py-4 text-left"
-                            >
-                              <div className="flex items-center gap-4">
-                                <div className="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center font-bold text-sm">
-                                  {num}
-                                </div>
-                                <div>
-                                  <div className="font-semibold text-gray-900">{c.title || `Campaign ${num}`}</div>
-                                  <div className="text-sm text-gray-500 mt-0.5">Subject: {c.subject_line || '—'}</div>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <StatusBadge status={c.status} />
-                                <svg className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
-                              </div>
-                            </button>
-                            {isOpen && (
-                              <div className="px-6 pb-6 border-t border-gray-100 pt-4">
-                                {isEditMode && (
-                                  <div className="mb-4 space-y-2">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs font-medium text-gray-500 w-20">Title:</span>
-                                      <EditableCell
-                                        value={c.title}
-                                        onSave={v => { c.title = v; saveCell('Campaigns', sheetRow, 'C', v) }}
-                                        className="text-sm font-medium text-gray-900 flex-1"
-                                      />
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs font-medium text-gray-500 w-20">Subject:</span>
-                                      <EditableCell
-                                        value={c.subject_line}
-                                        onSave={v => { c.subject_line = v; saveCell('Campaigns', sheetRow, 'D', v) }}
-                                        className="text-sm text-gray-700 flex-1"
-                                      />
-                                    </div>
-                                  </div>
-                                )}
-                                <EditableMarkdown
-                                  value={c.body || '*No content yet*'}
-                                  onSave={v => { c.body = v; saveCell('Campaigns', sheetRow, 'E', v) }}
-                                  cellId={`Campaigns-${sheetRow}-E`}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                  </div>
-                </div>
+            {prospectData && !prospectLoading && (() => {
+              const campaignSections = splitMarkdownSections(prospectData.campaigns_markdown)
+              const flowSections = splitMarkdownSections(prospectData.flows_markdown)
+              return (
+                <>
+                  {/* Campaign Emails */}
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                      <span className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl">📧</span>
+                      Campaign Emails ({campaignSections.length})
+                    </h2>
 
-                {/* Flow Automations */}
-                <div className="mb-12">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <span className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xl">⚙️</span>
-                    Flow Automations ({prospectData.flows.length})
-                  </h2>
-                  <div className="space-y-3">
-                    {prospectData.flows.length === 0 && (
-                      <p className="text-gray-500 text-center py-8">No flows found for this prospect.</p>
-                    )}
-                    {prospectData.flows
-                      .sort((a, b) => Number(a.flow_number) - Number(b.flow_number))
-                      .map((f, idx) => {
-                        const num = Number(f.flow_number) || idx + 1
-                        const isOpen = expandedFlows.has(num)
-                        const sheetRow = idx + 2
-                        return (
-                          <div key={num} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-shadow hover:shadow-md">
-                            <button
-                              onClick={() => toggleFlow(num)}
-                              className="w-full flex items-center justify-between px-6 py-4 text-left"
-                            >
-                              <div className="flex items-center gap-4">
-                                <div className="w-8 h-8 bg-purple-600 text-white rounded-lg flex items-center justify-center font-bold text-sm">
-                                  {num}
-                                </div>
-                                <div>
-                                  <div className="font-semibold text-gray-900">{f.title || `Flow ${num}`}</div>
-                                  <div className="text-sm text-gray-500 mt-0.5">Trigger: {f.trigger || '—'}</div>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <StatusBadge status={f.status} />
-                                <svg className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
-                              </div>
-                            </button>
-                            {isOpen && (
-                              <div className="px-6 pb-6 border-t border-gray-100 pt-4">
-                                {isEditMode && (
-                                  <div className="mb-4 space-y-2">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs font-medium text-gray-500 w-20">Title:</span>
-                                      <EditableCell
-                                        value={f.title}
-                                        onSave={v => { f.title = v; saveCell('Flows', sheetRow, 'C', v) }}
-                                        className="text-sm font-medium text-gray-900 flex-1"
-                                      />
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-xs font-medium text-gray-500 w-20">Trigger:</span>
-                                      <EditableCell
-                                        value={f.trigger}
-                                        onSave={v => { f.trigger = v; saveCell('Flows', sheetRow, 'D', v) }}
-                                        className="text-sm text-gray-700 flex-1"
-                                      />
-                                    </div>
-                                  </div>
-                                )}
-                                <EditableMarkdown
-                                  value={f.steps || '*No content yet*'}
-                                  onSave={v => { f.steps = v; saveCell('Flows', sheetRow, 'E', v) }}
-                                  cellId={`Flows-${sheetRow}-E`}
-                                />
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                  </div>
-                </div>
+                    {isEditMode && <EditPanel field="campaigns" label="campaigns_markdown (col M)" />}
 
-                {/* CTA */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-center text-white">
-                  <h3 className="text-2xl font-bold mb-3">Ready to deploy these for {prospectName}?</h3>
-                  <p className="text-white/90 mb-6 max-w-lg mx-auto">
-                    These deliverables are ready to go live in 14 days. Check the ROI calculator to see the projected impact.
-                  </p>
-                  <button
-                    onClick={() => setActiveSection('calculator')}
-                    className="px-8 py-3 bg-white text-blue-700 font-bold rounded-lg hover:bg-blue-50 transition-colors"
-                  >
-                    See ROI Projections →
-                  </button>
-                </div>
-              </>
-            )}
+                    <div className="space-y-3">
+                      {campaignSections.length === 0 && (
+                        <p className="text-gray-500 text-center py-8">
+                          No campaign content yet. Add <code>## Campaign 1: Title</code> sections to column M in your sheet.
+                        </p>
+                      )}
+                      {campaignSections.map((s, idx) => (
+                        <SectionCard
+                          key={idx}
+                          index={idx + 1}
+                          title={s.title}
+                          content={s.content}
+                          accentColor="blue"
+                          isOpen={expandedCampaigns.has(idx)}
+                          onToggle={() => toggleCampaign(idx)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Flow Automations */}
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                      <span className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xl">⚙️</span>
+                      Flow Automations ({flowSections.length})
+                    </h2>
+
+                    {isEditMode && <EditPanel field="flows" label="flows_markdown (col N)" />}
+
+                    <div className="space-y-3">
+                      {flowSections.length === 0 && (
+                        <p className="text-gray-500 text-center py-8">
+                          No flow content yet. Add <code>## Flow 1: Title</code> sections to column N in your sheet.
+                        </p>
+                      )}
+                      {flowSections.map((s, idx) => (
+                        <SectionCard
+                          key={idx}
+                          index={idx + 1}
+                          title={s.title}
+                          content={s.content}
+                          accentColor="purple"
+                          isOpen={expandedFlows.has(idx)}
+                          onToggle={() => toggleFlow(idx)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CTA */}
+                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-center text-white">
+                    <h3 className="text-2xl font-bold mb-3">Ready to deploy these for {prospectName}?</h3>
+                    <p className="text-white/90 mb-6 max-w-lg mx-auto">
+                      These deliverables are ready to go live in 14 days. Check the ROI calculator to see the projected impact.
+                    </p>
+                    <button
+                      onClick={() => setActiveSection('calculator')}
+                      className="px-8 py-3 bg-white text-blue-700 font-bold rounded-lg hover:bg-blue-50 transition-colors"
+                    >
+                      See ROI Projections →
+                    </button>
+                  </div>
+                </>
+              )
+            })()}
           </div>
         </section>
       )}
