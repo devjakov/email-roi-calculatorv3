@@ -910,7 +910,6 @@ function Home() {
             {prospectError && (
               <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
                 <p className="text-red-700 font-medium">{prospectError}</p>
-                <p className="text-red-600 text-sm mt-2">Check that the prospect_id in column L exactly matches the URL param.</p>
               </div>
             )}
 
