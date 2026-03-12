@@ -15,8 +15,8 @@
 
 'use client'
 
-import { useState, useMemo, useEffect, useCallback, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState, useMemo, useEffect, useCallback, useRef, Suspense } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { marked } from 'marked'
 
 /**
@@ -473,9 +473,22 @@ export default function Page() {
 function Home() {
   // ==================== URL PARAMS & PROSPECT MODE ====================
   const searchParams = useSearchParams()
+  const router = useRouter()
   const prospectSlug = searchParams.get('prospect')
   const isEditMode = searchParams.get('edit') === 'true'
   const editKey = searchParams.get('key') ?? ''
+
+  // Active section is derived from ?view=roi URL param so browser back works
+  const activeSection = searchParams.get('view') === 'roi' ? 'calculator' : 'deliverables'
+  const setActiveSection = (section: 'deliverables' | 'calculator') => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (section === 'calculator') {
+      params.set('view', 'roi')
+    } else {
+      params.delete('view')
+    }
+    router.push(`?${params.toString()}`)
+  }
 
   // Prospect data state
   const [prospectData, setProspectData] = useState<ProspectData | null>(null)
@@ -484,7 +497,6 @@ function Home() {
   const [expandedCampaigns, setExpandedCampaigns] = useState<Set<number>>(new Set())
   const [expandedFlows, setExpandedFlows] = useState<Set<number>>(new Set())
   const [savingField, setSavingField] = useState<string | null>(null)
-  const [activeSection, setActiveSection] = useState<'deliverables' | 'calculator'>('deliverables')
 
   // Fetch prospect data when slug changes
   useEffect(() => {
@@ -1071,7 +1083,7 @@ function Home() {
                     </p>
                     <button
                       onClick={() => setActiveSection('calculator')}
-                      className="px-8 py-3 bg-white text-blue-700 font-bold rounded-lg hover:bg-blue-50 transition-colors"
+                      className="px-24 py-9 bg-white text-blue-700 font-bold rounded-2xl hover:bg-blue-50 transition-colors text-3xl shadow-lg"
                     >
                       See ROI Projections →
                     </button>
