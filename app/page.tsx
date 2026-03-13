@@ -354,7 +354,7 @@ function getKlaviyoPrice(profiles: number): number {
  * LAST-TOUCH ATTRIBUTION CORRECTION
  *
  * Klaviyo uses last-touch attribution, meaning any purchase where the customer
- * clicked an email within the attribution window is credited to email — even if
+ * clicked an email within the attribution window is credited to email - even if
  * the customer would have purchased anyway (e.g., via a welcome flow).
  *
  * Industry estimate: ~20% of Klaviyo-reported email revenue is "would have happened
@@ -406,7 +406,7 @@ function renderEmailHtml(md: string): string {
   if (!md.trim()) return ''
   let html = marked.parse(md) as string
 
-  // Standalone CTA paragraph: <p>[Shop Now — $48]</p> → blue button
+  // Standalone CTA paragraph: <p>[Shop Now - $48]</p> → blue button
   html = html.replace(
     /<p>\[([^\]]+)\]<\/p>/g,
     '<p style="text-align:center;margin:1.5rem 0">' +
@@ -773,7 +773,7 @@ function Home() {
     return scenarios.map(scenario => {
       const avgCampRev = industry.campaignRPR * engagedListSize
       const campRev = scenario.campaigns * avgCampRev
-      
+
       // Flow calculation with diminishing returns
       let flowRevenueFactor = 0
       if (scenario.flows <= 10) {
@@ -785,8 +785,18 @@ function Home() {
       const flowRPRMonthly = industry.flowRPR * 0.015
       const maxFlowRev = 20 * flowRPRMonthly * engagedListSize
       const flowRev = flowRevenueFactor * maxFlowRev
-      
-      const totalRev = campRev + flowRev
+
+      let totalRev = campRev + flowRev
+
+      // Override Good and Best-in-Class to target specific email attribution %
+      // emailPercent = (totalRev * 0.8) / (totalMonthlyRevenue + totalRev * 0.8)
+      // Good  ~25%: totalRev = totalMonthlyRevenue * 5/12
+      // Best  ~40%: totalRev = totalMonthlyRevenue * 5/6
+      if (scenario.key === 'good') {
+        totalRev = totalMonthlyRevenue * 5 / 12
+      } else if (scenario.key === 'best') {
+        totalRev = totalMonthlyRevenue * 5 / 6
+      }
       const cost = monthlyRetainer + klaviyoCost
       const grossProf = totalRev * (grossMargin / 100)
       const netProf = grossProf - cost
@@ -970,7 +980,7 @@ function Home() {
               </h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                 Here&apos;s what we&apos;d build for {prospectName} in the first 14 days.
-                Campaign emails + automated flows — ready to deploy.
+                Campaign emails + automated flows - ready to deploy.
               </p>
             </div>
 
@@ -1101,7 +1111,7 @@ function Home() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Email Marketing ROI Calculator
-            {prospectSlug && <span className="text-blue-600"> — {prospectName}</span>}
+            {prospectSlug && <span className="text-blue-600"> - {prospectName}</span>}
           </h1>
           <p className="text-lg text-gray-600">
             See where you stand vs industry benchmarks • Based on Klaviyo data from 325B+ emails
@@ -1578,7 +1588,7 @@ function Home() {
               })()}
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
                 <p className="text-xs text-gray-700">
-                  <span className="font-semibold text-blue-700">Two performance peaks:</span> Most brands hit a first revenue peak at <strong>10–12 campaigns/month</strong> — the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong>second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new offers, not just higher frequency.
+                  <span className="font-semibold text-blue-700">Two performance peaks:</span> Most brands hit a first revenue peak at <strong>10–12 campaigns/month</strong> - the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong>second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new offers, not just higher frequency.
                 </p>
               </div>
             </div>
@@ -1631,7 +1641,7 @@ function Home() {
                     <path d={linePath} fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     {/* Phase labels */}
                     <text x={(PAD_L + phaseX) / 2} y={PAD_T - 8} textAnchor="middle" fill="#7c3aed" fontSize="10" fontWeight="700">Core 40%</text>
-                    <text x={(phaseX + PAD_L + CW) / 2} y={PAD_T - 8} textAnchor="middle" fill="#6366f1" fontSize="10" fontWeight="700">Hidden Revenue — 60% Most Brands Miss</text>
+                    <text x={(phaseX + PAD_L + CW) / 2} y={PAD_T - 8} textAnchor="middle" fill="#6366f1" fontSize="10" fontWeight="700">Hidden Revenue - 60% Most Brands Miss</text>
                     {/* Y-axis labels */}
                     {yLevels.map((f, i) => (
                       <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#9ca3af" fontSize="10">{formatCurrency(f * maxRev)}</text>
@@ -1654,7 +1664,7 @@ function Home() {
               })()}
               <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mt-3">
                 <p className="text-xs text-gray-700">
-                  <span className="font-semibold text-purple-700">40% from the first 8 flows. 60% from going further.</span> The first <strong>8 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset, and a couple more) build your foundation linearly — each one adds predictable, meaningful revenue. But that only unlocks <strong>40% of what email can do</strong>. The other 60% is hidden revenue that 90% of brands never touch. Top performers keep building flows because that's where true retention lives: cross-sell sequences, upsell flows, different offers for non-buyers, segment-specific win-backs, re-engagement for lapsed customers. Email is uniquely suited for this because you can test different offers with different segments at near-zero cost — no ad spend, no risk.
+                  <span className="font-semibold text-purple-700">40% from the first 8 flows. 60% from going further.</span> The first <strong>8 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset, and a couple more) build your foundation linearly - each one adds predictable, meaningful revenue. But that only unlocks <strong>40% of what email can do</strong>. The other 60% is hidden revenue that 90% of brands never touch. Top performers keep building flows because that's where true retention lives: cross-sell sequences, upsell flows, different offers for non-buyers, segment-specific win-backs, re-engagement for lapsed customers. Email is uniquely suited for this because you can test different offers with different segments at near-zero cost - no ad spend, no risk.
                 </p>
               </div>
             </div>
@@ -1662,7 +1672,7 @@ function Home() {
           </div>
         </div>
 
-        {/* Industry Performance Spectrum — Full Width */}
+        {/* Industry Performance Spectrum - Full Width */}
         <div className="mt-8 bg-white rounded-xl shadow-lg p-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
             🎯 Industry Performance Spectrum
@@ -1686,7 +1696,7 @@ function Home() {
                     </span>
                   </div>
                   <span className="text-sm text-gray-600">
-                    {scenario.campaigns} campaigns per month • {scenario.flows} flows
+                    {scenario.campaigns} campaigns per month - {scenario.flows} flows
                   </span>
                 </div>
 
@@ -1718,6 +1728,31 @@ function Home() {
                   <div className="text-sm text-gray-600 mt-2">
                     {formatNumber(scenario.emailPercent, 1)}% of total revenue from email
                   </div>
+                  {/* Pop-up conversion rate context */}
+                  <div className={`mt-3 pt-3 border-t text-sm ${
+                    scenario.color === 'red' ? 'border-red-200 text-red-800' :
+                    scenario.color === 'blue' ? 'border-blue-200 text-blue-800' :
+                    'border-green-200 text-green-800'
+                  }`}>
+                    {scenario.key === 'typical' && (
+                      <>
+                        <span className="font-semibold">Pop-up conversion: 1-3%</span>
+                        {' '}- Bad offer, poor design, wrong timing or targeting. Most list growth is slow and expensive. This is the single biggest lever being left untouched.
+                      </>
+                    )}
+                    {scenario.key === 'good' && (
+                      <>
+                        <span className="font-semibold">Pop-up conversion: ~5%</span>
+                        {' '}- A good offer, clean design, and the basics set in place. List growth is consistent and campaigns have a healthy engaged audience to send to.
+                      </>
+                    )}
+                    {scenario.key === 'best' && (
+                      <>
+                        <span className="font-semibold">Pop-up conversion: 10-15% - non-negotiable.</span>
+                        {' '}This is the highest lever you have and the best testing ground for your offer. 10-15% pop-up conversions means higher list growth, a perfect offer/audience match, and more campaign and flow revenue on the bottom line. It all compounds from here - every percentage point increase feeds more subscribers into flows, boosts campaign list size, and amplifies everything downstream.
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -1736,7 +1771,7 @@ function Home() {
                     <div className="text-xl font-bold text-blue-900">
                       +{formatCurrency((scenarioData[2].netProfit - scenarioData[0].netProfit) * 12)}
                     </div>
-                    <div className="text-sm text-gray-600">annual profit gain</div>
+                    <div className="text-sm text-gray-600">you're missing out on an annual profit gain</div>
                   </div>
                 </div>
               </div>
@@ -1750,7 +1785,7 @@ function Home() {
                     <div className="text-xl font-bold text-green-900">
                       +{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)}
                     </div>
-                    <div className="text-sm text-gray-600">total opportunity</div>
+                    <div className="text-sm text-gray-600">you're missing out on a total opportunity</div>
                   </div>
                 </div>
               </div>
@@ -1795,7 +1830,7 @@ function Home() {
           </div>
         </div>
 
-        {/* Bottom Line — Full Width */}
+        {/* Bottom Line - Full Width */}
         <div className="mt-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg p-10 text-white">
           <h3 className="text-3xl font-bold mb-5">✅ Bottom Line</h3>
           <p className="leading-relaxed text-2xl font-semibold">
@@ -1805,17 +1840,18 @@ function Home() {
           </p>
           <div className="mt-6 space-y-4 text-xl text-white/90 leading-relaxed">
             <p>
-              Most brands send just {industry.typical.campaigns} campaigns per month and miss out on{' '}
+              If you're sending just {industry.typical.campaigns} campaigns per month, you're missing out on{' '}
               <span className="font-bold text-white">{formatCurrency(scenarioData[2].netProfit - scenarioData[0].netProfit)} every single month</span>{' '}
-              in unrealized profit — that's{' '}
+              in profit - that's{' '}
               <span className="font-bold text-white">{formatCurrency((scenarioData[2].netProfit - scenarioData[0].netProfit) * 12)} per year</span>{' '}
-              left on the table just by not reaching Good Performance.
+              in unrealized revenue just by not being at Good Performance. Your list, your flows, your existing traffic - all of it sitting underutilized.
             </p>
             <p>
-              Brands that reach Best-in-Class ({industry.best.campaigns} campaigns/month + {industry.best.flows} flows) capture{' '}
-              <span className="font-bold text-white">{formatCurrency(scenarioData[3].netProfit - scenarioData[0].netProfit)} more monthly profit</span>{' '}
-              — a <span className="font-bold text-white">{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)} annual difference</span>{' '}
-              from the exact same email list, simply by sending 3–4 campaigns per week and building flows every month.
+              If you reached Best-in-Class ({industry.best.campaigns} campaigns/month + {industry.best.flows} flows), you would capture{' '}
+              <span className="font-bold text-white">{formatCurrency(scenarioData[3].netProfit - scenarioData[0].netProfit)} more in monthly profit</span>{' '}
+              - a{' '}
+              <span className="font-bold text-white">{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)} annual difference</span>{' '}
+              from the exact same email list. The only variable is how many campaigns you send per week and how many flows you build every month.
             </p>
           </div>
         </div>
@@ -1826,7 +1862,7 @@ function Home() {
           <p className="mt-2">Profit ROI accounts for gross margins. Revenue ROI is typically 4-5x higher.</p>
           <p className="mt-3 text-xs text-gray-400 max-w-2xl mx-auto leading-relaxed">
             * <strong>Last-touch attribution note:</strong> Klaviyo attributes a purchase to email whenever a customer clicks
-            an email within the attribution window — even if they would have purchased without it. Approximately 20% of
+            an email within the attribution window - even if they would have purchased without it. Approximately 20% of
             Klaviyo-reported email revenue falls into this category (most commonly attributed to welcome flows, where a
             new customer was already intending to buy). The dashboard deducts this 20% and adds only the remaining 80%
             (truly incremental revenue) on top of your base business revenue to calculate the correct total and
