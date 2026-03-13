@@ -1659,154 +1659,164 @@ function Home() {
               </div>
             </div>
 
-            {/* Success Spectrum */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                🎯 Industry Performance Spectrum
-              </h2>
-              <p className="text-sm text-gray-600 mb-6">
-                Campaign revenue scales linearly up to {industry.best.campaigns}/month for most brands
-              </p>
+          </div>
+        </div>
 
-              <div className="space-y-4">
-                {scenarioData.map((scenario, idx) => (
-                  <div key={scenario.key} className="relative">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${
-                          scenario.color === 'red' ? 'bg-red-500' :
-                          scenario.color === 'yellow' ? 'bg-yellow-500' :
-                          scenario.color === 'blue' ? 'bg-blue-500' :
-                          'bg-green-500'
-                        }`}></div>
-                        <span className="text-sm font-medium text-gray-700">
-                          {scenario.label}
-                        </span>
-                      </div>
-                      <span className="text-sm text-gray-600">
-                        {scenario.campaigns} campaigns • {scenario.flows} flows
-                      </span>
-                    </div>
-                    
-                    <div className={`rounded-lg p-4 ${
-                      scenario.color === 'red' ? 'bg-red-50 border-2 border-red-200' :
-                      scenario.color === 'yellow' ? 'bg-yellow-50 border-2 border-yellow-400' :
-                      scenario.color === 'blue' ? 'bg-blue-50 border-2 border-blue-200' :
-                      'bg-green-50 border-2 border-green-200'
-                    }`}>
-                      <div className="grid grid-cols-3 gap-4 text-sm">
-                        <div>
-                          <div className="text-gray-600">Revenue</div>
-                          <div className="font-bold text-gray-900">
-                            {formatCurrency(scenario.totalRevenue)}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-gray-600">Net Profit</div>
-                          <div className="font-bold text-gray-900">
-                            {formatCurrency(scenario.netProfit)}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-gray-600">ROI</div>
-                          <div className="font-bold text-gray-900">
-                            {formatNumber(scenario.netROI, 1)}x
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-600 mt-2">
-                        {formatNumber(scenario.emailPercent, 1)}% of total revenue from email
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        {/* Industry Performance Spectrum — Full Width */}
+        <div className="mt-8 bg-white rounded-xl shadow-lg p-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+            🎯 Industry Performance Spectrum
+          </h2>
+          <p className="text-base text-gray-600 mb-8">
+            Campaign revenue scales linearly up to {industry.best.campaigns}/month for most brands
+          </p>
 
-              <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-lg p-5">
-                <div className="font-semibold text-blue-900 mb-3 text-lg">💡 Opportunity Analysis</div>
-                
-                {/* Comparison Grid */}
-                <div className="space-y-3 mb-4">
-                  <div className="bg-white rounded-lg p-3 border border-blue-200">
-                    <div className="flex justify-between items-center">
-                      <div className="text-sm text-gray-700">
-                        <span className="font-semibold text-red-700">90% of Brands</span> → <span className="font-semibold text-yellow-700">Your Current Setup</span>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-blue-900">
-                          +{formatCurrency((scenarioData[1].netProfit - scenarioData[0].netProfit) * 12)}
-                        </div>
-                        <div className="text-xs text-gray-600">annual profit gain</div>
-                      </div>
-                    </div>
+          <div className="space-y-5">
+            {scenarioData.filter(s => s.key !== 'your').map((scenario) => (
+              <div key={scenario.key} className="relative">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${
+                      scenario.color === 'red' ? 'bg-red-500' :
+                      scenario.color === 'blue' ? 'bg-blue-500' :
+                      'bg-green-500'
+                    }`}></div>
+                    <span className="text-base font-semibold text-gray-800">
+                      {scenario.key === 'typical' ? '90% of Brands & Most Likely Your Current Setup' : scenario.label}
+                    </span>
                   </div>
-                  
-                  <div className="bg-white rounded-lg p-3 border border-blue-200">
-                    <div className="flex justify-between items-center">
-                      <div className="text-sm text-gray-700">
-                        <span className="font-semibold text-red-700">90% of Brands</span> → <span className="font-semibold text-green-700">Best-in-Class (Top 1%)</span>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-green-900">
-                          +{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)}
-                        </div>
-                        <div className="text-xs text-gray-600">total opportunity</div>
-                      </div>
-                    </div>
-                  </div>
+                  <span className="text-sm text-gray-600">
+                    {scenario.campaigns} campaigns per month • {scenario.flows} flows
+                  </span>
                 </div>
 
-                {/* Mars Copywriting Timeline */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-4 text-white mt-4">
-                  <div className="font-bold text-lg mb-3">🚀 Mars Copywriting Timeline</div>
-                  
-                  <div className="space-y-3 text-sm">
-                    <div className="flex items-start gap-3">
-                      <div className="bg-white/20 rounded-full px-3 py-1 font-bold text-xs whitespace-nowrap">14 Days</div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Initial Setup Complete</div>
-                        <div className="text-white/90 text-xs mt-1">
-                          Copywriting → Design → Your Approval. All deliverables implemented.
-                        </div>
+                <div className={`rounded-lg p-5 ${
+                  scenario.color === 'red' ? 'bg-red-50 border-2 border-red-200' :
+                  scenario.color === 'blue' ? 'bg-blue-50 border-2 border-blue-200' :
+                  'bg-green-50 border-2 border-green-200'
+                }`}>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <div className="text-sm text-gray-600">Revenue / mo</div>
+                      <div className="text-lg font-bold text-gray-900">
+                        {formatCurrency(scenario.totalRevenue)}
                       </div>
                     </div>
+                    <div>
+                      <div className="text-sm text-gray-600">Net Profit / mo</div>
+                      <div className="text-lg font-bold text-gray-900">
+                        {formatCurrency(scenario.netProfit)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-gray-600">ROI</div>
+                      <div className="text-lg font-bold text-gray-900">
+                        {formatNumber(scenario.netROI, 1)}x
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-600 mt-2">
+                    {formatNumber(scenario.emailPercent, 1)}% of total revenue from email
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
-                    <div className="flex items-start gap-3">
-                      <div className="bg-white/20 rounded-full px-3 py-1 font-bold text-xs whitespace-nowrap">1-2 Months</div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Good Performance Level</div>
-                        <div className="text-white/90 text-xs mt-1">
-                          Optimized campaigns, core flows dialed in, revenue accelerating.
-                        </div>
-                      </div>
-                    </div>
+          <div className="mt-8 bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+            <div className="font-bold text-blue-900 mb-4 text-2xl">💡 Opportunity Analysis</div>
 
-                    <div className="flex items-start gap-3">
-                      <div className="bg-white/20 rounded-full px-3 py-1 font-bold text-xs whitespace-nowrap">3-6 Months</div>
-                      <div className="flex-1">
-                        <div className="font-semibold">Best-in-Class (Top 1%)</div>
-                        <div className="text-white/90 text-xs mt-1">
-                          Advanced segmentation, full flow suite, maximized email revenue.
-                        </div>
-                      </div>
+            <div className="space-y-3 mb-5">
+              <div className="bg-white rounded-lg p-4 border border-blue-200">
+                <div className="flex justify-between items-center">
+                  <div className="text-base text-gray-700">
+                    <span className="font-semibold text-red-700">90% of Brands</span> → <span className="font-semibold text-blue-700">Good Performance</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-blue-900">
+                      +{formatCurrency((scenarioData[2].netProfit - scenarioData[0].netProfit) * 12)}
                     </div>
+                    <div className="text-sm text-gray-600">annual profit gain</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-4 border border-blue-200">
+                <div className="flex justify-between items-center">
+                  <div className="text-base text-gray-700">
+                    <span className="font-semibold text-red-700">90% of Brands</span> → <span className="font-semibold text-green-700">Best-in-Class (Top 1%)</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-green-900">
+                      +{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)}
+                    </div>
+                    <div className="text-sm text-gray-600">total opportunity</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Key Insight */}
-            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
-              <h3 className="text-lg font-semibold mb-3">✅ Bottom Line</h3>
-              <p className="text-white/90 leading-relaxed text-lg">
-                Email generates <span className="font-bold text-2xl">{formatCurrency(calculations.netProfitFromEmail)}</span> in
-                monthly profit at <span className="font-bold">{formatNumber(calculations.netROI, 1)}x net ROI</span>.
-              </p>
-              <p className="text-white/80 text-sm mt-3">
-                Most brands send {industry.typical.campaigns} campaigns/month. You're sending {campaignsPerMonth}.
-                Top performers send {industry.best.campaigns}+.
-              </p>
+            {/* Mars Copywriting Timeline */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white mt-4">
+              <div className="font-bold text-2xl mb-5">🚀 Mars Copywriting Timeline</div>
+
+              <div className="space-y-5">
+                <div className="flex items-start gap-4">
+                  <div className="bg-white/20 rounded-full px-4 py-2 font-bold text-sm whitespace-nowrap">14 Days</div>
+                  <div className="flex-1">
+                    <div className="font-bold text-lg">Initial Setup Complete</div>
+                    <div className="text-white/90 text-base mt-1">
+                      Copywriting → Design → Your Approval. All deliverables implemented.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="bg-white/20 rounded-full px-4 py-2 font-bold text-sm whitespace-nowrap">1-2 Months</div>
+                  <div className="flex-1">
+                    <div className="font-bold text-lg">Good Performance Level</div>
+                    <div className="text-white/90 text-base mt-1">
+                      Optimized campaigns, core flows dialed in, revenue accelerating.
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="bg-white/20 rounded-full px-4 py-2 font-bold text-sm whitespace-nowrap">3-6 Months</div>
+                  <div className="flex-1">
+                    <div className="font-bold text-lg">Best-in-Class (Top 1%)</div>
+                    <div className="text-white/90 text-base mt-1">
+                      Advanced segmentation, full flow suite, maximized email revenue.
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Bottom Line — Full Width */}
+        <div className="mt-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg p-10 text-white">
+          <h3 className="text-3xl font-bold mb-5">✅ Bottom Line</h3>
+          <p className="leading-relaxed text-2xl font-semibold">
+            Email could be generating{' '}
+            <span className="font-extrabold text-4xl">{formatCurrency(calculations.netProfitFromEmail)}</span>{' '}
+            in monthly profit at <span className="font-extrabold">{formatNumber(calculations.netROI, 1)}x net ROI</span>.
+          </p>
+          <div className="mt-6 space-y-4 text-xl text-white/90 leading-relaxed">
+            <p>
+              Most brands send just {industry.typical.campaigns} campaigns per month and miss out on{' '}
+              <span className="font-bold text-white">{formatCurrency(scenarioData[2].netProfit - scenarioData[0].netProfit)} every single month</span>{' '}
+              in unrealized profit — that's{' '}
+              <span className="font-bold text-white">{formatCurrency((scenarioData[2].netProfit - scenarioData[0].netProfit) * 12)} per year</span>{' '}
+              left on the table just by not reaching Good Performance.
+            </p>
+            <p>
+              Brands that reach Best-in-Class ({industry.best.campaigns} campaigns/month + {industry.best.flows} flows) capture{' '}
+              <span className="font-bold text-white">{formatCurrency(scenarioData[3].netProfit - scenarioData[0].netProfit)} more monthly profit</span>{' '}
+              — a <span className="font-bold text-white">{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)} annual difference</span>{' '}
+              from the exact same email list, simply by sending 3–4 campaigns per week and building flows every month.
+            </p>
           </div>
         </div>
 
