@@ -1834,9 +1834,11 @@ function Home() {
         <div className="mt-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg p-10 text-white">
           <h3 className="text-3xl font-bold mb-5">✅ Bottom Line</h3>
           <p className="leading-relaxed text-2xl font-semibold">
-            Email could be generating{' '}
-            <span className="font-extrabold text-4xl">{formatCurrency(calculations.netProfitFromEmail)}</span>{' '}
-            in monthly profit at <span className="font-extrabold">{formatNumber(calculations.netROI, 1)}x net ROI</span>.
+            Your email could be generating between{' '}
+            <span className="font-extrabold text-4xl">{formatCurrency(scenarioData[2].netProfit)}</span>
+            {' '}and{' '}
+            <span className="font-extrabold text-4xl">{formatCurrency(scenarioData[3].netProfit)}</span>
+            {' '}in monthly profit - a {formatNumber(scenarioData[2].netROI, 1)}x to {formatNumber(scenarioData[3].netROI, 1)}x net ROI.
           </p>
           <div className="mt-6 space-y-4 text-xl text-white/90 leading-relaxed">
             <p>
@@ -1847,11 +1849,11 @@ function Home() {
               in unrealized revenue just by not being at Good Performance. Your list, your flows, your existing traffic - all of it sitting underutilized.
             </p>
             <p>
-              If you reached Best-in-Class ({industry.best.campaigns} campaigns/month + {industry.best.flows} flows), you would capture{' '}
+              If you reached Best-in-Class ({industry.best.campaigns} campaigns/month + {industry.best.flows} flows + 10-15% pop-up conversion), you would capture{' '}
               <span className="font-bold text-white">{formatCurrency(scenarioData[3].netProfit - scenarioData[0].netProfit)} more in monthly profit</span>{' '}
               - a{' '}
               <span className="font-bold text-white">{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)} annual difference</span>{' '}
-              from the exact same email list. The only variable is how many campaigns you send per week and how many flows you build every month.
+              from the exact same email list. The only variable is how many campaigns you send per week, how many flows you build, and whether your pop-up is converting at 10-15%. That last one compounds into everything - more subscribers, bigger lists, higher flow revenue. It all starts there.
             </p>
           </div>
         </div>
