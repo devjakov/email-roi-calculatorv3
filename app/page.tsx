@@ -940,11 +940,11 @@ function Home() {
 
   return (
     <>
-      {/* ==================== NAVBAR (prospect mode only) ==================== */}
-      {prospectSlug && (
-        <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
-            <div className="font-bold text-gray-900 text-lg">Mars Copywriting</div>
+      {/* ==================== NAVBAR (always visible) ==================== */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+          <div className="font-bold text-gray-900 text-lg">Mars Copywriting</div>
+          {prospectSlug && (
             <div className="flex items-center gap-6">
               <button
                 onClick={() => setActiveSection('deliverables')}
@@ -962,9 +962,9 @@ function Home() {
                 <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full font-medium">Edit Mode</span>
               )}
             </div>
-          </div>
-        </nav>
-      )}
+          )}
+        </div>
+      </nav>
 
       {/* ==================== DELIVERABLES SECTION ==================== */}
       {prospectSlug && activeSection === 'deliverables' && (
@@ -1855,6 +1855,234 @@ function Home() {
               <span className="font-bold text-white">{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)} annual difference</span>{' '}
               from the exact same email list. The only variable is how many campaigns you send per week, how many flows you build, and whether your pop-up is converting at 10-15%. That last one compounds into everything - more subscribers, bigger lists, higher flow revenue. It all starts there.
             </p>
+          </div>
+        </div>
+
+        {/* ==================== CASE STUDIES ==================== */}
+        <div className="mt-12">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">📊 Real Results From Real Brands</h2>
+            <p className="text-lg text-gray-600">What happens when email is done right.</p>
+          </div>
+
+          <div className="space-y-6">
+            {/* Case Study 1 */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 flex items-center gap-3">
+                <span className="bg-white text-blue-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">1</span>
+                <span className="text-white font-semibold">Fitness Brand</span>
+                <span className="ml-auto text-blue-200 text-sm">112% year-over-year improvement</span>
+              </div>
+              <div className="p-6">
+                <div className="grid md:grid-cols-2 gap-6 mb-5">
+                  <div className="bg-red-50 rounded-lg p-4 border border-red-100">
+                    <div className="text-sm font-semibold text-red-700 mb-2">Before</div>
+                    <p className="text-gray-700 text-sm">Sending 1-2 emails per week, generating <strong>$45K monthly</strong> attributed revenue.</p>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+                    <div className="text-sm font-semibold text-green-700 mb-2">After</div>
+                    <p className="text-gray-700 text-sm">Scaled to 4-5 emails weekly, reaching <strong>$98K monthly</strong> attributed revenue. <strong>+112% YoY.</strong></p>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
+                  <p className="text-gray-600 text-sm leading-relaxed">Implemented a monthly calendar approved one week before each new month. Combined plain-text and design-based emails, repurposed YouTube videos into value-based email content, and avoided discounts entirely to keep margins high.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Case Study 2 */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+              <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-3 flex items-center gap-3">
+                <span className="bg-white text-purple-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">2</span>
+                <span className="text-white font-semibold">Luxury Brand</span>
+                <span className="ml-auto text-purple-200 text-sm">1,025% revenue increase</span>
+              </div>
+              <div className="p-6">
+                <div className="grid md:grid-cols-2 gap-6 mb-5">
+                  <div className="bg-red-50 rounded-lg p-4 border border-red-100">
+                    <div className="text-sm font-semibold text-red-700 mb-2">Before</div>
+                    <ul className="text-gray-700 text-sm space-y-1">
+                      <li><strong>$6.5K</strong> monthly revenue</li>
+                      <li><strong>12.1%</strong> bounce rate</li>
+                      <li><strong>37.2%</strong> open rate</li>
+                    </ul>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+                    <div className="text-sm font-semibold text-green-700 mb-2">After</div>
+                    <ul className="text-gray-700 text-sm space-y-1">
+                      <li><strong>$73.6K</strong> monthly revenue (+1,025%)</li>
+                      <li><strong>0.80%</strong> bounce rate</li>
+                      <li><strong>49.2%</strong> open rate</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
+                  <p className="text-gray-600 text-sm leading-relaxed">They were sending zero emails. We started sending 4 per week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Case Study 3 */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+              <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 flex items-center gap-3">
+                <span className="bg-white text-emerald-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">3</span>
+                <span className="text-white font-semibold">Supplement Brand - Plain Text vs Design</span>
+                <span className="ml-auto text-emerald-200 text-sm">21% higher conversion rate</span>
+              </div>
+              <div className="p-6">
+                <div className="grid md:grid-cols-2 gap-6 mb-5">
+                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="text-sm font-semibold text-gray-700 mb-2">Design Email</div>
+                    <ul className="text-gray-700 text-sm space-y-1">
+                      <li><strong>$9.3K</strong> revenue</li>
+                      <li><strong>9.42%</strong> conversion rate</li>
+                    </ul>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+                    <div className="text-sm font-semibold text-green-700 mb-2">Plain Text Email</div>
+                    <ul className="text-gray-700 text-sm space-y-1">
+                      <li><strong>$11.3K</strong> revenue</li>
+                      <li><strong>13.12%</strong> conversion rate (+21%)</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
+                  <p className="text-gray-600 text-sm leading-relaxed">Story-based and dialogue-style plain text emails consistently outperformed design-based emails by a 21% higher placed order rate per campaign - every single time.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Case Study 4 */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+              <div className="bg-gradient-to-r from-amber-600 to-amber-700 px-6 py-3 flex items-center gap-3">
+                <span className="bg-white text-amber-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">4</span>
+                <span className="text-white font-semibold">Value-Based vs Discount-Based Emails</span>
+                <span className="ml-auto text-amber-200 text-sm">70-82% open rates</span>
+              </div>
+              <div className="p-6">
+                <div className="grid md:grid-cols-3 gap-4 mb-5">
+                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
+                    <div className="text-2xl font-bold text-blue-700">6 of 10</div>
+                    <div className="text-sm text-gray-600 mt-1">top campaigns used zero discounts</div>
+                  </div>
+                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
+                    <div className="text-2xl font-bold text-blue-700">70-82%</div>
+                    <div className="text-sm text-gray-600 mt-1">open rates achieved</div>
+                  </div>
+                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
+                    <div className="text-2xl font-bold text-blue-700">&gt;0.7%</div>
+                    <div className="text-sm text-gray-600 mt-1">CTR maintained consistently</div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-sm font-semibold text-gray-700 mb-2">Result</div>
+                  <p className="text-gray-600 text-sm leading-relaxed">Margins jumped while email revenue grew without relying on discounts. Discount-based campaigns actually performed even better because value-based emails in between trained the audience to engage - not just buy when there's a sale.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Case Study 5 */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+              <div className="bg-gradient-to-r from-rose-600 to-rose-700 px-6 py-3 flex items-center gap-3">
+                <span className="bg-white text-rose-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">5</span>
+                <span className="text-white font-semibold">Pop-Up Form Optimization</span>
+                <span className="ml-auto text-rose-200 text-sm">2.13% - 8.72% conversion rate</span>
+              </div>
+              <div className="p-6">
+                <div className="grid md:grid-cols-2 gap-6 mb-5">
+                  <div className="bg-red-50 rounded-lg p-4 border border-red-100">
+                    <div className="text-sm font-semibold text-red-700 mb-2">Before</div>
+                    <p className="text-gray-700 text-sm"><strong>2.13%</strong> conversion rate. Very poor list growth, minimal new subscribers entering flows each month.</p>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+                    <div className="text-sm font-semibold text-green-700 mb-2">After</div>
+                    <ul className="text-gray-700 text-sm space-y-1">
+                      <li><strong>8.72%</strong> conversion rate</li>
+                      <li><strong>7,000</strong> new subscribers/month</li>
+                      <li>Mobile: <strong>$128K</strong> in 2 months</li>
+                      <li>Desktop: <strong>$28K</strong> in 2 months</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
+                  <p className="text-gray-600 text-sm leading-relaxed">Implemented zero-party data collection with a multi-step pop-up. New DR copy and design built to drive clicks instead of being annoying. The result compounded directly into flow revenue and campaign list size.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ==================== TESTIMONIALS ==================== */}
+        <div className="mt-16">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">💬 Kind Words</h2>
+            <p className="text-lg text-gray-600">From founders and agency owners who've worked with Jacob.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              {
+                quote: "Jacob is an incredible email marketer and copywriter... his work ethic and skillset is top 5%.",
+                name: "Daniel Filipe",
+                title: "Founder, Ecom Advertisers - 7-Figure Email Agency"
+              },
+              {
+                quote: "Jacob is an absolute pleasure to work with... he delivers fantastic copywriting work. We worked on multiple projects together and he hasn't disappointed once.",
+                name: "Marvin Sanginés",
+                title: "Founder, notus - 7-Figure Personal Branding Agency"
+              },
+              {
+                quote: "Jacob wrote weeks of copy in advance and with his help we keep making more money for our clients. One client told us he's getting his best month of the year so far. Jacob is easy to talk to, works fast and always delivers.",
+                name: "Brando Monetti",
+                title: "CEO, Brand Lux Media"
+              },
+              {
+                quote: "He doesn't stop until he has every answer and angle he needs to get customers turning heads buying your products. Definitely someone you can grab a beer with and vibe while knowing you're making money together.",
+                name: "Mason Doerr",
+                title: "Founder, CopyMBA"
+              },
+              {
+                quote: "Jacob's got a great instinct for finding a way to sell the unsellable.",
+                name: "Thom Benny",
+                title: "7-Figure Financial Copywriter for Agora (Billion Dollar Publisher)"
+              }
+            ].map((t, i) => (
+              <div key={i} className={`bg-white rounded-xl shadow-md p-6 border border-gray-100 ${i === 4 ? 'md:col-span-2 md:max-w-lg md:mx-auto' : ''}`}>
+                <p className="text-gray-700 italic leading-relaxed mb-4">"{t.quote}"</p>
+                <div className="border-t border-gray-100 pt-4">
+                  <div className="font-bold text-gray-900">{t.name}</div>
+                  <div className="text-sm text-gray-500">{t.title}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ==================== SERVICES ==================== */}
+        <div className="mt-16 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-10 text-white">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-3">🛠 What We Do</h2>
+            <p className="text-gray-400 text-lg">End-to-end email marketing for ecommerce brands serious about growth.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { icon: "✉️", title: "Campaign Copywriting", desc: "Weekly campaigns - plain text, story-based, and design - written to convert without discounting your margins away." },
+              { icon: "⚙️", title: "Flow Automation Setup", desc: "Welcome, abandoned cart, post-purchase, win-back, browse abandon, and 15+ more flows built and optimized." },
+              { icon: "🎯", title: "Pop-Up Form Optimization", desc: "Multi-step pop-ups with DR copy and design engineered to hit 8-15% conversion rates and compound into everything downstream." },
+              { icon: "📅", title: "Monthly Email Calendar", desc: "Full monthly strategy delivered one week before each new month. You approve it, we execute." },
+              { icon: "📊", title: "Klaviyo Setup & Management", desc: "Full account setup, list hygiene, segmentation, deliverability management, and performance reporting." },
+              { icon: "🔬", title: "Split Testing & Optimization", desc: "Ongoing A/B testing of subject lines, send times, copy styles, and offers to continuously compound results." }
+            ].map((s, i) => (
+              <div key={i} className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/15 transition-colors">
+                <div className="text-3xl mb-3">{s.icon}</div>
+                <div className="font-bold text-lg mb-2">{s.title}</div>
+                <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
 
