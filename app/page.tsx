@@ -1865,45 +1865,45 @@ function Home() {
             <p className="text-lg text-gray-600">What happens when email is done right.</p>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-6 max-w-2xl mx-auto">
             {/* Case Study 1 */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 flex items-center gap-3">
-                <span className="bg-white text-blue-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">1</span>
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-3">
+                <span className="bg-white text-green-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">1</span>
                 <span className="text-white font-semibold">Fitness Brand</span>
-                <span className="ml-auto text-blue-200 text-sm">112% year-over-year improvement</span>
+                <span className="ml-auto text-green-100 text-sm">112% year-over-year improvement</span>
               </div>
               <div className="p-6">
-                <div className="grid md:grid-cols-2 gap-6 mb-5">
+                <div className="grid grid-cols-2 gap-4 mb-5">
                   <div className="bg-red-50 rounded-lg p-4 border border-red-100">
                     <div className="text-sm font-semibold text-red-700 mb-2">Before</div>
-                    <p className="text-gray-700 text-sm">Sending 1-2 emails per week, generating <strong>$45K monthly</strong> attributed revenue.</p>
+                    <p className="text-gray-700 text-sm">1-2 emails/week, generating <strong>$45K monthly</strong>.</p>
                   </div>
                   <div className="bg-green-50 rounded-lg p-4 border border-green-100">
                     <div className="text-sm font-semibold text-green-700 mb-2">After</div>
-                    <p className="text-gray-700 text-sm">Scaled to 4-5 emails weekly, reaching <strong>$98K monthly</strong> attributed revenue. <strong>+112% YoY.</strong></p>
+                    <p className="text-gray-700 text-sm">4-5 emails/week, <strong>$98K monthly</strong>. <strong>+112% YoY.</strong></p>
                   </div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
-                  <p className="text-gray-600 text-sm leading-relaxed">Implemented a monthly calendar approved one week before each new month. Combined plain-text and design-based emails, repurposed YouTube videos into value-based email content, and avoided discounts entirely to keep margins high.</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">Monthly calendar approved one week before each month. Mix of plain-text and design emails, YouTube videos repurposed into value-based content, zero discounts to protect margins.</p>
                 </div>
               </div>
             </div>
 
             {/* Case Study 2 */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-6 py-3 flex items-center gap-3">
-                <span className="bg-white text-purple-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">2</span>
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-3">
+                <span className="bg-white text-green-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">2</span>
                 <span className="text-white font-semibold">Luxury Brand</span>
-                <span className="ml-auto text-purple-200 text-sm">1,025% revenue increase</span>
+                <span className="ml-auto text-green-100 text-sm">1,025% revenue increase</span>
               </div>
               <div className="p-6">
-                <div className="grid md:grid-cols-2 gap-6 mb-5">
+                <div className="grid grid-cols-2 gap-4 mb-5">
                   <div className="bg-red-50 rounded-lg p-4 border border-red-100">
                     <div className="text-sm font-semibold text-red-700 mb-2">Before</div>
                     <ul className="text-gray-700 text-sm space-y-1">
-                      <li><strong>$6.5K</strong> monthly revenue</li>
+                      <li><strong>$6.5K</strong>/mo revenue</li>
                       <li><strong>12.1%</strong> bounce rate</li>
                       <li><strong>37.2%</strong> open rate</li>
                     </ul>
@@ -1911,7 +1911,7 @@ function Home() {
                   <div className="bg-green-50 rounded-lg p-4 border border-green-100">
                     <div className="text-sm font-semibold text-green-700 mb-2">After</div>
                     <ul className="text-gray-700 text-sm space-y-1">
-                      <li><strong>$73.6K</strong> monthly revenue (+1,025%)</li>
+                      <li><strong>$73.6K</strong>/mo (+1,025%)</li>
                       <li><strong>0.80%</strong> bounce rate</li>
                       <li><strong>49.2%</strong> open rate</li>
                     </ul>
@@ -1919,97 +1919,74 @@ function Home() {
                 </div>
                 <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                   <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
-                  <p className="text-gray-600 text-sm leading-relaxed">They were sending zero emails. We started sending 4 per week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
+                  <p className="text-gray-600 text-sm leading-relaxed">They were sending zero emails. We started at 4/week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
                 </div>
               </div>
             </div>
 
-            {/* Case Study 3 */}
+            {/* Case Study 3 - Combined */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-6 py-3 flex items-center gap-3">
-                <span className="bg-white text-emerald-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">3</span>
-                <span className="text-white font-semibold">Supplement Brand - Plain Text vs Design</span>
-                <span className="ml-auto text-emerald-200 text-sm">21% higher conversion rate</span>
+              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-3">
+                <span className="bg-white text-green-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">3</span>
+                <span className="text-white font-semibold">Supplement Brand - Copy & Conversion Testing</span>
+                <span className="ml-auto text-green-100 text-sm">21% higher conversion + 8.72% pop-up</span>
               </div>
-              <div className="p-6">
-                <div className="grid md:grid-cols-2 gap-6 mb-5">
-                  <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <div className="text-sm font-semibold text-gray-700 mb-2">Design Email</div>
-                    <ul className="text-gray-700 text-sm space-y-1">
-                      <li><strong>$9.3K</strong> revenue</li>
-                      <li><strong>9.42%</strong> conversion rate</li>
-                    </ul>
+              <div className="p-6 space-y-5">
+                {/* Plain Text vs Design */}
+                <div>
+                  <div className="text-sm font-bold text-gray-800 mb-3">Plain Text vs Design Email</div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <div className="text-sm font-semibold text-gray-600 mb-1">Design Email</div>
+                      <div className="text-sm text-gray-700"><strong>$9.3K</strong> revenue - 9.42% CVR</div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-3 border border-green-100">
+                      <div className="text-sm font-semibold text-green-700 mb-1">Plain Text Email</div>
+                      <div className="text-sm text-gray-700"><strong>$11.3K</strong> revenue - 13.12% CVR (+21%)</div>
+                    </div>
                   </div>
-                  <div className="bg-green-50 rounded-lg p-4 border border-green-100">
-                    <div className="text-sm font-semibold text-green-700 mb-2">Plain Text Email</div>
-                    <ul className="text-gray-700 text-sm space-y-1">
-                      <li><strong>$11.3K</strong> revenue</li>
-                      <li><strong>13.12%</strong> conversion rate (+21%)</li>
-                    </ul>
-                  </div>
+                  <p className="text-gray-600 text-xs leading-relaxed bg-gray-50 rounded p-3 border border-gray-200">Story-based and dialogue-style emails outperformed design by 21% placed order rate per campaign - consistently.</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
-                  <p className="text-gray-600 text-sm leading-relaxed">Story-based and dialogue-style plain text emails consistently outperformed design-based emails by a 21% higher placed order rate per campaign - every single time.</p>
-                </div>
-              </div>
-            </div>
 
-            {/* Case Study 4 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-amber-600 to-amber-700 px-6 py-3 flex items-center gap-3">
-                <span className="bg-white text-amber-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">4</span>
-                <span className="text-white font-semibold">Value-Based vs Discount-Based Emails</span>
-                <span className="ml-auto text-amber-200 text-sm">70-82% open rates</span>
-              </div>
-              <div className="p-6">
-                <div className="grid md:grid-cols-3 gap-4 mb-5">
-                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
-                    <div className="text-2xl font-bold text-blue-700">6 of 10</div>
-                    <div className="text-sm text-gray-600 mt-1">top campaigns used zero discounts</div>
+                {/* Value vs Discount */}
+                <div>
+                  <div className="text-sm font-bold text-gray-800 mb-3">Value-Based vs Discount Emails</div>
+                  <div className="grid grid-cols-3 gap-3 mb-3">
+                    <div className="bg-green-50 rounded-lg p-3 border border-green-100 text-center">
+                      <div className="text-xl font-bold text-green-700">6/10</div>
+                      <div className="text-xs text-gray-600 mt-1">top campaigns, zero discounts</div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-3 border border-green-100 text-center">
+                      <div className="text-xl font-bold text-green-700">70-82%</div>
+                      <div className="text-xs text-gray-600 mt-1">open rates</div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-3 border border-green-100 text-center">
+                      <div className="text-xl font-bold text-green-700">&gt;0.7%</div>
+                      <div className="text-xs text-gray-600 mt-1">CTR consistently</div>
+                    </div>
                   </div>
-                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
-                    <div className="text-2xl font-bold text-blue-700">70-82%</div>
-                    <div className="text-sm text-gray-600 mt-1">open rates achieved</div>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-100 text-center">
-                    <div className="text-2xl font-bold text-blue-700">&gt;0.7%</div>
-                    <div className="text-sm text-gray-600 mt-1">CTR maintained consistently</div>
-                  </div>
+                  <p className="text-gray-600 text-xs leading-relaxed bg-gray-50 rounded p-3 border border-gray-200">Margins jumped while revenue grew. Discount campaigns performed even better when sandwiched between value emails.</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-sm font-semibold text-gray-700 mb-2">Result</div>
-                  <p className="text-gray-600 text-sm leading-relaxed">Margins jumped while email revenue grew without relying on discounts. Discount-based campaigns actually performed even better because value-based emails in between trained the audience to engage - not just buy when there's a sale.</p>
-                </div>
-              </div>
-            </div>
 
-            {/* Case Study 5 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-rose-600 to-rose-700 px-6 py-3 flex items-center gap-3">
-                <span className="bg-white text-rose-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">5</span>
-                <span className="text-white font-semibold">Pop-Up Form Optimization</span>
-                <span className="ml-auto text-rose-200 text-sm">2.13% - 8.72% conversion rate</span>
-              </div>
-              <div className="p-6">
-                <div className="grid md:grid-cols-2 gap-6 mb-5">
-                  <div className="bg-red-50 rounded-lg p-4 border border-red-100">
-                    <div className="text-sm font-semibold text-red-700 mb-2">Before</div>
-                    <p className="text-gray-700 text-sm"><strong>2.13%</strong> conversion rate. Very poor list growth, minimal new subscribers entering flows each month.</p>
+                {/* Pop-Up Optimization */}
+                <div>
+                  <div className="text-sm font-bold text-gray-800 mb-3">Pop-Up Form Optimization</div>
+                  <div className="grid grid-cols-2 gap-4 mb-3">
+                    <div className="bg-red-50 rounded-lg p-3 border border-red-100">
+                      <div className="text-sm font-semibold text-red-700 mb-1">Before</div>
+                      <div className="text-sm text-gray-700"><strong>2.13%</strong> conversion rate</div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-3 border border-green-100">
+                      <div className="text-sm font-semibold text-green-700 mb-1">After</div>
+                      <ul className="text-sm text-gray-700 space-y-0.5">
+                        <li><strong>8.72%</strong> conversion rate</li>
+                        <li><strong>7,000</strong> new subs/month</li>
+                        <li>Mobile: <strong>$128K</strong> in 2 months</li>
+                        <li>Desktop: <strong>$28K</strong> in 2 months</li>
+                      </ul>
+                    </div>
                   </div>
-                  <div className="bg-green-50 rounded-lg p-4 border border-green-100">
-                    <div className="text-sm font-semibold text-green-700 mb-2">After</div>
-                    <ul className="text-gray-700 text-sm space-y-1">
-                      <li><strong>8.72%</strong> conversion rate</li>
-                      <li><strong>7,000</strong> new subscribers/month</li>
-                      <li>Mobile: <strong>$128K</strong> in 2 months</li>
-                      <li>Desktop: <strong>$28K</strong> in 2 months</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
-                  <p className="text-gray-600 text-sm leading-relaxed">Implemented zero-party data collection with a multi-step pop-up. New DR copy and design built to drive clicks instead of being annoying. The result compounded directly into flow revenue and campaign list size.</p>
+                  <p className="text-gray-600 text-xs leading-relaxed bg-gray-50 rounded p-3 border border-gray-200">Multi-step pop-up with zero-party data collection, new DR copy and design built to drive clicks. Compounded directly into flow and campaign revenue.</p>
                 </div>
               </div>
             </div>
@@ -2023,7 +2000,7 @@ function Home() {
             <p className="text-lg text-gray-600">From founders and agency owners who've worked with Jacob.</p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="max-w-2xl mx-auto space-y-5">
             {[
               {
                 quote: "Jacob is an incredible email marketer and copywriter... his work ethic and skillset is top 5%.",
@@ -2051,7 +2028,7 @@ function Home() {
                 title: "7-Figure Financial Copywriter for Agora (Billion Dollar Publisher)"
               }
             ].map((t, i) => (
-              <div key={i} className={`bg-white rounded-xl shadow-md p-6 border border-gray-100 ${i === 4 ? 'md:col-span-2 md:max-w-lg md:mx-auto' : ''}`}>
+              <div key={i} className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
                 <p className="text-gray-700 italic leading-relaxed mb-4">"{t.quote}"</p>
                 <div className="border-t border-gray-100 pt-4">
                   <div className="font-bold text-gray-900">{t.name}</div>
