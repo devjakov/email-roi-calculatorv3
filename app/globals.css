@@ -3,17 +3,51 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 255, 255, 255;
+  --bg-dark: #08080f;
+  --bg-dark-2: #0d0d18;
+  --purple-glow: rgba(124, 58, 237, 0.35);
+  --purple-glow-soft: rgba(124, 58, 237, 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: var(--bg-dark);
+}
+
+/* Fixed nav offset for anchor scroll targets */
+[id] {
+  scroll-margin-top: 72px;
+}
+
+/* Purple glow utility */
+.glow-purple {
+  box-shadow: 0 0 80px rgba(124, 58, 237, 0.4), 0 0 160px rgba(124, 58, 237, 0.15);
+}
+
+.glow-purple-sm {
+  box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+}
+
+.glow-text-purple {
+  text-shadow: 0 0 60px rgba(167, 139, 250, 0.6);
+}
+
+.hero-bg {
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(109, 40, 217, 0.18) 0%, transparent 70%), var(--bg-dark);
+}
+
+.card-dark {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.card-dark:hover {
+  border-color: rgba(124, 58, 237, 0.4);
+  background: rgba(124, 58, 237, 0.06);
 }

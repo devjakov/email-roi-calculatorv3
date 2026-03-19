@@ -940,31 +940,375 @@ function Home() {
 
   return (
     <>
-      {/* ==================== NAVBAR (always visible) ==================== */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
-          <div className="font-bold text-gray-900 text-lg">Mars Copywriting</div>
-          {prospectSlug && (
-            <div className="flex items-center gap-6">
+      {/* ==================== NAV ==================== */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#08080f]/95 backdrop-blur-xl border-b border-purple-900/20">
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="font-bold text-white text-xl tracking-tight">Mars Copywriting</div>
+
+          {/* Center links */}
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#results" className="text-sm text-gray-400 hover:text-white transition-colors">Results</a>
+            <a href="#reviews" className="text-sm text-gray-400 hover:text-white transition-colors">Reviews</a>
+            <a href="#calculator" className="text-sm text-gray-400 hover:text-white transition-colors">ROI Calculator</a>
+            {prospectSlug && (
               <button
                 onClick={() => setActiveSection('deliverables')}
-                className={`text-sm font-medium transition-colors ${activeSection === 'deliverables' ? 'text-blue-600 border-b-2 border-blue-600 pb-0.5' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-semibold"
               >
                 Free Deliverables for {prospectName}
               </button>
-              <button
-                onClick={() => setActiveSection('calculator')}
-                className={`text-sm font-medium transition-colors ${activeSection === 'calculator' ? 'text-blue-600 border-b-2 border-blue-600 pb-0.5' : 'text-gray-600 hover:text-gray-900'}`}
-              >
-                ROI Calculator
-              </button>
-              {isEditMode && (
-                <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full font-medium">Edit Mode</span>
-              )}
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* Right */}
+          <div className="flex items-center gap-3">
+            {isEditMode && (
+              <span className="text-xs bg-orange-900/50 text-orange-300 px-2 py-1 rounded-full">Edit Mode</span>
+            )}
+            {/* CLIENT LOGIN — replace href with your actual client portal URL */}
+            <a
+              href="#"
+              className="text-sm text-gray-300 border border-gray-700 hover:border-purple-500 hover:text-purple-300 px-4 py-2 rounded-lg transition-all duration-200"
+            >
+              Client Login
+            </a>
+          </div>
         </div>
       </nav>
+
+      {/* ==================== HERO ==================== */}
+      <section id="hero" className="hero-bg min-h-screen flex items-center pt-16">
+        <div className="max-w-7xl mx-auto px-6 py-24 w-full">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+            {/* Left: copy */}
+            <div className="space-y-8">
+              {/* Pill tag */}
+              <div className="inline-flex items-center gap-2 bg-purple-950/60 border border-purple-700/40 rounded-full px-4 py-2 text-sm text-purple-300 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
+                Flows &nbsp;·&nbsp; Campaigns &nbsp;·&nbsp; Broadcasts
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight glow-text-purple">
+                Full Stack Email Copywriter with{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
+                  $8.5M in Sales
+                </span>{' '}
+                for 8-9 Figure DTC Brands
+              </h1>
+
+              {/* Subheadline */}
+              <p className="text-lg text-gray-400 leading-relaxed max-w-xl">
+                Klaviyo email campaigns, flows, and pop-ups - written for wellness, beauty, luxury, health, supplements, and fitness brands.
+              </p>
+
+              {/* Trust lines */}
+              <div className="space-y-1 text-sm text-gray-500">
+                <p>No contract lock-in. Cancel any time. Billed month-to-month.</p>
+              </div>
+
+              {/* CTA */}
+              {/* BOOK CALL — replace href with your Calendly or booking link */}
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 glow-purple-sm hover:glow-purple"
+              >
+                Book a Free Call →
+              </a>
+            </div>
+
+            {/* Right: video placeholder */}
+            <div className="relative">
+              <div className="aspect-video bg-[#0d0d18] border border-purple-800/40 rounded-2xl flex flex-col items-center justify-center glow-purple-sm overflow-hidden">
+                {/* Purple ambient glow inside */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent pointer-events-none" />
+                {/* Play button */}
+                <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/30 flex items-center justify-center backdrop-blur-sm">
+                  <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+                {/* Label */}
+                <p className="absolute bottom-4 text-xs text-gray-600 font-mono">
+                  {/* EMBED VIDEO — paste your Wistia or Vimeo iframe src here */}
+                  [ YOUR VSL GOES HERE - embed Wistia or Vimeo src here ]
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== STATS BAR ==================== */}
+      <section className="bg-[#0d0d18] border-y border-purple-900/20">
+        <div className="max-w-5xl mx-auto px-6 py-12">
+          <div className="grid grid-cols-3 gap-0 divide-x divide-purple-900/30">
+            {[
+              { stat: '$8.5M+', label: 'Revenue driven for clients' },
+              { stat: '1,025%', label: 'Highest single brand revenue increase' },
+              { stat: '+112% YoY', label: 'Fastest brand growth' },
+            ].map((item, i) => (
+              <div key={i} className="text-center px-8 py-4">
+                <div className="text-4xl font-extrabold text-white mb-2 glow-text-purple">{item.stat}</div>
+                <div className="text-sm text-gray-500">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== TRUSTED BY ==================== */}
+      <section className="bg-[#08080f] py-10 border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center gap-8">
+          <span className="text-xs text-gray-600 font-semibold tracking-widest uppercase whitespace-nowrap">Trusted by</span>
+          <div className="flex flex-wrap justify-center sm:justify-start items-center gap-10">
+            {['NOTUS', 'BITGET', 'ECOM ADVERTISERS', 'BRAND LUX MEDIA'].map((name) => (
+              <span key={name} className="text-sm font-bold tracking-widest text-gray-600 hover:text-gray-400 transition-colors uppercase">
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== FIT SECTION ==================== */}
+      <section id="fit" className="bg-[#08080f] py-24 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-white text-center mb-12">Is This Right For You?</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Good fit */}
+            <div className="card-dark rounded-2xl p-8 border-green-800/40 hover:border-green-700/60 transition-colors" style={{border: '1px solid rgba(22, 101, 52, 0.4)'}}>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-green-400 text-lg">Good fit if...</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "You're an ecommerce brand doing $50K-$500K+/month",
+                  "You're in wellness, beauty, luxury, health, supplements, or fitness",
+                  "You use Klaviyo or are open to switching",
+                  "You want more email revenue without discounting your margins",
+                  "You're sending fewer than 8 campaigns/month or have under 8 active flows",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                    <span className="mt-0.5 text-green-500 shrink-0">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Not a fit */}
+            <div className="card-dark rounded-2xl p-8" style={{border: '1px solid rgba(153, 27, 27, 0.4)'}}>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-red-400 text-lg">Not a fit if...</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "You're not running an ecommerce store",
+                  "You want cheap, templated batch-and-blast emails",
+                  "You need someone to run paid ads",
+                  "You're not open to testing and iterating on copy",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                    <span className="mt-0.5 text-red-500 shrink-0">✕</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== WHAT WE DO ==================== */}
+      <section id="services" className="bg-[#0d0d18] py-24 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">What We Do</h2>
+            <p className="text-gray-400 text-lg max-w-xl mx-auto">End-to-end email marketing for ecommerce brands that want revenue without burning margins on discounts.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { icon: "✉️", title: "Campaign Copywriting", desc: "Weekly campaigns - plain text, story-based, and design - written to convert without discounting your margins away." },
+              { icon: "⚙️", title: "Flow Automation Setup", desc: "Welcome, abandoned cart, post-purchase, win-back, browse abandon, and 15+ more flows built and optimized." },
+              { icon: "🎯", title: "Pop-Up Form Optimization", desc: "Multi-step pop-ups with DR copy and design engineered to hit 8-15% conversion rates and compound into everything downstream." },
+              { icon: "📅", title: "Monthly Email Calendar", desc: "Full monthly strategy delivered one week before each new month. You approve it, we execute." },
+              { icon: "📊", title: "Klaviyo Setup & Management", desc: "Full account setup, list hygiene, segmentation, deliverability management, and performance reporting." },
+              { icon: "🔬", title: "Split Testing & Optimization", desc: "Ongoing A/B testing of subject lines, send times, copy styles, and offers to continuously compound results." }
+            ].map((s, i) => (
+              <div key={i} className="card-dark rounded-2xl p-6 transition-all duration-200">
+                <div className="text-3xl mb-4">{s.icon}</div>
+                <div className="font-bold text-white text-lg mb-2">{s.title}</div>
+                <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== CASE STUDIES ==================== */}
+      <section id="results" className="bg-[#08080f] py-24 px-6 border-t border-white/5">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-4xl font-bold text-white mb-3">Real Results From Real Brands</h2>
+            <p className="text-gray-500">What happens when email is done right.</p>
+          </div>
+          <div className="space-y-6">
+
+            {/* Case Study 1 */}
+            <div className="card-dark rounded-2xl overflow-hidden">
+              <div className="bg-purple-900/30 px-6 py-3 flex items-center gap-3 border-b border-purple-800/30">
+                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">1</span>
+                <span className="text-white font-semibold">Fitness Brand</span>
+                <span className="ml-auto text-purple-300 text-xs">112% year-over-year improvement</span>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-4 mb-5">
+                  <div className="bg-red-950/40 rounded-xl p-4 border border-red-900/30">
+                    <div className="text-xs font-semibold text-red-400 mb-2 uppercase tracking-wide">Before</div>
+                    <p className="text-gray-300 text-sm">1-2 emails/week, generating <strong className="text-white">$45K monthly</strong>.</p>
+                  </div>
+                  <div className="bg-green-950/40 rounded-xl p-4 border border-green-900/30">
+                    <div className="text-xs font-semibold text-green-400 mb-2 uppercase tracking-wide">After</div>
+                    <p className="text-gray-300 text-sm">4-5 emails/week, <strong className="text-white">$98K monthly</strong>. +112% YoY.</p>
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-xl p-4 border border-white/8">
+                  <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
+                  <p className="text-gray-400 text-sm leading-relaxed">Monthly calendar approved one week before each month. Mix of plain-text and design emails, YouTube videos repurposed into value-based content, zero discounts to protect margins.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Case Study 2 */}
+            <div className="card-dark rounded-2xl overflow-hidden">
+              <div className="bg-purple-900/30 px-6 py-3 flex items-center gap-3 border-b border-purple-800/30">
+                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</span>
+                <span className="text-white font-semibold">Luxury Brand</span>
+                <span className="ml-auto text-purple-300 text-xs">1,025% revenue increase</span>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-4 mb-5">
+                  <div className="bg-red-950/40 rounded-xl p-4 border border-red-900/30">
+                    <div className="text-xs font-semibold text-red-400 mb-2 uppercase tracking-wide">Before</div>
+                    <ul className="text-gray-300 text-sm space-y-1">
+                      <li><strong className="text-white">$6.5K</strong>/mo revenue</li>
+                      <li><strong className="text-white">12.1%</strong> bounce rate</li>
+                      <li><strong className="text-white">37.2%</strong> open rate</li>
+                    </ul>
+                  </div>
+                  <div className="bg-green-950/40 rounded-xl p-4 border border-green-900/30">
+                    <div className="text-xs font-semibold text-green-400 mb-2 uppercase tracking-wide">After</div>
+                    <ul className="text-gray-300 text-sm space-y-1">
+                      <li><strong className="text-white">$73.6K</strong>/mo (+1,025%)</li>
+                      <li><strong className="text-white">0.80%</strong> bounce rate</li>
+                      <li><strong className="text-white">49.2%</strong> open rate</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-xl p-4 border border-white/8">
+                  <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
+                  <p className="text-gray-400 text-sm leading-relaxed">They were sending zero emails. We started at 4/week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Case Study 3 - Combined */}
+            <div className="card-dark rounded-2xl overflow-hidden">
+              <div className="bg-purple-900/30 px-6 py-3 flex items-center gap-3 border-b border-purple-800/30">
+                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">3</span>
+                <span className="text-white font-semibold">Supplement Brand - Copy & Conversion Testing</span>
+                <span className="ml-auto text-purple-300 text-xs">21% higher CVR + 8.72% pop-up</span>
+              </div>
+              <div className="p-6 space-y-5">
+                <div>
+                  <div className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">Plain Text vs Design Email</div>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="bg-white/5 rounded-xl p-3 border border-white/8">
+                      <div className="text-xs text-gray-500 mb-1">Design Email</div>
+                      <div className="text-gray-300 text-sm"><strong className="text-white">$9.3K</strong> - 9.42% CVR</div>
+                    </div>
+                    <div className="bg-green-950/40 rounded-xl p-3 border border-green-900/30">
+                      <div className="text-xs text-green-400 mb-1">Plain Text Email</div>
+                      <div className="text-gray-300 text-sm"><strong className="text-white">$11.3K</strong> - 13.12% CVR (+21%)</div>
+                    </div>
+                  </div>
+                  <p className="text-gray-500 text-xs leading-relaxed">Story-based, dialogue-style emails outperformed design by 21% placed order rate - every single campaign.</p>
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">Value-Based vs Discount Emails</div>
+                  <div className="grid grid-cols-3 gap-3 mb-3">
+                    {[['6/10', 'top campaigns, zero discounts'], ['70-82%', 'open rates'], ['>0.7%', 'CTR consistently']].map(([stat, label], i) => (
+                      <div key={i} className="bg-purple-950/40 rounded-xl p-3 border border-purple-900/30 text-center">
+                        <div className="text-lg font-bold text-purple-300">{stat}</div>
+                        <div className="text-xs text-gray-500 mt-1">{label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">Pop-Up Form Optimization</div>
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="bg-red-950/40 rounded-xl p-3 border border-red-900/30">
+                      <div className="text-xs text-red-400 mb-1">Before</div>
+                      <div className="text-gray-300 text-sm"><strong className="text-white">2.13%</strong> conversion rate</div>
+                    </div>
+                    <div className="bg-green-950/40 rounded-xl p-3 border border-green-900/30">
+                      <div className="text-xs text-green-400 mb-1">After</div>
+                      <ul className="text-gray-300 text-sm space-y-0.5">
+                        <li><strong className="text-white">8.72%</strong> conversion</li>
+                        <li><strong className="text-white">7,000</strong> new subs/month</li>
+                        <li>Mobile: <strong className="text-white">$128K</strong> in 2 months</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== TESTIMONIALS ==================== */}
+      <section id="reviews" className="bg-[#0d0d18] py-24 px-6 border-t border-white/5">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-4xl font-bold text-white mb-3">Kind Words</h2>
+            <p className="text-gray-500">From founders and agency owners who've worked with Jacob.</p>
+          </div>
+          <div className="space-y-5">
+            {[
+              { quote: "Jacob is an incredible email marketer and copywriter... his work ethic and skillset is top 5%.", name: "Daniel Filipe", title: "Founder, Ecom Advertisers - 7-Figure Email Agency" },
+              { quote: "Jacob is an absolute pleasure to work with... he delivers fantastic copywriting work. We worked on multiple projects together and he hasn't disappointed once.", name: "Marvin Sanginés", title: "Founder, notus - 7-Figure Personal Branding Agency" },
+              { quote: "Jacob wrote weeks of copy in advance and with his help we keep making more money for our clients. One client told us he's getting his best month of the year so far. Jacob is easy to talk to, works fast and always delivers.", name: "Brando Monetti", title: "CEO, Brand Lux Media" },
+              { quote: "He doesn't stop until he has every answer and angle he needs to get customers turning heads buying your products. Definitely someone you can grab a beer with and vibe while knowing you're making money together.", name: "Mason Doerr", title: "Founder, CopyMBA" },
+              { quote: "Jacob's got a great instinct for finding a way to sell the unsellable.", name: "Thom Benny", title: "7-Figure Financial Copywriter for Agora (Billion Dollar Publisher)" },
+            ].map((t, i) => (
+              <div key={i} className="card-dark rounded-2xl p-6">
+                <div className="text-yellow-400 text-xl mb-3 tracking-wider">★★★★★</div>
+                <p className="text-gray-300 italic leading-relaxed mb-5">"{t.quote}"</p>
+                <div className="border-t border-white/10 pt-4">
+                  <div className="font-bold text-white">{t.name}</div>
+                  <div className="text-sm text-gray-500">{t.title}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ==================== DELIVERABLES SECTION ==================== */}
       {prospectSlug && activeSection === 'deliverables' && (
@@ -1106,7 +1450,7 @@ function Home() {
       )}
 
       {/* ==================== CALCULATOR SECTION ==================== */}
-    <main className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
+    <main id="calculator" className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -1858,211 +2202,6 @@ function Home() {
           </div>
         </div>
 
-        {/* ==================== CASE STUDIES ==================== */}
-        <div className="mt-12">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">📊 Real Results From Real Brands</h2>
-            <p className="text-lg text-gray-600">What happens when email is done right.</p>
-          </div>
-
-          <div className="space-y-6 max-w-2xl mx-auto">
-            {/* Case Study 1 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-3">
-                <span className="bg-white text-green-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">1</span>
-                <span className="text-white font-semibold">Fitness Brand</span>
-                <span className="ml-auto text-green-100 text-sm">112% year-over-year improvement</span>
-              </div>
-              <div className="p-6">
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                  <div className="bg-red-50 rounded-lg p-4 border border-red-100">
-                    <div className="text-sm font-semibold text-red-700 mb-2">Before</div>
-                    <p className="text-gray-700 text-sm">1-2 emails/week, generating <strong>$45K monthly</strong>.</p>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-4 border border-green-100">
-                    <div className="text-sm font-semibold text-green-700 mb-2">After</div>
-                    <p className="text-gray-700 text-sm">4-5 emails/week, <strong>$98K monthly</strong>. <strong>+112% YoY.</strong></p>
-                  </div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
-                  <p className="text-gray-600 text-sm leading-relaxed">Monthly calendar approved one week before each month. Mix of plain-text and design emails, YouTube videos repurposed into value-based content, zero discounts to protect margins.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Case Study 2 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-3">
-                <span className="bg-white text-green-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">2</span>
-                <span className="text-white font-semibold">Luxury Brand</span>
-                <span className="ml-auto text-green-100 text-sm">1,025% revenue increase</span>
-              </div>
-              <div className="p-6">
-                <div className="grid grid-cols-2 gap-4 mb-5">
-                  <div className="bg-red-50 rounded-lg p-4 border border-red-100">
-                    <div className="text-sm font-semibold text-red-700 mb-2">Before</div>
-                    <ul className="text-gray-700 text-sm space-y-1">
-                      <li><strong>$6.5K</strong>/mo revenue</li>
-                      <li><strong>12.1%</strong> bounce rate</li>
-                      <li><strong>37.2%</strong> open rate</li>
-                    </ul>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-4 border border-green-100">
-                    <div className="text-sm font-semibold text-green-700 mb-2">After</div>
-                    <ul className="text-gray-700 text-sm space-y-1">
-                      <li><strong>$73.6K</strong>/mo (+1,025%)</li>
-                      <li><strong>0.80%</strong> bounce rate</li>
-                      <li><strong>49.2%</strong> open rate</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="text-sm font-semibold text-gray-700 mb-2">What We Did</div>
-                  <p className="text-gray-600 text-sm leading-relaxed">They were sending zero emails. We started at 4/week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Case Study 3 - Combined */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-              <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-3 flex items-center gap-3">
-                <span className="bg-white text-green-700 font-bold text-sm rounded-full w-7 h-7 flex items-center justify-center">3</span>
-                <span className="text-white font-semibold">Supplement Brand - Copy & Conversion Testing</span>
-                <span className="ml-auto text-green-100 text-sm">21% higher conversion + 8.72% pop-up</span>
-              </div>
-              <div className="p-6 space-y-5">
-                {/* Plain Text vs Design */}
-                <div>
-                  <div className="text-sm font-bold text-gray-800 mb-3">Plain Text vs Design Email</div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                      <div className="text-sm font-semibold text-gray-600 mb-1">Design Email</div>
-                      <div className="text-sm text-gray-700"><strong>$9.3K</strong> revenue - 9.42% CVR</div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-3 border border-green-100">
-                      <div className="text-sm font-semibold text-green-700 mb-1">Plain Text Email</div>
-                      <div className="text-sm text-gray-700"><strong>$11.3K</strong> revenue - 13.12% CVR (+21%)</div>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-xs leading-relaxed bg-gray-50 rounded p-3 border border-gray-200">Story-based and dialogue-style emails outperformed design by 21% placed order rate per campaign - consistently.</p>
-                </div>
-
-                {/* Value vs Discount */}
-                <div>
-                  <div className="text-sm font-bold text-gray-800 mb-3">Value-Based vs Discount Emails</div>
-                  <div className="grid grid-cols-3 gap-3 mb-3">
-                    <div className="bg-green-50 rounded-lg p-3 border border-green-100 text-center">
-                      <div className="text-xl font-bold text-green-700">6/10</div>
-                      <div className="text-xs text-gray-600 mt-1">top campaigns, zero discounts</div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-3 border border-green-100 text-center">
-                      <div className="text-xl font-bold text-green-700">70-82%</div>
-                      <div className="text-xs text-gray-600 mt-1">open rates</div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-3 border border-green-100 text-center">
-                      <div className="text-xl font-bold text-green-700">&gt;0.7%</div>
-                      <div className="text-xs text-gray-600 mt-1">CTR consistently</div>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-xs leading-relaxed bg-gray-50 rounded p-3 border border-gray-200">Margins jumped while revenue grew. Discount campaigns performed even better when sandwiched between value emails.</p>
-                </div>
-
-                {/* Pop-Up Optimization */}
-                <div>
-                  <div className="text-sm font-bold text-gray-800 mb-3">Pop-Up Form Optimization</div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <div className="bg-red-50 rounded-lg p-3 border border-red-100">
-                      <div className="text-sm font-semibold text-red-700 mb-1">Before</div>
-                      <div className="text-sm text-gray-700"><strong>2.13%</strong> conversion rate</div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-3 border border-green-100">
-                      <div className="text-sm font-semibold text-green-700 mb-1">After</div>
-                      <ul className="text-sm text-gray-700 space-y-0.5">
-                        <li><strong>8.72%</strong> conversion rate</li>
-                        <li><strong>7,000</strong> new subs/month</li>
-                        <li>Mobile: <strong>$128K</strong> in 2 months</li>
-                        <li>Desktop: <strong>$28K</strong> in 2 months</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 text-xs leading-relaxed bg-gray-50 rounded p-3 border border-gray-200">Multi-step pop-up with zero-party data collection, new DR copy and design built to drive clicks. Compounded directly into flow and campaign revenue.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ==================== TESTIMONIALS ==================== */}
-        <div className="mt-16">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">💬 Kind Words</h2>
-            <p className="text-lg text-gray-600">From founders and agency owners who've worked with Jacob.</p>
-          </div>
-
-          <div className="max-w-2xl mx-auto space-y-5">
-            {[
-              {
-                quote: "Jacob is an incredible email marketer and copywriter... his work ethic and skillset is top 5%.",
-                name: "Daniel Filipe",
-                title: "Founder, Ecom Advertisers - 7-Figure Email Agency"
-              },
-              {
-                quote: "Jacob is an absolute pleasure to work with... he delivers fantastic copywriting work. We worked on multiple projects together and he hasn't disappointed once.",
-                name: "Marvin Sanginés",
-                title: "Founder, notus - 7-Figure Personal Branding Agency"
-              },
-              {
-                quote: "Jacob wrote weeks of copy in advance and with his help we keep making more money for our clients. One client told us he's getting his best month of the year so far. Jacob is easy to talk to, works fast and always delivers.",
-                name: "Brando Monetti",
-                title: "CEO, Brand Lux Media"
-              },
-              {
-                quote: "He doesn't stop until he has every answer and angle he needs to get customers turning heads buying your products. Definitely someone you can grab a beer with and vibe while knowing you're making money together.",
-                name: "Mason Doerr",
-                title: "Founder, CopyMBA"
-              },
-              {
-                quote: "Jacob's got a great instinct for finding a way to sell the unsellable.",
-                name: "Thom Benny",
-                title: "7-Figure Financial Copywriter for Agora (Billion Dollar Publisher)"
-              }
-            ].map((t, i) => (
-              <div key={i} className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-                <p className="text-gray-700 italic leading-relaxed mb-4">"{t.quote}"</p>
-                <div className="border-t border-gray-100 pt-4">
-                  <div className="font-bold text-gray-900">{t.name}</div>
-                  <div className="text-sm text-gray-500">{t.title}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ==================== SERVICES ==================== */}
-        <div className="mt-16 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-10 text-white">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-3">🛠 What We Do</h2>
-            <p className="text-gray-400 text-lg">End-to-end email marketing for ecommerce brands serious about growth.</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
-              { icon: "✉️", title: "Campaign Copywriting", desc: "Weekly campaigns - plain text, story-based, and design - written to convert without discounting your margins away." },
-              { icon: "⚙️", title: "Flow Automation Setup", desc: "Welcome, abandoned cart, post-purchase, win-back, browse abandon, and 15+ more flows built and optimized." },
-              { icon: "🎯", title: "Pop-Up Form Optimization", desc: "Multi-step pop-ups with DR copy and design engineered to hit 8-15% conversion rates and compound into everything downstream." },
-              { icon: "📅", title: "Monthly Email Calendar", desc: "Full monthly strategy delivered one week before each new month. You approve it, we execute." },
-              { icon: "📊", title: "Klaviyo Setup & Management", desc: "Full account setup, list hygiene, segmentation, deliverability management, and performance reporting." },
-              { icon: "🔬", title: "Split Testing & Optimization", desc: "Ongoing A/B testing of subject lines, send times, copy styles, and offers to continuously compound results." }
-            ].map((s, i) => (
-              <div key={i} className="bg-white/10 rounded-xl p-5 border border-white/10 hover:bg-white/15 transition-colors">
-                <div className="text-3xl mb-3">{s.icon}</div>
-                <div className="font-bold text-lg mb-2">{s.title}</div>
-                <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Footer */}
         <div className="mt-12 text-center text-sm text-gray-500">
           <p>Based on Klaviyo benchmarks from 325B+ emails • RPR = Revenue Per Recipient</p>
@@ -2078,6 +2217,36 @@ function Home() {
         </div>
       </div>
     </main>
+
+      {/* ==================== FINAL CTA ==================== */}
+      <section className="bg-[#08080f] py-24 px-6 border-t border-white/5">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="text-purple-400 text-sm font-semibold tracking-widest uppercase mb-4">Ready to grow?</p>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
+            Let's turn your email list<br className="hidden sm:block" /> into your #1 revenue channel.
+          </h2>
+          <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+            No fluff, no retainer lock-ins on day one. Just a straightforward conversation about where your email is right now and what's possible in 90 days.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://calendly.com/jacobjakobi/strategy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-8 py-4 rounded-xl transition-colors duration-200 text-lg"
+            >
+              Book a Free Strategy Call
+            </a>
+            <a
+              href="#calculator"
+              className="inline-flex items-center justify-center gap-2 border border-white/15 hover:border-white/30 text-gray-300 hover:text-white font-semibold px-8 py-4 rounded-xl transition-colors duration-200 text-lg"
+            >
+              Run the Numbers First
+            </a>
+          </div>
+          <p className="mt-6 text-sm text-gray-600">No commitment required. 30-minute call. Real answers.</p>
+        </div>
+      </section>
     </>
   )
 }
