@@ -940,31 +940,197 @@ function Home() {
 
   return (
     <>
-      {/* ==================== NAVBAR (always visible) ==================== */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
-          <div className="font-bold text-gray-900 text-lg">Mars Copywriting</div>
-          {prospectSlug && (
-            <div className="flex items-center gap-6">
+      {/* ==================== NAV ==================== */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#08080f]/95 backdrop-blur-xl border-b border-purple-900/20">
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="font-bold text-white text-xl tracking-tight">Mars Copywriting</div>
+
+          {/* Center links */}
+          <div className="hidden md:flex items-center gap-8">
+            <a href="#results" className="text-sm text-gray-400 hover:text-white transition-colors">Results</a>
+            <a href="#reviews" className="text-sm text-gray-400 hover:text-white transition-colors">Reviews</a>
+            <a href="#calculator" className="text-sm text-gray-400 hover:text-white transition-colors">ROI Calculator</a>
+            {prospectSlug && (
               <button
                 onClick={() => setActiveSection('deliverables')}
-                className={`text-sm font-medium transition-colors ${activeSection === 'deliverables' ? 'text-blue-600 border-b-2 border-blue-600 pb-0.5' : 'text-gray-600 hover:text-gray-900'}`}
+                className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-semibold"
               >
                 Free Deliverables for {prospectName}
               </button>
-              <button
-                onClick={() => setActiveSection('calculator')}
-                className={`text-sm font-medium transition-colors ${activeSection === 'calculator' ? 'text-blue-600 border-b-2 border-blue-600 pb-0.5' : 'text-gray-600 hover:text-gray-900'}`}
-              >
-                ROI Calculator
-              </button>
-              {isEditMode && (
-                <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full font-medium">Edit Mode</span>
-              )}
-            </div>
-          )}
+            )}
+          </div>
+
+          {/* Right */}
+          <div className="flex items-center gap-3">
+            {isEditMode && (
+              <span className="text-xs bg-orange-900/50 text-orange-300 px-2 py-1 rounded-full">Edit Mode</span>
+            )}
+            {/* CLIENT LOGIN — replace href with your actual client portal URL */}
+            <a
+              href="#"
+              className="text-sm text-gray-300 border border-gray-700 hover:border-purple-500 hover:text-purple-300 px-4 py-2 rounded-lg transition-all duration-200"
+            >
+              Client Login
+            </a>
+          </div>
         </div>
       </nav>
+
+      {/* ==================== HERO ==================== */}
+      <section id="hero" className="hero-bg min-h-screen flex items-center pt-16">
+        <div className="max-w-7xl mx-auto px-6 py-24 w-full">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+            {/* Left: copy */}
+            <div className="space-y-8">
+              {/* Pill tag */}
+              <div className="inline-flex items-center gap-2 bg-purple-950/60 border border-purple-700/40 rounded-full px-4 py-2 text-sm text-purple-300 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
+                Flows &nbsp;·&nbsp; Campaigns &nbsp;·&nbsp; Broadcasts
+              </div>
+
+              {/* Headline */}
+              <h1 className="text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight glow-text-purple">
+                Full Stack Email Copywriter with{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
+                  $8.5M in Sales
+                </span>{' '}
+                for 8-9 Figure DTC Brands
+              </h1>
+
+              {/* Subheadline */}
+              <p className="text-lg text-gray-400 leading-relaxed max-w-xl">
+                Klaviyo email campaigns, flows, and pop-ups - written for wellness, beauty, luxury, health, supplements, and fitness brands.
+              </p>
+
+              {/* Trust lines */}
+              <div className="space-y-1 text-sm text-gray-500">
+                <p>No contract lock-in. Cancel any time. Billed month-to-month.</p>
+              </div>
+
+              {/* CTA */}
+              {/* BOOK CALL — replace href with your Calendly or booking link */}
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 glow-purple-sm hover:glow-purple"
+              >
+                Book a Free Call →
+              </a>
+            </div>
+
+            {/* Right: video placeholder */}
+            <div className="relative">
+              <div className="aspect-video bg-[#0d0d18] border border-purple-800/40 rounded-2xl flex flex-col items-center justify-center glow-purple-sm overflow-hidden">
+                {/* Purple ambient glow inside */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent pointer-events-none" />
+                {/* Play button */}
+                <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/30 flex items-center justify-center backdrop-blur-sm">
+                  <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+                {/* Label */}
+                <p className="absolute bottom-4 text-xs text-gray-600 font-mono">
+                  {/* EMBED VIDEO — paste your Wistia or Vimeo iframe src here */}
+                  [ YOUR VSL GOES HERE - embed Wistia or Vimeo src here ]
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== STATS BAR ==================== */}
+      <section className="bg-[#0d0d18] border-y border-purple-900/20">
+        <div className="max-w-5xl mx-auto px-6 py-12">
+          <div className="grid grid-cols-3 gap-0 divide-x divide-purple-900/30">
+            {[
+              { stat: '$8.5M+', label: 'Revenue driven for clients' },
+              { stat: '1,025%', label: 'Highest single brand revenue increase' },
+              { stat: '+112% YoY', label: 'Fastest brand growth' },
+            ].map((item, i) => (
+              <div key={i} className="text-center px-8 py-4">
+                <div className="text-4xl font-extrabold text-white mb-2 glow-text-purple">{item.stat}</div>
+                <div className="text-sm text-gray-500">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== TRUSTED BY ==================== */}
+      <section className="bg-[#08080f] py-10 border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center gap-8">
+          <span className="text-xs text-gray-600 font-semibold tracking-widest uppercase whitespace-nowrap">Trusted by</span>
+          <div className="flex flex-wrap justify-center sm:justify-start items-center gap-10">
+            {['NOTUS', 'BITGET', 'ECOM ADVERTISERS', 'BRAND LUX MEDIA'].map((name) => (
+              <span key={name} className="text-sm font-bold tracking-widest text-gray-600 hover:text-gray-400 transition-colors uppercase">
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== FIT SECTION ==================== */}
+      <section id="fit" className="bg-[#08080f] py-24 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-bold text-white text-center mb-12">Is This Right For You?</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Good fit */}
+            <div className="card-dark rounded-2xl p-8 border-green-800/40 hover:border-green-700/60 transition-colors" style={{border: '1px solid rgba(22, 101, 52, 0.4)'}}>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-green-400 text-lg">Good fit if...</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "You're an ecommerce brand doing $50K-$500K+/month",
+                  "You're in wellness, beauty, luxury, health, supplements, or fitness",
+                  "You use Klaviyo or are open to switching",
+                  "You want more email revenue without discounting your margins",
+                  "You're sending fewer than 8 campaigns/month or have under 8 active flows",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                    <span className="mt-0.5 text-green-500 shrink-0">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Not a fit */}
+            <div className="card-dark rounded-2xl p-8" style={{border: '1px solid rgba(153, 27, 27, 0.4)'}}>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-red-400 text-lg">Not a fit if...</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "You're not running an ecommerce store",
+                  "You want cheap, templated batch-and-blast emails",
+                  "You need someone to run paid ads",
+                  "You're not open to testing and iterating on copy",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                    <span className="mt-0.5 text-red-500 shrink-0">✕</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ==================== DELIVERABLES SECTION ==================== */}
       {prospectSlug && activeSection === 'deliverables' && (
