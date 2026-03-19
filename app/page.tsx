@@ -942,7 +942,7 @@ function Home() {
   return (
     <>
       {/* ==================== NAV ==================== */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#08080f]/95 backdrop-blur-xl border-b border-purple-900/20">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#08080f]/60 backdrop-blur-lg border-b border-purple-900/20">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
           {/* Logo */}
           <div className="font-bold text-white text-xl tracking-tight">Mars Copywriting</div>
@@ -2239,6 +2239,24 @@ function Home() {
               from the exact same email list. The only variable is how many campaigns you send per week, how many flows you build, and whether your pop-up is converting at 10-15%. That last one compounds into everything - more subscribers, bigger lists, higher flow revenue. It all starts there.
             </p>
           </div>
+        </div>
+
+        {/* Per $1 Invested Callout */}
+        <div className="mt-6 rounded-xl border border-purple-700/30 bg-[#0d0d1a] p-8 text-center">
+          <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-3">Your Email ROI</p>
+          <p className="text-2xl text-gray-300 leading-relaxed">
+            For every{' '}
+            <span className="font-bold text-white">$1</span>
+            {' '}invested in email marketing, you get back{' '}
+            <span className="font-extrabold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
+              ${formatNumber(scenarioData[2].netROI, 2)}
+            </span>
+            {' '}–{' '}
+            <span className="font-extrabold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
+              ${formatNumber(scenarioData[3].netROI, 2)}
+            </span>
+          </p>
+          <p className="text-sm text-gray-500 mt-3">Based on Good Performance → Best-in-Class net ROI range for your inputs</p>
         </div>
 
         {/* Footer */}
