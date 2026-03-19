@@ -497,6 +497,7 @@ function Home() {
   const [expandedCampaigns, setExpandedCampaigns] = useState<Set<number>>(new Set())
   const [expandedFlows, setExpandedFlows] = useState<Set<number>>(new Set())
   const [savingField, setSavingField] = useState<string | null>(null)
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   // Fetch prospect data when slug changes
   useEffect(() => {
@@ -948,6 +949,7 @@ function Home() {
 
           {/* Center links */}
           <div className="hidden md:flex items-center gap-8">
+            <a href="#services" className="text-sm text-gray-400 hover:text-white transition-colors">Services</a>
             <a href="#results" className="text-sm text-gray-400 hover:text-white transition-colors">Results</a>
             <a href="#reviews" className="text-sm text-gray-400 hover:text-white transition-colors">Reviews</a>
             <a href="#calculator" className="text-sm text-gray-400 hover:text-white transition-colors">ROI Calculator</a>
@@ -969,7 +971,7 @@ function Home() {
             {/* CLIENT LOGIN — replace href with your actual client portal URL */}
             <a
               href="#"
-              className="text-sm text-gray-300 border border-gray-700 hover:border-purple-500 hover:text-purple-300 px-4 py-2 rounded-lg transition-all duration-200"
+              className="text-sm text-white bg-purple-600 hover:bg-purple-500 font-semibold px-4 py-2 rounded-lg transition-all duration-200"
             >
               Client Login
             </a>
@@ -978,72 +980,57 @@ function Home() {
       </nav>
 
       {/* ==================== HERO ==================== */}
-      <section id="hero" className="hero-bg min-h-screen flex items-center pt-16">
-        <div className="max-w-7xl mx-auto px-6 py-24 w-full">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section id="hero" className="hero-bg pt-16">
+        <div className="max-w-4xl mx-auto px-6 py-8 text-center w-full">
+          {/* Pill tag */}
+          <div className="inline-flex items-center gap-2 bg-purple-950/60 border border-purple-700/40 rounded-full px-4 py-1.5 text-sm text-purple-300 font-medium mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
+            Flows &nbsp;·&nbsp; Campaigns &nbsp;·&nbsp; Broadcasts
+          </div>
 
-            {/* Left: copy */}
-            <div className="space-y-8">
-              {/* Pill tag */}
-              <div className="inline-flex items-center gap-2 bg-purple-950/60 border border-purple-700/40 rounded-full px-4 py-2 text-sm text-purple-300 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
-                Flows &nbsp;·&nbsp; Campaigns &nbsp;·&nbsp; Broadcasts
+          {/* Headline */}
+          <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] tracking-tight glow-text-purple mb-3">
+            Full Stack Email Copywriter with{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
+              $8.5M in Sales
+            </span>{' '}
+            for 8-9 Figure DTC Brands
+          </h1>
+
+          {/* Subheadline */}
+          <p className="text-base text-gray-400 mb-6 max-w-2xl mx-auto">
+            Klaviyo emails for wellness, beauty, luxury, health, supplements, and fitness brands.
+          </p>
+
+          {/* Video */}
+          <div className="relative max-w-2xl mx-auto mb-6">
+            <div className="aspect-video bg-[#0d0d18] border border-purple-800/40 rounded-2xl flex flex-col items-center justify-center glow-purple-sm overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent pointer-events-none" />
+              <div className="w-16 h-16 rounded-full bg-white/10 border-2 border-white/30 flex items-center justify-center backdrop-blur-sm">
+                <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
               </div>
-
-              {/* Headline */}
-              <h1 className="text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight glow-text-purple">
-                Full Stack Email Copywriter with{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
-                  $8.5M in Sales
-                </span>{' '}
-                for 8-9 Figure DTC Brands
-              </h1>
-
-              {/* Subheadline */}
-              <p className="text-lg text-gray-400 leading-relaxed max-w-xl">
-                Klaviyo email campaigns, flows, and pop-ups - written for wellness, beauty, luxury, health, supplements, and fitness brands.
-              </p>
-
-              {/* Trust lines */}
-              <div className="space-y-1 text-sm text-gray-500">
-                <p>No contract lock-in. Cancel any time. Billed month-to-month.</p>
-              </div>
-
-              {/* CTA */}
-              {/* BOOK CALL — replace href with your Calendly or booking link */}
-              <a
-                href="#"
-                className="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white font-bold px-8 py-4 rounded-xl text-lg transition-all duration-200 glow-purple-sm hover:glow-purple"
-              >
-                Book a Free Call →
-              </a>
-            </div>
-
-            {/* Right: video placeholder */}
-            <div className="relative">
-              <div className="aspect-video bg-[#0d0d18] border border-purple-800/40 rounded-2xl flex flex-col items-center justify-center glow-purple-sm overflow-hidden">
-                {/* Purple ambient glow inside */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent pointer-events-none" />
-                {/* Play button */}
-                <div className="w-20 h-20 rounded-full bg-white/10 border-2 border-white/30 flex items-center justify-center backdrop-blur-sm">
-                  <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                </div>
-                {/* Label */}
-                <p className="absolute bottom-4 text-xs text-gray-600 font-mono">
-                  {/* EMBED VIDEO — paste your Wistia or Vimeo iframe src here */}
-                  [ YOUR VSL GOES HERE - embed Wistia or Vimeo src here ]
-                </p>
-              </div>
+              {/* EMBED VIDEO — paste your Wistia or Vimeo iframe src here */}
+              <p className="absolute bottom-3 text-xs text-gray-600 font-mono">[ YOUR VSL GOES HERE ]</p>
             </div>
           </div>
+
+          {/* CTA */}
+          {/* BOOK CALL — replace href with your Calendly or booking link */}
+          <a
+            href="#"
+            className="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white font-bold px-7 py-3.5 rounded-xl text-base transition-all duration-200 glow-purple-sm hover:glow-purple mb-2"
+          >
+            Book a Free Call →
+          </a>
+          <p className="text-xs text-gray-600 mt-2">No contract lock-in. Cancel any time. Billed month-to-month.</p>
         </div>
       </section>
 
       {/* ==================== STATS BAR ==================== */}
       <section className="bg-[#0d0d18] border-y border-purple-900/20">
-        <div className="max-w-5xl mx-auto px-6 py-12">
+        <div className="max-w-5xl mx-auto px-6 py-6">
           <div className="grid grid-cols-3 gap-0 divide-x divide-purple-900/30">
             {[
               { stat: '$8.5M+', label: 'Revenue driven for clients' },
@@ -1060,7 +1047,7 @@ function Home() {
       </section>
 
       {/* ==================== TRUSTED BY ==================== */}
-      <section className="bg-[#08080f] py-10 border-b border-white/5">
+      <section className="bg-[#08080f] py-5 border-b border-white/5">
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center gap-8">
           <span className="text-xs text-gray-600 font-semibold tracking-widest uppercase whitespace-nowrap">Trusted by</span>
           <div className="flex flex-wrap justify-center sm:justify-start items-center gap-10">
@@ -1169,10 +1156,10 @@ function Home() {
 
             {/* Case Study 1 */}
             <div className="card-dark rounded-2xl overflow-hidden">
-              <div className="bg-purple-900/30 px-6 py-3 flex items-center gap-3 border-b border-purple-800/30">
-                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">1</span>
+              <div className="bg-green-900/20 px-6 py-3 flex items-center gap-3 border-b border-green-800/30">
+                <span className="bg-green-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">1</span>
                 <span className="text-white font-semibold">Fitness Brand</span>
-                <span className="ml-auto text-purple-300 text-xs">112% year-over-year improvement</span>
+                <span className="ml-auto text-green-400 text-xs">112% year-over-year improvement</span>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-2 gap-4 mb-5">
@@ -1194,10 +1181,10 @@ function Home() {
 
             {/* Case Study 2 */}
             <div className="card-dark rounded-2xl overflow-hidden">
-              <div className="bg-purple-900/30 px-6 py-3 flex items-center gap-3 border-b border-purple-800/30">
-                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</span>
+              <div className="bg-green-900/20 px-6 py-3 flex items-center gap-3 border-b border-green-800/30">
+                <span className="bg-green-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</span>
                 <span className="text-white font-semibold">Luxury Brand</span>
-                <span className="ml-auto text-purple-300 text-xs">1,025% revenue increase</span>
+                <span className="ml-auto text-green-400 text-xs">1,025% revenue increase</span>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-2 gap-4 mb-5">
@@ -1227,10 +1214,10 @@ function Home() {
 
             {/* Case Study 3 - Combined */}
             <div className="card-dark rounded-2xl overflow-hidden">
-              <div className="bg-purple-900/30 px-6 py-3 flex items-center gap-3 border-b border-purple-800/30">
-                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">3</span>
+              <div className="bg-green-900/20 px-6 py-3 flex items-center gap-3 border-b border-green-800/30">
+                <span className="bg-green-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">3</span>
                 <span className="text-white font-semibold">Supplement Brand - Copy & Conversion Testing</span>
-                <span className="ml-auto text-purple-300 text-xs">21% higher CVR + 8.72% pop-up</span>
+                <span className="ml-auto text-green-400 text-xs">21% higher CVR + 8.72% pop-up</span>
               </div>
               <div className="p-6 space-y-5">
                 <div>
@@ -1251,8 +1238,8 @@ function Home() {
                   <div className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">Value-Based vs Discount Emails</div>
                   <div className="grid grid-cols-3 gap-3 mb-3">
                     {[['6/10', 'top campaigns, zero discounts'], ['70-82%', 'open rates'], ['>0.7%', 'CTR consistently']].map(([stat, label], i) => (
-                      <div key={i} className="bg-purple-950/40 rounded-xl p-3 border border-purple-900/30 text-center">
-                        <div className="text-lg font-bold text-purple-300">{stat}</div>
+                      <div key={i} className="bg-green-950/40 rounded-xl p-3 border border-green-900/30 text-center">
+                        <div className="text-lg font-bold text-green-400">{stat}</div>
                         <div className="text-xs text-gray-500 mt-1">{label}</div>
                       </div>
                     ))}
@@ -1304,6 +1291,56 @@ function Home() {
                   <div className="font-bold text-white">{t.name}</div>
                   <div className="text-sm text-gray-500">{t.title}</div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== FAQ ==================== */}
+      <section className="bg-[#08080f] py-24 px-6 border-t border-white/5">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-4xl font-bold text-white mb-3">Frequently Asked Questions</h2>
+            <p className="text-gray-500">Everything you need to know before booking a call.</p>
+          </div>
+          <div className="divide-y divide-white/8">
+            {[
+              {
+                q: 'How is Mars Copywriting different from an agency?',
+                a: "We don't view ourselves as an agency. We act as an in-house extension of your team so you don't have to fully hand over control of your brand. We communicate daily and take care of every email operation — strategy, copy, Klaviyo management — without you chasing a project manager every week.",
+              },
+              {
+                q: 'What services do you offer?',
+                a: 'Full-service Klaviyo email marketing: campaign copywriting, flow automation, pop-up form optimization, monthly content calendars, list segmentation, and deliverability management. You provide brand assets. We handle everything else.',
+              },
+              {
+                q: 'How often will you send campaigns to my list?',
+                a: "Typically 3–4 campaigns per week to your engaged segment. We adjust based on your list health, seasonal calendar, and revenue goals — more during BFCM, less when needed to protect deliverability.",
+              },
+              {
+                q: 'What does it cost?',
+                a: 'We work on a flat monthly retainer. Our clients typically invest between $4K–$6K/month depending on project scope. No lock-in contracts on day one — we start with a 60-day pilot and go from there. Book a call to get an exact number for your brand.',
+              },
+            ].map((item, i) => (
+              <div key={i} className="py-6">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between text-left gap-6"
+                >
+                  <span className="text-lg font-semibold text-white">{item.q}</span>
+                  <svg
+                    className={`w-6 h-6 text-green-500 shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {openFaq === i && (
+                  <p className="mt-4 text-gray-400 leading-relaxed">{item.a}</p>
+                )}
               </div>
             ))}
           </div>
@@ -1450,17 +1487,19 @@ function Home() {
       )}
 
       {/* ==================== CALCULATOR SECTION ==================== */}
-    <main id="calculator" className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
+    <section id="calculator" className={`bg-[#08080f] py-20 px-6 border-t border-white/5 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-10">
+          <h2 className="text-4xl font-bold text-white mb-3">
             Email Marketing ROI Calculator
-            {prospectSlug && <span className="text-blue-600"> - {prospectName}</span>}
-          </h1>
-          <p className="text-lg text-gray-600">
-            See where you stand vs industry benchmarks • Based on Klaviyo data from 325B+ emails
+            {prospectSlug && <span className="text-purple-400"> — {prospectName}</span>}
+          </h2>
+          <p className="text-gray-400 text-lg">
+            See where you stand vs industry benchmarks · Based on Klaviyo data from 325B+ emails
           </p>
         </div>
+        {/* Dark container wrapping all calculator content */}
+        <div className="rounded-2xl border border-purple-900/30 bg-gradient-to-br from-[#0d0d1a] to-[#080810] p-8 shadow-2xl">
 
         {/* Industry Selector */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
@@ -2215,8 +2254,9 @@ function Home() {
             email-attributed percentage.
           </p>
         </div>
+        </div>{/* end dark calculator container */}
       </div>
-    </main>
+    </section>
 
       {/* ==================== FINAL CTA ==================== */}
       <section className="bg-[#08080f] py-24 px-6 border-t border-white/5">
@@ -2247,6 +2287,20 @@ function Home() {
           <p className="mt-6 text-sm text-gray-600">No commitment required. 30-minute call. Real answers.</p>
         </div>
       </section>
+
+      {/* ==================== FOOTER ==================== */}
+      <footer className="bg-[#08080f] border-t border-white/8 py-8 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
+          <div className="font-bold text-white text-lg tracking-tight">Mars Copywriting</div>
+          <nav className="flex items-center gap-8">
+            <a href="#services" className="text-sm text-gray-500 hover:text-white transition-colors">Services</a>
+            <a href="#results" className="text-sm text-gray-500 hover:text-white transition-colors">Results</a>
+            <a href="#reviews" className="text-sm text-gray-500 hover:text-white transition-colors">Reviews</a>
+            <a href="#calculator" className="text-sm text-gray-500 hover:text-white transition-colors">ROI Calculator</a>
+          </nav>
+          <div className="text-sm text-gray-600">© 2026 Mars Copywriting</div>
+        </div>
+      </footer>
     </>
   )
 }
