@@ -1499,30 +1499,30 @@ function Home() {
           </p>
         </div>
         {/* Dark container wrapping all calculator content */}
-        <div className="rounded-2xl border border-purple-900/30 bg-gradient-to-br from-[#0d0d1a] to-[#080810] p-8 shadow-2xl">
+        <div className="rounded-2xl border border-purple-900/40 bg-gradient-to-br from-[#0d0d1a] to-[#080810] p-8 shadow-2xl max-h-[82vh] overflow-y-auto scrollbar-thin scrollbar-thumb-purple-800 scrollbar-track-transparent">
 
         {/* Industry Selector */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">📊 Select Your Industry</h2>
+        <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6 mb-8">
+          <h2 className="text-xl font-semibold text-white mb-4">📊 Select Your Industry</h2>
           <select
             value={selectedIndustry}
             onChange={(e) => setSelectedIndustry(e.target.value as keyof typeof INDUSTRY_BENCHMARKS)}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 bg-[#080810] border border-purple-800/40 text-white rounded-lg text-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           >
             {Object.entries(INDUSTRY_BENCHMARKS).map(([key, data]) => (
-              <option key={key} value={key}>{data.name}</option>
+              <option key={key} value={key} className="bg-[#0d0d1a]">{data.name}</option>
             ))}
           </select>
           <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-            <div className="bg-blue-50 rounded-lg p-3">
-              <div className="text-blue-600 font-medium">Campaign RPR</div>
-              <div className="text-2xl font-bold text-blue-900">${formatNumber(industry.campaignRPR, 3)}</div>
-              <div className="text-blue-600 text-xs">per recipient</div>
+            <div className="bg-purple-950/40 rounded-lg p-3 border border-purple-800/20">
+              <div className="text-purple-400 font-medium">Campaign RPR</div>
+              <div className="text-2xl font-bold text-white">${formatNumber(industry.campaignRPR, 3)}</div>
+              <div className="text-purple-400 text-xs">per recipient</div>
             </div>
-            <div className="bg-purple-50 rounded-lg p-3">
-              <div className="text-purple-600 font-medium">Flow RPR</div>
-              <div className="text-2xl font-bold text-purple-900">${formatNumber(industry.flowRPR, 2)}</div>
-              <div className="text-purple-600 text-xs">per recipient</div>
+            <div className="bg-violet-950/40 rounded-lg p-3 border border-violet-800/20">
+              <div className="text-violet-400 font-medium">Flow RPR</div>
+              <div className="text-2xl font-bold text-white">${formatNumber(industry.flowRPR, 2)}</div>
+              <div className="text-violet-400 text-xs">per recipient</div>
             </div>
           </div>
         </div>
@@ -1531,12 +1531,12 @@ function Home() {
           {/* Left Panel - Inputs */}
           <div className="space-y-6">
             {/* Business Inputs */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">💼 Your Business</h2>
+            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
+              <h2 className="text-xl font-semibold text-white mb-4">💼 Your Business</h2>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Email List Size: {emailListSize.toLocaleString()} profiles
                   </label>
                   <input
@@ -1546,48 +1546,48 @@ function Home() {
                     step="500"
                     value={emailListSize}
                     onChange={(e) => setEmailListSize(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
                     <span>500</span>
                     <span>500k</span>
                   </div>
-                  <div className="mt-2 text-sm text-blue-600">
+                  <div className="mt-2 text-sm text-purple-400">
                     Klaviyo Cost: {formatCurrency(klaviyoCost)}/month
                   </div>
-                  <div className="mt-3 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                    <div className="text-xs font-semibold text-yellow-900 mb-1">📊 Engaged List Size</div>
-                    <div className="text-lg font-bold text-yellow-900">{engagedListSize.toLocaleString()} profiles (40%)</div>
-                    <div className="text-xs text-yellow-700 mt-1">
-                      Your "true" list size is typically 30-40% of your total list. This is your engaged segment 
+                  <div className="mt-3 bg-amber-950/30 border border-amber-700/30 rounded-lg p-3">
+                    <div className="text-xs font-semibold text-amber-300 mb-1">📊 Engaged List Size</div>
+                    <div className="text-lg font-bold text-amber-200">{engagedListSize.toLocaleString()} profiles (40%)</div>
+                    <div className="text-xs text-amber-400/80 mt-1">
+                      Your "true" list size is typically 30-40% of your total list. This is your engaged segment
                       (90-240 day active subscribers) and is what we use for all revenue calculations.
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Total Monthly Revenue
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-3 text-gray-500">$</span>
+                    <span className="absolute left-3 top-3 text-gray-400">$</span>
                     <input
                       type="number"
                       value={totalMonthlyRevenue}
                       onChange={(e) => setTotalMonthlyRevenue(Number(e.target.value))}
-                      className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg"
+                      className="w-full pl-8 pr-4 py-2 bg-[#080810] border border-purple-800/40 text-white rounded-lg"
                     />
                   </div>
-                  <div className="mt-2 text-xs text-gray-600">
+                  <div className="mt-2 text-xs text-gray-500">
                     Annual: {formatCurrency(calculations.annualRevenue)}
-                    <span className="ml-2 font-semibold text-blue-600">
+                    <span className="ml-2 font-semibold text-purple-400">
                       ({calculations.annualRevenue < 1000000 ? '$0-1M' : calculations.annualRevenue < 5000000 ? '$1M-5M' : '$5M-20M'} bracket)
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Average Order Value (AOV): {formatCurrency(averageOrderValue)}
                   </label>
                   <input
@@ -1597,16 +1597,16 @@ function Home() {
                     step="5"
                     value={averageOrderValue}
                     onChange={(e) => setAverageOrderValue(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
                     <span>$20</span>
                     <span>$300</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Gross Profit Margin: {grossMargin}%
                   </label>
                   <input
@@ -1615,9 +1615,9 @@ function Home() {
                     max="90"
                     value={grossMargin}
                     onChange={(e) => setGrossMargin(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
                     <span>20%</span>
                     <span>90%</span>
                   </div>
@@ -1626,12 +1626,12 @@ function Home() {
             </div>
 
             {/* Traffic & Pop-up Performance */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">🌐 Website Traffic & Pop-up</h2>
+            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
+              <h2 className="text-xl font-semibold text-white mb-4">🌐 Website Traffic & Pop-up</h2>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Monthly Website Visitors: {monthlyTraffic.toLocaleString()}
                   </label>
                   <input
@@ -1641,16 +1641,16 @@ function Home() {
                     step="1000"
                     value={monthlyTraffic}
                     onChange={(e) => setMonthlyTraffic(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
                     <span>1k</span>
                     <span>500k</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Pop-up Conversion Rate: {popupConversionRate.toFixed(1)}%
                   </label>
                   <input
@@ -1660,30 +1660,30 @@ function Home() {
                     step="0.5"
                     value={popupConversionRate}
                     onChange={(e) => setPopupConversionRate(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
                     <span>1%</span>
                     <span>20%</span>
                   </div>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="text-sm font-semibold text-blue-900 mb-2">
+                <div className="bg-purple-950/40 border border-purple-700/40 rounded-lg p-4">
+                  <div className="text-sm font-semibold text-purple-300 mb-2">
                     📊 New Subscribers Per Month
                   </div>
-                  <div className="text-3xl font-bold text-blue-900">
+                  <div className="text-3xl font-bold text-white">
                     {calculations.newSubscribersPerMonth.toLocaleString()}
                   </div>
-                  <div className="text-xs text-blue-700 mt-2">
+                  <div className="text-xs text-purple-400 mt-2">
                     These {calculations.newSubscribersPerMonth.toLocaleString()} new subscribers enter your flows each month.
                     <br/>
-                    <span className="font-semibold">Without traffic, there is no flow revenue.</span>
+                    <span className="font-semibold text-purple-300">Without traffic, there is no flow revenue.</span>
                   </div>
                 </div>
 
-                <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                  <div className="text-xs text-purple-900">
+                <div className="bg-violet-950/40 border border-violet-800/30 rounded-lg p-3">
+                  <div className="text-xs text-violet-300">
                     <span className="font-semibold">💡 Pop-up Benchmarks:</span>
                     <br/>• 1-3%: Typical (most brands)
                     <br/>• 5-8%: Good performance
@@ -1692,8 +1692,8 @@ function Home() {
                 </div>
 
                 {calculations.campaignMultiplier > 1 && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                    <div className="text-xs text-green-900">
+                  <div className="bg-green-950/40 border border-green-800/30 rounded-lg p-3">
+                    <div className="text-xs text-green-300">
                       <span className="font-semibold">🔥 Campaign Multiplier Active:</span>
                       <br/>Your {campaignsPerMonth} campaigns/month are boosting flow revenue by{' '}
                       <span className="font-bold">{((calculations.campaignMultiplier - 1) * 100).toFixed(1)}%</span>
@@ -1705,12 +1705,12 @@ function Home() {
             </div>
 
             {/* Email Strategy */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">📧 Your Email Strategy</h2>
+            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
+              <h2 className="text-xl font-semibold text-white mb-4">📧 Your Email Strategy</h2>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Campaigns per Month: {campaignsPerMonth}
                   </label>
                   <input
@@ -1719,16 +1719,16 @@ function Home() {
                     max="30"
                     value={campaignsPerMonth}
                     onChange={(e) => setCampaignsPerMonth(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
                     <span>1</span>
                     <span>30</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Number of Active Flows: {numberOfFlows}
                   </label>
                   <input
@@ -1737,16 +1737,16 @@ function Home() {
                     max="20"
                     value={numberOfFlows}
                     onChange={(e) => setNumberOfFlows(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
                     <span>1</span>
                     <span>20</span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
                     Monthly Retainer: {formatCurrency(monthlyRetainer)}
                   </label>
                   <input
@@ -1756,18 +1756,18 @@ function Home() {
                     step="500"
                     value={monthlyRetainer}
                     onChange={(e) => setMonthlyRetainer(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-gray-600 mt-1">
                     <span>$2k</span>
                     <span>$10k</span>
                   </div>
                 </div>
 
                 {/* Manual Overrides */}
-                <div className="border-t border-gray-200 pt-4 mt-4">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3">🎯 Manual Overrides (Optional)</h3>
-                  
+                <div className="border-t border-white/10 pt-4 mt-4">
+                  <h3 className="text-sm font-semibold text-gray-400 mb-3">🎯 Manual Overrides (Optional)</h3>
+
                   <div className="space-y-3">
                     <div>
                       <div className="flex items-center gap-2 mb-2">
@@ -1781,26 +1781,26 @@ function Home() {
                               setManualAvgCampaignRev(calculations.avgCampaignRev)
                             }
                           }}
-                          className="w-4 h-4"
+                          className="w-4 h-4 accent-purple-500"
                         />
-                        <label htmlFor="manualCampaign" className="text-sm font-medium text-gray-700">
+                        <label htmlFor="manualCampaign" className="text-sm font-medium text-gray-300">
                           Set Average Campaign Revenue
                         </label>
                       </div>
                       {useManualCampaignRev && (
                         <div className="relative">
-                          <span className="absolute left-3 top-3 text-gray-500">$</span>
+                          <span className="absolute left-3 top-3 text-gray-400">$</span>
                           <input
                             type="number"
                             value={manualAvgCampaignRev}
                             onChange={(e) => setManualAvgCampaignRev(Number(e.target.value))}
-                            className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg"
+                            className="w-full pl-8 pr-4 py-2 bg-[#080810] border border-purple-800/40 text-white rounded-lg"
                             placeholder={`Default: ${formatCurrency(calculations.avgCampaignRev)}`}
                           />
                         </div>
                       )}
                       {!useManualCampaignRev && (
-                        <div className="text-xs text-gray-500 ml-6">
+                        <div className="text-xs text-gray-600 ml-6">
                           Default: {formatCurrency(industry.campaignRPR * engagedListSize)} per campaign
                         </div>
                       )}
@@ -1814,7 +1814,7 @@ function Home() {
           {/* Right Panel - Results */}
           <div className="space-y-6">
             {/* Current Performance */}
-            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <div className="bg-gradient-to-br from-purple-900 to-violet-950 rounded-xl border border-purple-700/40 p-6 text-white glow-purple-sm">
               <h2 className="text-2xl font-bold mb-6">📈 Your Current Performance (Monthly)</h2>
               
               <div className="grid grid-cols-2 gap-4 mb-4">
@@ -1900,8 +1900,8 @@ function Home() {
             </div>
 
             {/* Campaign Revenue Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
+              <h2 className="text-xl font-semibold text-white mb-2">
                 📈 Campaign Volume vs Revenue
               </h2>
               {(() => {
@@ -1927,8 +1927,8 @@ function Home() {
                   <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: '260px' }}>
                     <defs>
                       <linearGradient id="campGrad" x1="0" y1={PAD_T} x2="0" y2={PAD_T + CH} gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.45" />
-                        <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.02" />
+                        <stop offset="0%" stopColor="#a855f7" stopOpacity="0.5" />
+                        <stop offset="100%" stopColor="#a855f7" stopOpacity="0.02" />
                       </linearGradient>
                     </defs>
                     {/* Peak zone highlights */}
@@ -1936,28 +1936,28 @@ function Home() {
                     <rect x={p2x1} y={PAD_T} width={p2x2 - p2x1} height={CH} fill="#2563eb" opacity="0.1" rx="2" />
                     {/* Horizontal grid lines */}
                     {yLevels.map((f, i) => (
-                      <line key={i} x1={PAD_L} y1={toY(f * maxRev)} x2={PAD_L + CW} y2={toY(f * maxRev)} stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4,4" />
+                      <line key={i} x1={PAD_L} y1={toY(f * maxRev)} x2={PAD_L + CW} y2={toY(f * maxRev)} stroke="#ffffff12" strokeWidth="1" strokeDasharray="4,4" />
                     ))}
                     {/* Chart border */}
-                    <rect x={PAD_L} y={PAD_T} width={CW} height={CH} fill="none" stroke="#d1d5db" strokeWidth="1" />
+                    <rect x={PAD_L} y={PAD_T} width={CW} height={CH} fill="none" stroke="#7c3aed30" strokeWidth="1" />
                     {/* Area gradient fill */}
                     <path d={areaPath} fill="url(#campGrad)" />
                     {/* Line curve */}
-                    <path d={linePath} fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d={linePath} fill="none" stroke="#a855f7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     {/* Peak zone top labels */}
                     <text x={(p1x1 + p1x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#059669" fontSize="10" fontWeight="700">Peak 1</text>
                     <text x={(p1x1 + p1x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#059669" fontSize="9">10–12/mo</text>
-                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#1d4ed8" fontSize="10" fontWeight="700">Peak 2</text>
-                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#1d4ed8" fontSize="9">20–25/mo</text>
+                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#a78bfa" fontSize="10" fontWeight="700">Peak 2</text>
+                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#a78bfa" fontSize="9">20–25/mo</text>
                     {/* Y-axis labels */}
                     {yLevels.map((f, i) => (
-                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#9ca3af" fontSize="10">{formatCurrency(f * maxRev)}</text>
+                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#6b7280" fontSize="10">{formatCurrency(f * maxRev)}</text>
                     ))}
                     {/* X-axis ticks + labels */}
                     {xTicks.map(v => (
                       <g key={v}>
                         <line x1={toX(v)} y1={PAD_T + CH} x2={toX(v)} y2={PAD_T + CH + 4} stroke="#9ca3af" strokeWidth="1" />
-                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#9ca3af" fontSize="10">{v}</text>
+                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#6b7280" fontSize="10">{v}</text>
                       </g>
                     ))}
                     {/* X-axis title */}
@@ -1969,16 +1969,16 @@ function Home() {
                   </svg>
                 )
               })()}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-3">
-                <p className="text-xs text-gray-700">
-                  <span className="font-semibold text-blue-700">Two performance peaks:</span> Most brands hit a first revenue peak at <strong>10–12 campaigns/month</strong> - the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong>second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new offers, not just higher frequency.
+              <div className="bg-purple-950/40 border border-purple-700/30 rounded-lg p-3 mt-3">
+                <p className="text-xs text-gray-400">
+                  <span className="font-semibold text-purple-400">Two performance peaks:</span> Most brands hit a first revenue peak at <strong className="text-white">10–12 campaigns/month</strong> - the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong className="text-white">second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new offers, not just higher frequency.
                 </p>
               </div>
             </div>
 
             {/* Flow Revenue Chart */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
+              <h2 className="text-xl font-semibold text-white mb-2">
                 ⚙️ Flow Count vs Revenue
               </h2>
               {(() => {
@@ -2012,10 +2012,10 @@ function Home() {
                     <rect x={phaseX} y={PAD_T} width={PAD_L + CW - phaseX} height={CH} fill="#6366f1" opacity="0.04" rx="2" />
                     {/* Horizontal grid lines */}
                     {yLevels.map((f, i) => (
-                      <line key={i} x1={PAD_L} y1={toY(f * maxRev)} x2={PAD_L + CW} y2={toY(f * maxRev)} stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4,4" />
+                      <line key={i} x1={PAD_L} y1={toY(f * maxRev)} x2={PAD_L + CW} y2={toY(f * maxRev)} stroke="#ffffff12" strokeWidth="1" strokeDasharray="4,4" />
                     ))}
                     {/* Chart border */}
-                    <rect x={PAD_L} y={PAD_T} width={CW} height={CH} fill="none" stroke="#d1d5db" strokeWidth="1" />
+                    <rect x={PAD_L} y={PAD_T} width={CW} height={CH} fill="none" stroke="#7c3aed30" strokeWidth="1" />
                     {/* Phase divider */}
                     <line x1={phaseX} y1={PAD_T} x2={phaseX} y2={PAD_T + CH} stroke="#8b5cf6" strokeWidth="1.5" strokeDasharray="4,3" opacity="0.4" />
                     {/* Area gradient fill */}
@@ -2027,13 +2027,13 @@ function Home() {
                     <text x={(phaseX + PAD_L + CW) / 2} y={PAD_T - 8} textAnchor="middle" fill="#6366f1" fontSize="10" fontWeight="700">Hidden Revenue - 60% Most Brands Miss</text>
                     {/* Y-axis labels */}
                     {yLevels.map((f, i) => (
-                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#9ca3af" fontSize="10">{formatCurrency(f * maxRev)}</text>
+                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#6b7280" fontSize="10">{formatCurrency(f * maxRev)}</text>
                     ))}
                     {/* X-axis ticks + labels */}
                     {xTicks.map(v => (
                       <g key={v}>
                         <line x1={toX(v)} y1={PAD_T + CH} x2={toX(v)} y2={PAD_T + CH + 4} stroke="#9ca3af" strokeWidth="1" />
-                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#9ca3af" fontSize="10">{v}</text>
+                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#6b7280" fontSize="10">{v}</text>
                       </g>
                     ))}
                     {/* X-axis title */}
@@ -2045,9 +2045,9 @@ function Home() {
                   </svg>
                 )
               })()}
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mt-3">
-                <p className="text-xs text-gray-700">
-                  <span className="font-semibold text-purple-700">40% from the first 8 flows. 60% from going further.</span> The first <strong>8 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset, and a couple more) build your foundation linearly - each one adds predictable, meaningful revenue. But that only unlocks <strong>40% of what email can do</strong>. The other 60% is hidden revenue that 90% of brands never touch. Top performers keep building flows because that's where true retention lives: cross-sell sequences, upsell flows, different offers for non-buyers, segment-specific win-backs, re-engagement for lapsed customers. Email is uniquely suited for this because you can test different offers with different segments at near-zero cost - no ad spend, no risk.
+              <div className="bg-violet-950/40 border border-violet-700/30 rounded-lg p-3 mt-3">
+                <p className="text-xs text-gray-400">
+                  <span className="font-semibold text-violet-400">40% from the first 8 flows. 60% from going further.</span> The first <strong>8 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset, and a couple more) build your foundation linearly - each one adds predictable, meaningful revenue. But that only unlocks <strong>40% of what email can do</strong>. The other 60% is hidden revenue that 90% of brands never touch. Top performers keep building flows because that's where true retention lives: cross-sell sequences, upsell flows, different offers for non-buyers, segment-specific win-backs, re-engagement for lapsed customers. Email is uniquely suited for this because you can test different offers with different segments at near-zero cost - no ad spend, no risk.
                 </p>
               </div>
             </div>
@@ -2056,11 +2056,11 @@ function Home() {
         </div>
 
         {/* Industry Performance Spectrum - Full Width */}
-        <div className="mt-8 bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="mt-8 bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-8">
+          <h2 className="text-3xl font-bold text-white mb-2">
             🎯 Industry Performance Spectrum
           </h2>
-          <p className="text-base text-gray-600 mb-8">
+          <p className="text-base text-gray-400 mb-8">
             Campaign revenue scales linearly up to {industry.best.campaigns}/month for most brands
           </p>
 
@@ -2071,51 +2071,51 @@ function Home() {
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${
                       scenario.color === 'red' ? 'bg-red-500' :
-                      scenario.color === 'blue' ? 'bg-blue-500' :
+                      scenario.color === 'blue' ? 'bg-purple-500' :
                       'bg-green-500'
                     }`}></div>
-                    <span className="text-base font-semibold text-gray-800">
+                    <span className="text-base font-semibold text-gray-200">
                       {scenario.key === 'typical' ? '90% of Brands & Most Likely Your Current Setup' : scenario.label}
                     </span>
                   </div>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-500">
                     {scenario.campaigns} campaigns per month - {scenario.flows} flows
                   </span>
                 </div>
 
                 <div className={`rounded-lg p-5 ${
-                  scenario.color === 'red' ? 'bg-red-50 border-2 border-red-200' :
-                  scenario.color === 'blue' ? 'bg-blue-50 border-2 border-blue-200' :
-                  'bg-green-50 border-2 border-green-200'
+                  scenario.color === 'red' ? 'bg-red-950/30 border border-red-800/40' :
+                  scenario.color === 'blue' ? 'bg-purple-950/30 border border-purple-800/40' :
+                  'bg-green-950/30 border border-green-800/40'
                 }`}>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <div className="text-sm text-gray-600">Revenue / mo</div>
-                      <div className="text-lg font-bold text-gray-900">
+                      <div className="text-sm text-gray-500">Revenue / mo</div>
+                      <div className="text-lg font-bold text-white">
                         {formatCurrency(scenario.totalRevenue)}
                       </div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600">Net Profit / mo</div>
-                      <div className="text-lg font-bold text-gray-900">
+                      <div className="text-sm text-gray-500">Net Profit / mo</div>
+                      <div className="text-lg font-bold text-white">
                         {formatCurrency(scenario.netProfit)}
                       </div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-600">ROI</div>
-                      <div className="text-lg font-bold text-gray-900">
+                      <div className="text-sm text-gray-500">ROI</div>
+                      <div className="text-lg font-bold text-white">
                         {formatNumber(scenario.netROI, 1)}x
                       </div>
                     </div>
                   </div>
-                  <div className="text-sm text-gray-600 mt-2">
+                  <div className="text-sm text-gray-500 mt-2">
                     {formatNumber(scenario.emailPercent, 1)}% of total revenue from email
                   </div>
                   {/* Pop-up conversion rate context */}
                   <div className={`mt-3 pt-3 border-t text-sm ${
-                    scenario.color === 'red' ? 'border-red-200 text-red-800' :
-                    scenario.color === 'blue' ? 'border-blue-200 text-blue-800' :
-                    'border-green-200 text-green-800'
+                    scenario.color === 'red' ? 'border-red-900/40 text-red-400' :
+                    scenario.color === 'blue' ? 'border-purple-900/40 text-purple-400' :
+                    'border-green-900/40 text-green-400'
                   }`}>
                     {scenario.key === 'typical' && (
                       <>
@@ -2141,41 +2141,41 @@ function Home() {
             ))}
           </div>
 
-          <div className="mt-8 bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
-            <div className="font-bold text-blue-900 mb-4 text-2xl">💡 Opportunity Analysis</div>
+          <div className="mt-8 bg-purple-950/30 border border-purple-800/40 rounded-lg p-6">
+            <div className="font-bold text-purple-300 mb-4 text-2xl">💡 Opportunity Analysis</div>
 
             <div className="space-y-3 mb-5">
-              <div className="bg-white rounded-lg p-4 border border-blue-200">
+              <div className="bg-white/5 rounded-lg p-4 border border-purple-800/30">
                 <div className="flex justify-between items-center">
-                  <div className="text-base text-gray-700">
-                    <span className="font-semibold text-red-700">90% of Brands</span> → <span className="font-semibold text-blue-700">Good Performance</span>
+                  <div className="text-base text-gray-300">
+                    <span className="font-semibold text-red-400">90% of Brands</span> → <span className="font-semibold text-purple-400">Good Performance</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-blue-900">
+                    <div className="text-xl font-bold text-white">
                       +{formatCurrency((scenarioData[2].netProfit - scenarioData[0].netProfit) * 12)}
                     </div>
-                    <div className="text-sm text-gray-600">you're missing out on an annual profit gain</div>
+                    <div className="text-sm text-gray-500">you're missing out on an annual profit gain</div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg p-4 border border-blue-200">
+              <div className="bg-white/5 rounded-lg p-4 border border-purple-800/30">
                 <div className="flex justify-between items-center">
-                  <div className="text-base text-gray-700">
-                    <span className="font-semibold text-red-700">90% of Brands</span> → <span className="font-semibold text-green-700">Best-in-Class (Top 1%)</span>
+                  <div className="text-base text-gray-300">
+                    <span className="font-semibold text-red-400">90% of Brands</span> → <span className="font-semibold text-green-400">Best-in-Class (Top 1%)</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-xl font-bold text-green-900">
+                    <div className="text-xl font-bold text-green-400">
                       +{formatCurrency((scenarioData[3].netProfit - scenarioData[0].netProfit) * 12)}
                     </div>
-                    <div className="text-sm text-gray-600">you're missing out on a total opportunity</div>
+                    <div className="text-sm text-gray-500">you're missing out on a total opportunity</div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Mars Copywriting Timeline */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white mt-4">
+            <div className="bg-gradient-to-r from-purple-900 to-violet-900 border border-purple-700/40 rounded-lg p-6 text-white mt-4">
               <div className="font-bold text-2xl mb-5">🚀 Mars Copywriting Timeline</div>
 
               <div className="space-y-5">
@@ -2214,7 +2214,7 @@ function Home() {
         </div>
 
         {/* Bottom Line - Full Width */}
-        <div className="mt-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg p-10 text-white">
+        <div className="mt-6 bg-gradient-to-br from-purple-900 to-violet-950 rounded-xl border border-purple-700/40 p-10 text-white glow-purple-sm">
           <h3 className="text-3xl font-bold mb-5">✅ Bottom Line</h3>
           <p className="leading-relaxed text-2xl font-semibold">
             Your email could be generating between{' '}
@@ -2242,10 +2242,10 @@ function Home() {
         </div>
 
         {/* Footer */}
-        <div className="mt-12 text-center text-sm text-gray-500">
+        <div className="mt-12 text-center text-sm text-gray-600">
           <p>Based on Klaviyo benchmarks from 325B+ emails • RPR = Revenue Per Recipient</p>
           <p className="mt-2">Profit ROI accounts for gross margins. Revenue ROI is typically 4-5x higher.</p>
-          <p className="mt-3 text-xs text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-3 text-xs text-gray-600 max-w-2xl mx-auto leading-relaxed">
             * <strong>Last-touch attribution note:</strong> Klaviyo attributes a purchase to email whenever a customer clicks
             an email within the attribution window - even if they would have purchased without it. Approximately 20% of
             Klaviyo-reported email revenue falls into this category (most commonly attributed to welcome flows, where a
