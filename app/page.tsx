@@ -2307,16 +2307,30 @@ function Home() {
       </section>
 
       {/* ==================== FOOTER ==================== */}
-      <footer className="bg-[#08080f] border-t border-white/8 py-8 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5">
-          <div className="font-bold text-white text-lg tracking-tight">Mars Copywriting</div>
-          <nav className="flex items-center gap-8">
-            <a href="#services" className="text-sm text-gray-500 hover:text-white transition-colors">Services</a>
-            <a href="#results" className="text-sm text-gray-500 hover:text-white transition-colors">Results</a>
-            <a href="#reviews" className="text-sm text-gray-500 hover:text-white transition-colors">Reviews</a>
-            <a href="#calculator" className="text-sm text-gray-500 hover:text-white transition-colors">ROI Calculator</a>
-          </nav>
-          <div className="text-sm text-gray-600">© 2026 Mars Copywriting</div>
+      <footer className="bg-[#08080f] border-t border-white/8 px-6 pt-8 pb-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Main footer row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-5 mb-6">
+            <div className="font-bold text-white text-lg tracking-tight">Mars Copywriting</div>
+            <nav className="flex items-center gap-8">
+              <a href="#services" className="text-sm text-gray-500 hover:text-white transition-colors">Services</a>
+              <a href="#results" className="text-sm text-gray-500 hover:text-white transition-colors">Results</a>
+              <a href="#reviews" className="text-sm text-gray-500 hover:text-white transition-colors">Reviews</a>
+              <a href="#calculator" className="text-sm text-gray-500 hover:text-white transition-colors">ROI Calculator</a>
+            </nav>
+            <div className="text-sm text-gray-600">© 2026 Mars Copywriting</div>
+          </div>
+          {/* Legal row */}
+          <div className="border-t border-white/5 pt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <p className="text-xs text-gray-600 leading-relaxed max-w-2xl">
+              Mars Copywriting j.d.o.o. is registered at Topoljska ulica 15B, 10255, Donji Stupnik, Croatia. Company director: Jakov Maršić. Active since 30 January 2024.
+            </p>
+            <div className="flex items-center gap-4 shrink-0">
+              <a href="/privacy" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Privacy Policy</a>
+              <span className="text-gray-700 text-xs">·</span>
+              <a href="/cancellation" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Cancellation Policy</a>
+            </div>
+          </div>
         </div>
       </footer>
     </>
