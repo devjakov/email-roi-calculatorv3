@@ -39,11 +39,7 @@ export default function CancellationPage() {
           <section>
             <h2 className="text-lg font-semibold text-white mb-3">How to cancel</h2>
             <p>To cancel your retainer, simply email us at <a href="mailto:jacob@marscopywriting.com" className="text-purple-400 hover:text-purple-300 transition-colors">jacob@marscopywriting.com</a> before your next billing date. We will confirm your cancellation in writing.</p>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Refunds</h2>
-            <p>Because we begin work immediately at the start of each billing cycle, we do not offer refunds for the current month once work has commenced. Cancellations take effect at the end of the period already paid for.</p>
+            <p className="mt-3">Cancellations take effect at the end of the period already paid for.</p>
           </section>
 
           <section>
