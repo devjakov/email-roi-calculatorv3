@@ -2328,7 +2328,7 @@ function Home() {
             <div className="flex items-center gap-4 shrink-0">
               <a href="/privacy" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Privacy Policy</a>
               <span className="text-gray-700 text-xs">·</span>
-              <a href="/cancellation" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Cancellation Policy</a>
+              <a href="/refund-cancellation" className="text-xs text-gray-600 hover:text-gray-400 transition-colors">Refund &amp; Cancellation Policy</a>
             </div>
           </div>
         </div>
