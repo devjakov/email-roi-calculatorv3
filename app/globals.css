@@ -51,3 +51,31 @@ body {
   border-color: rgba(124, 58, 237, 0.4);
   background: rgba(124, 58, 237, 0.06);
 }
+
+/* Social proof carousel */
+@keyframes scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes scroll-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+.carousel-track {
+  width: max-content;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.carousel-track:hover {
+  animation-play-state: paused;
+}
+.carousel-track-left {
+  animation-name: scroll-left;
+}
+.carousel-track-right {
+  animation-name: scroll-right;
+}
+.carousel-mask {
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}

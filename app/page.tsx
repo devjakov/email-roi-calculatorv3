@@ -456,12 +456,57 @@ function renderFlowHtml(md: string): string {
   return html
 }
 
-/**
- * MAIN CALCULATOR COMPONENT
- *
- * This component manages all state and calculations for the ROI calculator
- * Built with React hooks for reactive updates
- */
+function SocialProofCarousels() {
+  const [images, setImages] = useState<{ klaviyo: string[]; slack: string[] }>({ klaviyo: [], slack: [] })
+
+  useEffect(() => {
+    fetch('/images/proof/manifest.json')
+      .then(res => res.json())
+      .then(setImages)
+      .catch(() => {})
+  }, [])
+
+  if (!images.klaviyo.length && !images.slack.length) return null
+
+  const renderCarousel = (
+    items: string[],
+    folder: string,
+    label: string,
+    direction: 'left' | 'right',
+    alt: string
+  ) => {
+    if (!items.length) return null
+    const doubled = [...items, ...items]
+    return (
+      <div>
+        <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-4 text-center">{label}</p>
+        <div className="overflow-hidden carousel-mask">
+          <div
+            className={`flex gap-6 carousel-track carousel-track-${direction}`}
+            style={{ animationDuration: `${Math.max(items.length * 8, 16)}s` }}
+          >
+            {doubled.map((img, i) => (
+              <img
+                key={i}
+                src={`/images/proof/${folder}/${img}`}
+                alt={alt}
+                className="h-[200px] md:h-[280px] w-auto rounded-xl shadow-lg shadow-black/40 object-contain flex-shrink-0"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="mb-14 space-y-10">
+      {renderCarousel(images.klaviyo, 'klaviyo', 'Results', 'left', 'Klaviyo results')}
+      {renderCarousel(images.slack, 'slack', 'What Clients Say', 'right', 'Client feedback')}
+    </div>
+  )
+}
+
 export default function Page() {
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>}>
@@ -1147,11 +1192,14 @@ function Home() {
 
       {/* ==================== CASE STUDIES ==================== */}
       <section id="results" className="bg-[#08080f] py-24 px-6 border-t border-white/5">
-        <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-14">
+          <div className="max-w-2xl mx-auto text-center mb-14">
             <h2 className="text-4xl font-bold text-white mb-3">Real Results From Real Brands</h2>
             <p className="text-gray-500">What happens when email is done right.</p>
           </div>
+
+          <SocialProofCarousels />
+
+        <div className="max-w-2xl mx-auto">
           <div className="space-y-6">
 
             {/* Case Study 1 */}
