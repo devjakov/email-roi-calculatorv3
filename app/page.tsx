@@ -456,8 +456,11 @@ function renderFlowHtml(md: string): string {
   return html
 }
 
+type LightboxState = { items: string[]; folder: string; index: number; alt: string }
+
 function SocialProofCarousels() {
   const [images, setImages] = useState<{ klaviyo: string[]; slack: string[] }>({ klaviyo: [], slack: [] })
+  const [lightbox, setLightbox] = useState<LightboxState | null>(null)
 
   useEffect(() => {
     fetch('/images/proof/manifest.json')
@@ -468,41 +471,184 @@ function SocialProofCarousels() {
 
   if (!images.klaviyo.length && !images.slack.length) return null
 
-  const renderCarousel = (
-    items: string[],
-    folder: string,
-    label: string,
-    direction: 'left' | 'right',
-    alt: string
-  ) => {
-    if (!items.length) return null
-    const doubled = [...items, ...items]
-    return (
-      <div>
-        <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-4 text-center">{label}</p>
-        <div className="overflow-hidden carousel-mask">
-          <div
-            className={`flex gap-6 carousel-track carousel-track-${direction}`}
-            style={{ animationDuration: `${Math.max(items.length * 8, 16)}s` }}
-          >
-            {doubled.map((img, i) => (
-              <img
-                key={i}
-                src={`/images/proof/${folder}/${img}`}
-                alt={alt}
-                className="h-[200px] md:h-[280px] w-auto rounded-xl shadow-lg shadow-black/40 object-contain flex-shrink-0"
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    )
-  }
+  return (
+    <div className="mb-14 space-y-12">
+      <MosaicMarquee
+        items={images.klaviyo}
+        folder="klaviyo"
+        label="Results"
+        direction="left"
+        alt="Klaviyo results"
+        onOpen={(index) => setLightbox({ items: images.klaviyo, folder: 'klaviyo', index, alt: 'Klaviyo results' })}
+      />
+      <MosaicMarquee
+        items={images.slack}
+        folder="slack"
+        label="What Clients Say"
+        direction="right"
+        alt="Client feedback"
+        onOpen={(index) => setLightbox({ items: images.slack, folder: 'slack', index, alt: 'Client feedback' })}
+      />
+      {lightbox && (
+        <Lightbox
+          {...lightbox}
+          onClose={() => setLightbox(null)}
+          onIndex={(index) => setLightbox(prev => (prev ? { ...prev, index } : prev))}
+        />
+      )}
+    </div>
+  )
+}
+
+function MosaicMarquee({
+  items,
+  folder,
+  label,
+  direction,
+  alt,
+  onOpen,
+}: {
+  items: string[]
+  folder: string
+  label: string
+  direction: 'left' | 'right'
+  alt: string
+  onOpen: (index: number) => void
+}) {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const offsetRef = useRef(0)
+  const distanceRef = useRef(0)
+  const speedRef = useRef(0)
+  const targetRef = useRef(0)
+
+  const BASE_SPEED = 40 // px/sec at rest
+  const HOVER_SPEED = 10 // px/sec while hovered (slows, never stops)
+
+  useEffect(() => {
+    if (!items.length) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const dirSign = direction === 'left' ? 1 : -1
+    targetRef.current = reduce ? 0 : BASE_SPEED
+    speedRef.current = reduce ? 0 : BASE_SPEED
+
+    const panel = panelRef.current
+    const measure = () => {
+      if (!panel) return
+      const parent = panel.parentElement
+      const gap = parent ? parseFloat(getComputedStyle(parent).columnGap || '0') || 0 : 0
+      distanceRef.current = panel.offsetWidth + gap
+    }
+    measure()
+    const ro = new ResizeObserver(measure)
+    if (panel) ro.observe(panel)
+
+    let raf = 0
+    let last = performance.now()
+    const tick = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05)
+      last = now
+      speedRef.current += (targetRef.current - speedRef.current) * Math.min(dt * 6, 1)
+      const d = distanceRef.current
+      if (d > 0) {
+        offsetRef.current = ((offsetRef.current + dirSign * speedRef.current * dt) % d + d) % d
+        if (trackRef.current) trackRef.current.style.transform = `translate3d(${-offsetRef.current}px,0,0)`
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+
+    return () => {
+      cancelAnimationFrame(raf)
+      ro.disconnect()
+    }
+  }, [direction, items.length])
+
+  if (!items.length) return null
+
+  const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const slow = () => { if (!reduce) targetRef.current = HOVER_SPEED }
+  const resume = () => { if (!reduce) targetRef.current = BASE_SPEED }
+
+  const renderPanel = (keyPrefix: string, ariaHidden: boolean) => (
+    <div ref={ariaHidden ? undefined : panelRef} className="mosaic-panel" aria-hidden={ariaHidden}>
+      {items.map((img, i) => (
+        <button
+          key={`${keyPrefix}-${i}`}
+          type="button"
+          className="mosaic-tile"
+          onClick={() => onOpen(i)}
+          aria-label={`${alt}, view ${i + 1} of ${items.length}`}
+          tabIndex={ariaHidden ? -1 : 0}
+        >
+          <img src={`/images/proof/${folder}/${img}`} alt={alt} loading="lazy" decoding="async" />
+        </button>
+      ))}
+    </div>
+  )
 
   return (
-    <div className="mb-14 space-y-10">
-      {renderCarousel(images.klaviyo, 'klaviyo', 'Results', 'left', 'Klaviyo results')}
-      {renderCarousel(images.slack, 'slack', 'What Clients Say', 'right', 'Client feedback')}
+    <div>
+      <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-5 text-center">{label}</p>
+      <div className="overflow-hidden carousel-mask" onMouseEnter={slow} onMouseLeave={resume}>
+        <div ref={trackRef} className="mosaic-track">
+          {renderPanel('a', false)}
+          {renderPanel('b', true)}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Lightbox({
+  items,
+  folder,
+  index,
+  alt,
+  onClose,
+  onIndex,
+}: LightboxState & { onClose: () => void; onIndex: (index: number) => void }) {
+  const go = useCallback((delta: number) => {
+    onIndex((index + delta + items.length) % items.length)
+  }, [index, items.length, onIndex])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      else if (e.key === 'ArrowRight') go(1)
+      else if (e.key === 'ArrowLeft') go(-1)
+    }
+    window.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [go, onClose])
+
+  return (
+    <div className="lightbox-backdrop" role="dialog" aria-modal="true" aria-label={alt} onClick={onClose}>
+      <button className="lightbox-btn lightbox-close" onClick={onClose} aria-label="Close">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+      {items.length > 1 && (
+        <button className="lightbox-btn lightbox-arrow lightbox-prev" onClick={(e) => { e.stopPropagation(); go(-1) }} aria-label="Previous">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+        </button>
+      )}
+      <img
+        className="lightbox-img"
+        src={`/images/proof/${folder}/${items[index]}`}
+        alt={alt}
+        onClick={(e) => e.stopPropagation()}
+      />
+      {items.length > 1 && (
+        <button className="lightbox-btn lightbox-arrow lightbox-next" onClick={(e) => { e.stopPropagation(); go(1) }} aria-label="Next">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+      )}
+      <div className="lightbox-count">{index + 1} / {items.length}</div>
     </div>
   )
 }
