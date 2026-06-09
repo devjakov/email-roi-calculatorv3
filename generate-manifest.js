@@ -22,10 +22,19 @@ const buildGroupManifest = (groupDir) => {
   return manifest
 }
 
+// Writes a manifest.json that is a flat array of image files in `dir` (single-folder group).
+const buildFlatManifest = (dir) => {
+  if (!fs.existsSync(dir)) return []
+  const files = listImages(dir)
+  fs.writeFileSync(path.join(dir, 'manifest.json'), JSON.stringify(files, null, 2))
+  return files
+}
+
 const groups = ['proof', 'case-studies', 'brand-results', 'testimonials']
 const result = {}
 for (const group of groups) {
   result[group] = buildGroupManifest(path.join(imagesRoot, group))
 }
+result['trusted-by'] = buildFlatManifest(path.join(imagesRoot, 'trusted-by'))
 
 console.log('Manifests generated:', JSON.stringify(result))

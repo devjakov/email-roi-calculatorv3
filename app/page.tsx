@@ -653,6 +653,33 @@ function Lightbox({
   )
 }
 
+// Trusted-by logo strip fed by a single flat manifest folder. Shows brand logos when
+// present, otherwise placeholder logo tiles.
+function TrustedByLogos({ images }: { images: string[] }) {
+  if (!images.length) {
+    return (
+      <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-10 gap-y-4" aria-hidden>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="tb-logo tb-logo-ph">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <path d="m21 15-5-5L5 21" />
+            </svg>
+          </div>
+        ))}
+      </div>
+    )
+  }
+  return (
+    <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-10 gap-y-4">
+      {images.map((img, i) => (
+        <img key={i} className="tb-logo" src={`/images/trusted-by/${img}`} alt="Brand logo" loading="lazy" decoding="async" />
+      ))}
+    </div>
+  )
+}
+
 // Round avatar fed by a manifest folder. Shows the first image if present, otherwise
 // a placeholder with the person's initials.
 function Avatar({ basePath, image, name }: { basePath: string; image?: string; name: string }) {
@@ -809,10 +836,12 @@ function Home() {
   const [caseImages, setCaseImages] = useState<Record<string, string[]>>({})
   const [brandImages, setBrandImages] = useState<Record<string, string[]>>({})
   const [testimonialImages, setTestimonialImages] = useState<Record<string, string[]>>({})
+  const [trustedImages, setTrustedImages] = useState<string[]>([])
   useEffect(() => {
     fetch('/images/case-studies/manifest.json').then(r => r.json()).then(setCaseImages).catch(() => {})
     fetch('/images/brand-results/manifest.json').then(r => r.json()).then(setBrandImages).catch(() => {})
     fetch('/images/testimonials/manifest.json').then(r => r.json()).then(setTestimonialImages).catch(() => {})
+    fetch('/images/trusted-by/manifest.json').then(r => r.json()).then(setTrustedImages).catch(() => {})
   }, [])
 
   const prospectName = prospectSlug
@@ -1342,13 +1371,7 @@ function Home() {
       <section className="bg-[#08080f] py-5 border-b border-white/5">
         <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center gap-8">
           <span className="text-xs text-gray-600 font-semibold tracking-widest uppercase whitespace-nowrap">Trusted by</span>
-          <div className="flex flex-wrap justify-center sm:justify-start items-center gap-10">
-            {['NOTUS', 'BITGET', 'ECOM ADVERTISERS', 'BRAND LUX MEDIA'].map((name) => (
-              <span key={name} className="text-sm font-bold tracking-widest text-gray-600 hover:text-gray-400 transition-colors uppercase">
-                {name}
-              </span>
-            ))}
-          </div>
+          <TrustedByLogos images={trustedImages} />
         </div>
       </section>
 

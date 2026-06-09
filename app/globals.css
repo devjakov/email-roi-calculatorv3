@@ -290,3 +290,32 @@ body {
   color: rgba(196, 181, 253, 0.85);
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(13, 13, 24, 0.7));
 }
+
+/* Trusted-by logos */
+.tb-logo {
+  height: 30px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+  opacity: 0.55;
+  filter: grayscale(1);
+  transition: opacity 200ms ease, filter 200ms ease;
+}
+.tb-logo:hover {
+  opacity: 1;
+  filter: grayscale(0);
+}
+.tb-logo-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 30px;
+  border: 1px dashed rgba(124, 58, 237, 0.25);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.10), rgba(13, 13, 24, 0.6));
+  opacity: 1;
+  filter: none;
+}
+.tb-logo-ph svg { width: 20px; height: 20px; color: rgba(167, 139, 250, 0.5); }
+.tb-logo-ph:hover { opacity: 1; filter: none; }
