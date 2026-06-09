@@ -456,7 +456,7 @@ function renderFlowHtml(md: string): string {
   return html
 }
 
-type LightboxState = { items: string[]; folder: string; index: number; alt: string }
+type LightboxState = { items: string[]; basePath: string; index: number; alt: string }
 
 function SocialProofCarousels() {
   const [images, setImages] = useState<{ klaviyo: string[]; slack: string[] }>({ klaviyo: [], slack: [] })
@@ -479,7 +479,7 @@ function SocialProofCarousels() {
         label="Results"
         direction="left"
         alt="Klaviyo results"
-        onOpen={(index) => setLightbox({ items: images.klaviyo, folder: 'klaviyo', index, alt: 'Klaviyo results' })}
+        onOpen={(index) => setLightbox({ items: images.klaviyo, basePath: '/images/proof/klaviyo', index, alt: 'Klaviyo results' })}
       />
       <MosaicMarquee
         items={images.slack}
@@ -487,7 +487,7 @@ function SocialProofCarousels() {
         label="What Clients Say"
         direction="right"
         alt="Client feedback"
-        onOpen={(index) => setLightbox({ items: images.slack, folder: 'slack', index, alt: 'Client feedback' })}
+        onOpen={(index) => setLightbox({ items: images.slack, basePath: '/images/proof/slack', index, alt: 'Client feedback' })}
       />
       {lightbox && (
         <Lightbox
@@ -602,7 +602,7 @@ function MosaicMarquee({
 
 function Lightbox({
   items,
-  folder,
+  basePath,
   index,
   alt,
   onClose,
@@ -639,7 +639,7 @@ function Lightbox({
       )}
       <img
         className="lightbox-img"
-        src={`/images/proof/${folder}/${items[index]}`}
+        src={`${basePath}/${items[index]}`}
         alt={alt}
         onClick={(e) => e.stopPropagation()}
       />
@@ -650,6 +650,69 @@ function Lightbox({
       )}
       <div className="lightbox-count">{index + 1} / {items.length}</div>
     </div>
+  )
+}
+
+// Static image mosaic fed by a manifest folder. Renders clickable tiles (opening the
+// shared Lightbox) when images exist, or placeholder tiles while the folder is empty.
+function ProofMosaic({
+  basePath,
+  images,
+  alt,
+  placeholderCount = 6,
+  size = 'md',
+}: {
+  basePath: string
+  images: string[]
+  alt: string
+  placeholderCount?: number
+  size?: 'sm' | 'md'
+}) {
+  const [index, setIndex] = useState<number | null>(null)
+  const gridClass = `pm-grid${size === 'sm' ? ' pm-grid-sm' : ''}`
+
+  if (!images.length) {
+    return (
+      <div className={gridClass} aria-hidden>
+        {Array.from({ length: placeholderCount }).map((_, i) => (
+          <div key={i} className="pm-tile pm-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <path d="m21 15-5-5L5 21" />
+            </svg>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div className={gridClass}>
+        {images.map((img, i) => (
+          <button
+            key={i}
+            type="button"
+            className="pm-tile"
+            onClick={() => setIndex(i)}
+            aria-label={`${alt}, image ${i + 1} of ${images.length}`}
+          >
+            <img src={`${basePath}/${img}`} alt={alt} loading="lazy" decoding="async" />
+          </button>
+        ))}
+      </div>
+      {index !== null && (
+        <Lightbox
+          items={images}
+          basePath={basePath}
+          index={index}
+          alt={alt}
+          onClose={() => setIndex(null)}
+          onIndex={setIndex}
+        />
+      )}
+    </>
   )
 }
 
@@ -731,6 +794,14 @@ function Home() {
     els.forEach(el => io.observe(el))
     return () => { io.disconnect(); document.documentElement.classList.remove('reveal-on') }
   }, [prospectSlug])
+
+  // Case study / brand result images, sourced from manifests (same pattern as the carousels)
+  const [caseImages, setCaseImages] = useState<Record<string, string[]>>({})
+  const [brandImages, setBrandImages] = useState<Record<string, string[]>>({})
+  useEffect(() => {
+    fetch('/images/case-studies/manifest.json').then(r => r.json()).then(setCaseImages).catch(() => {})
+    fetch('/images/brand-results/manifest.json').then(r => r.json()).then(setBrandImages).catch(() => {})
+  }, [])
 
   const prospectName = prospectSlug
     ? prospectSlug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
@@ -1281,6 +1352,7 @@ function Home() {
             {[
               {
                 brand: 'PATCHED',
+                folder: 'patched',
                 headlineBig: '$776K in email revenue in 6 months.',
                 headlineSub: 'From a brand that had been burned by an unfit agency, a 0.12% spam rate, and zero campaigns ever sent.',
                 href: 'https://gamma.app/docs/PATCHED-Email-Marketing-Case-Study-v159pr7e7irgoww?mode=doc',
@@ -1295,6 +1367,7 @@ function Home() {
               },
               {
                 brand: 'Cerberus Collective',
+                folder: 'cerberus',
                 headlineBig: 'CA$322K in email revenue in 6 months.',
                 headlineSub: 'Built from scratch in 90 days — before they spent a single ad dollar.',
                 href: 'https://gamma.app/docs/Cerberus-Collective-building-an-email-backend-that-captured-eve-3dxhtdgt3v6i97t?mode=doc',
@@ -1330,6 +1403,15 @@ function Home() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                  <div className="mt-7">
+                    <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Proof</div>
+                    <ProofMosaic
+                      basePath={`/images/case-studies/${cs.folder}`}
+                      images={caseImages[cs.folder] || []}
+                      alt={`${cs.brand} case study proof`}
+                      placeholderCount={6}
+                    />
                   </div>
                   <div className="mt-8 flex justify-center">
                     <a
@@ -1379,6 +1461,10 @@ function Home() {
                   <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
                   <p className="text-gray-400 text-sm leading-relaxed">Monthly calendar approved one week before each month. Mix of plain-text and design emails, YouTube videos repurposed into value-based content, zero discounts to protect margins.</p>
                 </div>
+                <div className="mt-5">
+                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Proof</div>
+                  <ProofMosaic basePath="/images/brand-results/fitness" images={brandImages['fitness'] || []} alt="Fitness brand proof" placeholderCount={3} size="sm" />
+                </div>
               </div>
             </div>
 
@@ -1411,6 +1497,10 @@ function Home() {
                 <div className="bg-white/5 rounded-xl p-4 border border-white/8">
                   <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
                   <p className="text-gray-400 text-sm leading-relaxed">They were sending zero emails. We started at 4/week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
+                </div>
+                <div className="mt-5">
+                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Proof</div>
+                  <ProofMosaic basePath="/images/brand-results/luxury" images={brandImages['luxury'] || []} alt="Luxury brand proof" placeholderCount={3} size="sm" />
                 </div>
               </div>
             </div>
@@ -1464,6 +1554,10 @@ function Home() {
                       </ul>
                     </div>
                   </div>
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Proof</div>
+                  <ProofMosaic basePath="/images/brand-results/supplement" images={brandImages['supplement'] || []} alt="Supplement brand proof" placeholderCount={4} size="sm" />
                 </div>
               </div>
             </div>
