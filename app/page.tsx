@@ -589,7 +589,7 @@ function MosaicMarquee({
 
   return (
     <div>
-      <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-5 text-center">{label}</p>
+      <p className="text-xs font-semibold text-purple-400 uppercase tracking-[0.2em] mb-5 text-center">{label}</p>
       <div className="overflow-hidden carousel-mask" onMouseEnter={slow} onMouseLeave={resume}>
         <div ref={trackRef} className="mosaic-track">
           {renderPanel('a', false)}
@@ -1341,6 +1341,75 @@ function Home() {
           <div className="max-w-2xl mx-auto text-center mb-14">
             <h2 className="text-4xl font-bold text-white mb-3">Real Results From Real Brands</h2>
             <p className="text-gray-500">What happens when email is done right.</p>
+          </div>
+
+          {/* ===== Flagship case studies ===== */}
+          <div className="max-w-3xl mx-auto space-y-8 mb-16">
+            {[
+              {
+                brand: 'PATCHED',
+                headlineBig: '$776K in email revenue in 6 months.',
+                headlineSub: 'From a brand that had been burned by an unfit agency, a 0.12% spam rate, and zero campaigns ever sent.',
+                href: 'https://gamma.app/docs/PATCHED-Email-Marketing-Case-Study-v159pr7e7irgoww?mode=doc',
+                cta: 'Read the full PATCHED case study',
+                bullets: [
+                  `The broken CheckoutChamp trigger that was silently firing a 10% discount to people mid-purchase — cannibalizing revenue from buyers who never needed the nudge, and why fixing this one flow logic error was worth more than any subject line test`,
+                  `How a 0.12% spam rate (caused by emailing people about abandoned carts they'd already completed) was quietly destroying inbox placement — and the exact exclusion filter fix that brought it down to 0.028% in 6 months`,
+                  `The list warm-up strategy we used on 100,000 contacts who had never received a single campaign — starting with a few hundred recipients and expanding every 2–3 days until campaigns were averaging $5,000 per send within 90 days`,
+                  `Why 70% of the campaigns we sent had zero design, zero discounts, and subject lines like "Big Pharma Can't Patent These" — and how plain text emails treating readers like intelligent adults generated $327K in campaign revenue from a dead list`,
+                  `The "next expected order" post-purchase flow branching by product tier that ended up rivalling abandoned checkout revenue — built because we spotted a Night Burn communication gap in our custom dashboard before the client noticed a single lost sale`,
+                ],
+              },
+              {
+                brand: 'Cerberus Collective',
+                headlineBig: 'CA$322K in email revenue in 6 months.',
+                headlineSub: 'Built from scratch in 90 days — before they spent a single ad dollar.',
+                href: 'https://gamma.app/docs/Cerberus-Collective-building-an-email-backend-that-captured-eve-3dxhtdgt3v6i97t?mode=doc',
+                cta: 'Read the full Cerberus case study',
+                bullets: [
+                  `The 3-field pop-up change that doubled their submit rate from 10% to 21% overnight — and sent 30% more subscribers straight into the buying sequence (most brands ignore this and wonder why their list doesn't convert)`,
+                  `How we built 8 flows from scratch and had the entire email backend live before a single ad dollar dropped — so when July came, every new visitor hit a system that was ready for them`,
+                  `The Klaviyo bug that silently skipped 18,000% more SMS subscribers past the welcome flow entirely — we caught it, filed the ticket, and fixed it in 90 minutes before the client noticed a dollar missing`,
+                  `The segmentation rule most brands get backwards: why we always email loyal buyers (2x+ purchasers) instead of excluding them — and how it drove the repeat purchase rate that pushed email to 26.84% of total store revenue`,
+                  `The first campaign we sent after the infrastructure was built broke every record Cerberus had ever set — more than their previous 6–7 campaigns combined, in a single send`,
+                ],
+              },
+            ].map((cs, i) => (
+              <div key={i} className="relative overflow-hidden rounded-2xl border border-purple-900/40 bg-gradient-to-br from-[#17102e] via-[#0d0d1a] to-[#08080f] p-7 md:p-10">
+                <div className="pointer-events-none absolute -top-28 -right-20 w-80 h-80 rounded-full bg-purple-700/20 blur-3xl"></div>
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-purple-400">Case Study</span>
+                    <span className="h-px flex-1 bg-white/10"></span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">{cs.brand}</span>
+                  </div>
+                  <h3 className="font-extrabold text-white mb-7">
+                    <span className="block text-[1.7rem] md:text-4xl leading-[1.1] glow-text-purple">{cs.headlineBig}</span>
+                    <span className="block mt-3 text-base md:text-lg font-semibold text-gray-400 leading-snug">{cs.headlineSub}</span>
+                  </h3>
+                  <div className="rounded-xl bg-white/5 border border-white/8 p-5 md:p-6">
+                    <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">What We Did</div>
+                    <ul className="space-y-3.5">
+                      {cs.bullets.map((b, j) => (
+                        <li key={j} className="flex gap-3 text-gray-300 text-sm md:text-[0.95rem] leading-relaxed">
+                          <svg className="w-4 h-4 mt-1 shrink-0 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <a
+                    href={cs.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group mt-7 inline-flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 px-8 py-4 text-base font-bold text-white shadow-[0_0_30px_rgba(124,58,237,0.35)] transition-all duration-200 hover:from-purple-500 hover:to-violet-500 hover:shadow-[0_0_45px_rgba(124,58,237,0.55)]"
+                  >
+                    {cs.cta}
+                    <svg className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                  </a>
+                </div>
+              </div>
+            ))}
           </div>
 
           <SocialProofCarousels />
