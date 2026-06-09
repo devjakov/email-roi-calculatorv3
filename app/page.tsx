@@ -653,6 +653,16 @@ function Lightbox({
   )
 }
 
+// Round avatar fed by a manifest folder. Shows the first image if present, otherwise
+// a placeholder with the person's initials.
+function Avatar({ basePath, image, name }: { basePath: string; image?: string; name: string }) {
+  if (image) {
+    return <img className="kw-avatar" src={`${basePath}/${image}`} alt={name} loading="lazy" decoding="async" />
+  }
+  const initials = name.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase()
+  return <div className="kw-avatar kw-avatar-ph" aria-hidden>{initials}</div>
+}
+
 // Static image mosaic fed by a manifest folder. Renders clickable tiles (opening the
 // shared Lightbox) when images exist, or placeholder tiles while the folder is empty.
 function ProofMosaic({
@@ -798,9 +808,11 @@ function Home() {
   // Case study / brand result images, sourced from manifests (same pattern as the carousels)
   const [caseImages, setCaseImages] = useState<Record<string, string[]>>({})
   const [brandImages, setBrandImages] = useState<Record<string, string[]>>({})
+  const [testimonialImages, setTestimonialImages] = useState<Record<string, string[]>>({})
   useEffect(() => {
     fetch('/images/case-studies/manifest.json').then(r => r.json()).then(setCaseImages).catch(() => {})
     fetch('/images/brand-results/manifest.json').then(r => r.json()).then(setBrandImages).catch(() => {})
+    fetch('/images/testimonials/manifest.json').then(r => r.json()).then(setTestimonialImages).catch(() => {})
   }, [])
 
   const prospectName = prospectSlug
@@ -1575,18 +1587,21 @@ function Home() {
           </div>
           <div className="space-y-5">
             {[
-              { quote: "Jacob is an incredible email marketer and copywriter... his work ethic and skillset is top 5%.", name: "Daniel Filipe", title: "Founder, Ecom Advertisers - 7-Figure Email Agency" },
-              { quote: "Jacob is an absolute pleasure to work with... he delivers fantastic copywriting work. We worked on multiple projects together and he hasn't disappointed once.", name: "Marvin Sanginés", title: "Founder, notus - 7-Figure Personal Branding Agency" },
-              { quote: "Jacob wrote weeks of copy in advance and with his help we keep making more money for our clients. One client told us he's getting his best month of the year so far. Jacob is easy to talk to, works fast and always delivers.", name: "Brando Monetti", title: "CEO, Brand Lux Media" },
-              { quote: "He doesn't stop until he has every answer and angle he needs to get customers turning heads buying your products. Definitely someone you can grab a beer with and vibe while knowing you're making money together.", name: "Mason Doerr", title: "Founder, CopyMBA" },
-              { quote: "Jacob's got a great instinct for finding a way to sell the unsellable.", name: "Thom Benny", title: "7-Figure Financial Copywriter for Agora (Billion Dollar Publisher)" },
+              { folder: "daniel-filipe", quote: "Jacob is an incredible email marketer and copywriter... his work ethic and skillset is top 5%.", name: "Daniel Filipe", title: "Founder, Ecom Advertisers - 7-Figure Email Agency" },
+              { folder: "marvin-sangines", quote: "Jacob is an absolute pleasure to work with... he delivers fantastic copywriting work. We worked on multiple projects together and he hasn't disappointed once.", name: "Marvin Sanginés", title: "Founder, notus - 7-Figure Personal Branding Agency" },
+              { folder: "brando-monetti", quote: "Jacob wrote weeks of copy in advance and with his help we keep making more money for our clients. One client told us he's getting his best month of the year so far. Jacob is easy to talk to, works fast and always delivers.", name: "Brando Monetti", title: "CEO, Brand Lux Media" },
+              { folder: "mason-doerr", quote: "He doesn't stop until he has every answer and angle he needs to get customers turning heads buying your products. Definitely someone you can grab a beer with and vibe while knowing you're making money together.", name: "Mason Doerr", title: "Founder, CopyMBA" },
+              { folder: "thom-benny", quote: "Jacob's got a great instinct for finding a way to sell the unsellable.", name: "Thom Benny", title: "7-Figure Financial Copywriter for Agora (Billion Dollar Publisher)" },
             ].map((t, i) => (
               <div key={i} className="reveal card-dark rounded-2xl p-6" style={{ transitionDelay: `${i * 80}ms` }}>
                 <div className="text-yellow-400 text-xl mb-3 tracking-wider">★★★★★</div>
                 <p className="text-gray-300 italic leading-relaxed mb-5">"{t.quote}"</p>
-                <div className="border-t border-white/10 pt-4">
-                  <div className="font-bold text-white">{t.name}</div>
-                  <div className="text-sm text-gray-500">{t.title}</div>
+                <div className="border-t border-white/10 pt-4 flex items-center gap-3">
+                  <Avatar basePath={`/images/testimonials/${t.folder}`} image={(testimonialImages[t.folder] || [])[0]} name={t.name} />
+                  <div>
+                    <div className="font-bold text-white">{t.name}</div>
+                    <div className="text-sm text-gray-500">{t.title}</div>
+                  </div>
                 </div>
               </div>
             ))}

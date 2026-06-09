@@ -270,3 +270,23 @@ body {
   .pm-placeholder { width: 140px; height: 104px; }
   .pm-placeholder:nth-child(3n) { width: 180px; }
 }
+
+/* Kind Words avatars */
+.kw-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+.kw-avatar-ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(196, 181, 253, 0.85);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(13, 13, 24, 0.7));
+}

@@ -22,7 +22,7 @@ const buildGroupManifest = (groupDir) => {
   return manifest
 }
 
-const groups = ['proof', 'case-studies', 'brand-results']
+const groups = ['proof', 'case-studies', 'brand-results', 'testimonials']
 const result = {}
 for (const group of groups) {
   result[group] = buildGroupManifest(path.join(imagesRoot, group))
