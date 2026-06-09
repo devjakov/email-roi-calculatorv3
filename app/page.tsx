@@ -589,7 +589,7 @@ function MosaicMarquee({
 
   return (
     <div>
-      <p className="text-xs font-semibold text-purple-400 uppercase tracking-[0.2em] mb-5 text-center">{label}</p>
+      <p className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">{label}</p>
       <div className="overflow-hidden carousel-mask" onMouseEnter={slow} onMouseLeave={resume}>
         <div ref={trackRef} className="mosaic-track">
           {renderPanel('a', false)}
@@ -712,6 +712,24 @@ function Home() {
         setProspectError(err.message)
         setProspectLoading(false)
       })
+  }, [prospectSlug])
+
+  // Scroll-reveal: fade elements up as they enter the viewport (skipped for reduced-motion)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    document.documentElement.classList.add('reveal-on')
+    const els = Array.from(document.querySelectorAll<HTMLElement>('.reveal'))
+    if (!els.length) return
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+          io.unobserve(entry.target)
+        }
+      }
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' })
+    els.forEach(el => io.observe(el))
+    return () => { io.disconnect(); document.documentElement.classList.remove('reveal-on') }
   }, [prospectSlug])
 
   const prospectName = prospectSlug
@@ -1140,9 +1158,9 @@ function Home() {
 
           {/* Center links */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#services" className="text-sm text-gray-400 hover:text-white transition-colors">Services</a>
             <a href="#results" className="text-sm text-gray-400 hover:text-white transition-colors">Results</a>
             <a href="#reviews" className="text-sm text-gray-400 hover:text-white transition-colors">Reviews</a>
+            <a href="#services" className="text-sm text-gray-400 hover:text-white transition-colors">Services</a>
             <a href="#calculator" className="text-sm text-gray-400 hover:text-white transition-colors">ROI Calculator</a>
             {prospectSlug && (
               <button
@@ -1251,94 +1269,9 @@ function Home() {
         </div>
       </section>
 
-      {/* ==================== FIT SECTION ==================== */}
-      <section id="fit" className="bg-[#08080f] py-24 px-6">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">Is This Right For You?</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Good fit */}
-            <div className="card-dark rounded-2xl p-8 border-green-800/40 hover:border-green-700/60 transition-colors" style={{border: '1px solid rgba(22, 101, 52, 0.4)'}}>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-green-400 text-lg">Good fit if...</h3>
-              </div>
-              <ul className="space-y-4">
-                {[
-                  "You're an ecommerce brand doing $50K-$500K+/month",
-                  "You're in wellness, beauty, luxury, health, supplements, or fitness",
-                  "You use Klaviyo or are open to switching",
-                  "You want more email revenue without discounting your margins",
-                  "You're sending fewer than 8 campaigns/month or have under 8 active flows",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                    <span className="mt-0.5 text-green-500 shrink-0">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Not a fit */}
-            <div className="card-dark rounded-2xl p-8" style={{border: '1px solid rgba(153, 27, 27, 0.4)'}}>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-red-400 text-lg">Not a fit if...</h3>
-              </div>
-              <ul className="space-y-4">
-                {[
-                  "You're not running an ecommerce store",
-                  "You want cheap, templated batch-and-blast emails",
-                  "You need someone to run paid ads",
-                  "You're not open to testing and iterating on copy",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                    <span className="mt-0.5 text-red-500 shrink-0">✕</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== WHAT WE DO ==================== */}
-      <section id="services" className="bg-[#0d0d18] py-24 px-6 border-t border-white/5">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">What We Do</h2>
-            <p className="text-gray-400 text-lg max-w-xl mx-auto">End-to-end email marketing for ecommerce brands that want revenue without burning margins on discounts.</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[
-              { icon: "✉️", title: "Campaign Copywriting", desc: "Weekly campaigns - plain text, story-based, and design - written to convert without discounting your margins away." },
-              { icon: "⚙️", title: "Flow Automation Setup", desc: "Welcome, abandoned cart, post-purchase, win-back, browse abandon, and 15+ more flows built and optimized." },
-              { icon: "🎯", title: "Pop-Up Form Optimization", desc: "Multi-step pop-ups with DR copy and design engineered to hit 8-15% conversion rates and compound into everything downstream." },
-              { icon: "📅", title: "Monthly Email Calendar", desc: "Full monthly strategy delivered one week before each new month. You approve it, we execute." },
-              { icon: "📊", title: "Klaviyo Setup & Management", desc: "Full account setup, list hygiene, segmentation, deliverability management, and performance reporting." },
-              { icon: "🔬", title: "Split Testing & Optimization", desc: "Ongoing A/B testing of subject lines, send times, copy styles, and offers to continuously compound results." }
-            ].map((s, i) => (
-              <div key={i} className="card-dark rounded-2xl p-6 transition-all duration-200">
-                <div className="text-3xl mb-4">{s.icon}</div>
-                <div className="font-bold text-white text-lg mb-2">{s.title}</div>
-                <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ==================== CASE STUDIES ==================== */}
       <section id="results" className="bg-[#08080f] py-24 px-6 border-t border-white/5">
-          <div className="max-w-2xl mx-auto text-center mb-14">
+          <div className="reveal max-w-2xl mx-auto text-center mb-14">
             <h2 className="text-4xl font-bold text-white mb-3">Real Results From Real Brands</h2>
             <p className="text-gray-500">What happens when email is done right.</p>
           </div>
@@ -1375,7 +1308,7 @@ function Home() {
                 ],
               },
             ].map((cs, i) => (
-              <div key={i} className="relative overflow-hidden rounded-2xl border border-purple-900/40 bg-gradient-to-br from-[#17102e] via-[#0d0d1a] to-[#08080f] p-7 md:p-10">
+              <div key={i} className="reveal relative overflow-hidden rounded-2xl border border-purple-900/40 bg-gradient-to-br from-[#17102e] via-[#0d0d1a] to-[#08080f] p-7 md:p-10" style={{ transitionDelay: `${i * 120}ms` }}>
                 <div className="pointer-events-none absolute -top-28 -right-20 w-80 h-80 rounded-full bg-purple-700/20 blur-3xl"></div>
                 <div className="relative">
                   <div className="flex items-center gap-3 mb-5">
@@ -1398,15 +1331,17 @@ function Home() {
                       ))}
                     </ul>
                   </div>
-                  <a
-                    href={cs.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group mt-7 inline-flex w-full sm:w-auto items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 px-8 py-4 text-base font-bold text-white shadow-[0_0_30px_rgba(124,58,237,0.35)] transition-all duration-200 hover:from-purple-500 hover:to-violet-500 hover:shadow-[0_0_45px_rgba(124,58,237,0.55)]"
-                  >
-                    {cs.cta}
-                    <svg className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                  </a>
+                  <div className="mt-8 flex justify-center">
+                    <a
+                      href={cs.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex w-full sm:w-auto items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-purple-600 to-violet-600 px-12 py-5 text-xl font-bold text-white shadow-[0_0_30px_rgba(124,58,237,0.35)] transition-all duration-200 hover:from-purple-500 hover:to-violet-500 hover:shadow-[0_0_45px_rgba(124,58,237,0.55)]"
+                    >
+                      {cs.cta}
+                      <svg className="w-6 h-6 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1414,13 +1349,18 @@ function Home() {
 
           <SocialProofCarousels />
 
+          <div className="reveal max-w-2xl mx-auto text-center mb-12 mt-24">
+            <h3 className="text-3xl md:text-4xl font-bold text-white mb-3">More Wins Across Brands</h3>
+            <p className="text-gray-500">Fitness, luxury, and supplement brands, by the numbers.</p>
+          </div>
+
         <div className="max-w-2xl mx-auto">
           <div className="space-y-6">
 
             {/* Case Study 1 */}
-            <div className="card-dark rounded-2xl overflow-hidden">
-              <div className="bg-green-900/20 px-6 py-3 flex items-center gap-3 border-b border-green-800/30">
-                <span className="bg-green-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">1</span>
+            <div className="reveal rounded-2xl overflow-hidden border border-purple-900/40 bg-gradient-to-br from-[#17102e] via-[#0d0d1a] to-[#08080f]">
+              <div className="bg-purple-900/20 px-6 py-3.5 flex items-center gap-3 border-b border-purple-800/30">
+                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">1</span>
                 <span className="text-white font-semibold">Fitness Brand</span>
                 <span className="ml-auto text-green-400 text-xs">112% year-over-year improvement</span>
               </div>
@@ -1443,9 +1383,9 @@ function Home() {
             </div>
 
             {/* Case Study 2 */}
-            <div className="card-dark rounded-2xl overflow-hidden">
-              <div className="bg-green-900/20 px-6 py-3 flex items-center gap-3 border-b border-green-800/30">
-                <span className="bg-green-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</span>
+            <div className="reveal rounded-2xl overflow-hidden border border-purple-900/40 bg-gradient-to-br from-[#17102e] via-[#0d0d1a] to-[#08080f]">
+              <div className="bg-purple-900/20 px-6 py-3.5 flex items-center gap-3 border-b border-purple-800/30">
+                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</span>
                 <span className="text-white font-semibold">Luxury Brand</span>
                 <span className="ml-auto text-green-400 text-xs">1,025% revenue increase</span>
               </div>
@@ -1476,9 +1416,9 @@ function Home() {
             </div>
 
             {/* Case Study 3 - Combined */}
-            <div className="card-dark rounded-2xl overflow-hidden">
-              <div className="bg-green-900/20 px-6 py-3 flex items-center gap-3 border-b border-green-800/30">
-                <span className="bg-green-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">3</span>
+            <div className="reveal rounded-2xl overflow-hidden border border-purple-900/40 bg-gradient-to-br from-[#17102e] via-[#0d0d1a] to-[#08080f]">
+              <div className="bg-purple-900/20 px-6 py-3.5 flex items-center gap-3 border-b border-purple-800/30">
+                <span className="bg-purple-600 text-white font-bold text-xs rounded-full w-6 h-6 flex items-center justify-center shrink-0">3</span>
                 <span className="text-white font-semibold">Supplement Brand - Copy & Conversion Testing</span>
                 <span className="ml-auto text-green-400 text-xs">21% higher CVR + 8.72% pop-up</span>
               </div>
@@ -1547,13 +1487,98 @@ function Home() {
               { quote: "He doesn't stop until he has every answer and angle he needs to get customers turning heads buying your products. Definitely someone you can grab a beer with and vibe while knowing you're making money together.", name: "Mason Doerr", title: "Founder, CopyMBA" },
               { quote: "Jacob's got a great instinct for finding a way to sell the unsellable.", name: "Thom Benny", title: "7-Figure Financial Copywriter for Agora (Billion Dollar Publisher)" },
             ].map((t, i) => (
-              <div key={i} className="card-dark rounded-2xl p-6">
+              <div key={i} className="reveal card-dark rounded-2xl p-6" style={{ transitionDelay: `${i * 80}ms` }}>
                 <div className="text-yellow-400 text-xl mb-3 tracking-wider">★★★★★</div>
                 <p className="text-gray-300 italic leading-relaxed mb-5">"{t.quote}"</p>
                 <div className="border-t border-white/10 pt-4">
                   <div className="font-bold text-white">{t.name}</div>
                   <div className="text-sm text-gray-500">{t.title}</div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== FIT SECTION ==================== */}
+      <section id="fit" className="bg-[#08080f] py-24 px-6 border-t border-white/5">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="reveal text-4xl font-bold text-white text-center mb-12">Is This Right For You?</h2>
+          <div className="reveal grid md:grid-cols-2 gap-6">
+            {/* Good fit */}
+            <div className="card-dark rounded-2xl p-8 border-green-800/40 hover:border-green-700/60 transition-colors" style={{border: '1px solid rgba(22, 101, 52, 0.4)'}}>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-green-400 text-lg">Good fit if...</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "You're an ecommerce brand doing $50K-$500K+/month",
+                  "You're in wellness, beauty, luxury, health, supplements, or fitness",
+                  "You use Klaviyo or are open to switching",
+                  "You want more email revenue without discounting your margins",
+                  "You're sending fewer than 8 campaigns/month or have under 8 active flows",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                    <span className="mt-0.5 text-green-500 shrink-0">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Not a fit */}
+            <div className="card-dark rounded-2xl p-8" style={{border: '1px solid rgba(153, 27, 27, 0.4)'}}>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center">
+                  <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h3 className="font-bold text-red-400 text-lg">Not a fit if...</h3>
+              </div>
+              <ul className="space-y-4">
+                {[
+                  "You're not running an ecommerce store",
+                  "You want cheap, templated batch-and-blast emails",
+                  "You need someone to run paid ads",
+                  "You're not open to testing and iterating on copy",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
+                    <span className="mt-0.5 text-red-500 shrink-0">✕</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ==================== WHAT WE DO ==================== */}
+      <section id="services" className="bg-[#0d0d18] py-24 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="reveal text-center mb-16">
+            <h2 className="text-4xl font-bold text-white mb-4">What We Do</h2>
+            <p className="text-gray-400 text-lg max-w-xl mx-auto">End-to-end email marketing for ecommerce brands that want revenue without burning margins on discounts.</p>
+          </div>
+          <div className="reveal grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[
+              { icon: "✉️", title: "Campaign Copywriting", desc: "Weekly campaigns - plain text, story-based, and design - written to convert without discounting your margins away." },
+              { icon: "⚙️", title: "Flow Automation Setup", desc: "Welcome, abandoned cart, post-purchase, win-back, browse abandon, and 15+ more flows built and optimized." },
+              { icon: "🎯", title: "Pop-Up Form Optimization", desc: "Multi-step pop-ups with DR copy and design engineered to hit 8-15% conversion rates and compound into everything downstream." },
+              { icon: "📅", title: "Monthly Email Calendar", desc: "Full monthly strategy delivered one week before each new month. You approve it, we execute." },
+              { icon: "📊", title: "Klaviyo Setup & Management", desc: "Full account setup, list hygiene, segmentation, deliverability management, and performance reporting." },
+              { icon: "🔬", title: "Split Testing & Optimization", desc: "Ongoing A/B testing of subject lines, send times, copy styles, and offers to continuously compound results." }
+            ].map((s, i) => (
+              <div key={i} className="card-dark rounded-2xl p-6 transition-all duration-200">
+                <div className="text-3xl mb-4">{s.icon}</div>
+                <div className="font-bold text-white text-lg mb-2">{s.title}</div>
+                <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
