@@ -3,7 +3,7 @@ const path = require('path')
 
 const imagesRoot = path.join(__dirname, 'public', 'images')
 
-const isImage = (f) => /\.(png|jpe?g|webp|svg|gif)$/i.test(f)
+const isImage = (f) => /\.(png|jpe?g|webp|avif|svg|gif)$/i.test(f)
 
 const listImages = (dir) => {
   if (!fs.existsSync(dir)) return []
