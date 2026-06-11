@@ -1427,7 +1427,6 @@ function Home() {
                     basePath={`/images/case-studies/${cs.folder}`}
                     images={caseImages[cs.folder] || []}
                     alt={`${cs.brand} case study proof`}
-                    label="Proof"
                   />
                   <div className="mt-8 flex justify-center">
                     <a
@@ -1477,7 +1476,7 @@ function Home() {
                   <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
                   <p className="text-gray-400 text-sm leading-relaxed">Monthly calendar approved one week before each month. Mix of plain-text and design emails, YouTube videos repurposed into value-based content, zero discounts to protect margins.</p>
                 </div>
-                <ProofMosaic basePath="/images/brand-results/fitness" images={brandImages['fitness'] || []} alt="Fitness brand proof" label="Proof" size="sm" />
+                <ProofMosaic basePath="/images/brand-results/fitness" images={brandImages['fitness'] || []} alt="Fitness brand proof" size="sm" />
               </div>
             </div>
 
@@ -1511,7 +1510,7 @@ function Home() {
                   <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
                   <p className="text-gray-400 text-sm leading-relaxed">They were sending zero emails. We started at 4/week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
                 </div>
-                <ProofMosaic basePath="/images/brand-results/luxury" images={brandImages['luxury'] || []} alt="Luxury brand proof" label="Proof" size="sm" />
+                <ProofMosaic basePath="/images/brand-results/luxury" images={brandImages['luxury'] || []} alt="Luxury brand proof" size="sm" />
               </div>
             </div>
 
@@ -1565,7 +1564,7 @@ function Home() {
                     </div>
                   </div>
                 </div>
-                <ProofMosaic basePath="/images/brand-results/supplement" images={brandImages['supplement'] || []} alt="Supplement brand proof" label="Proof" size="sm" />
+                <ProofMosaic basePath="/images/brand-results/supplement" images={brandImages['supplement'] || []} alt="Supplement brand proof" size="sm" />
               </div>
             </div>
 
