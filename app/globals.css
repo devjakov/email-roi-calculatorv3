@@ -246,29 +246,8 @@ body {
   max-height: 104px;
 }
 
-/* Placeholder tiles: varied widths read as a mosaic until real images land */
-.pm-placeholder {
-  width: 180px;
-  height: 132px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: default;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.10), rgba(13, 13, 24, 0.6));
-  border-style: dashed;
-  border-color: rgba(124, 58, 237, 0.25);
-}
-.pm-placeholder svg { width: 30px; height: 30px; color: rgba(167, 139, 250, 0.5); }
-.pm-placeholder:nth-child(3n) { width: 240px; }
-.pm-placeholder:nth-child(4n) { width: 140px; }
-.pm-placeholder:hover { transform: none; box-shadow: none; border-color: rgba(124, 58, 237, 0.25); }
-.pm-grid-sm .pm-placeholder { width: 132px; height: 92px; }
-.pm-grid-sm .pm-placeholder:nth-child(3n) { width: 168px; }
-.pm-grid-sm .pm-placeholder:nth-child(4n) { width: 104px; }
 @media (max-width: 640px) {
   .pm-tile img { max-width: 150px; max-height: 110px; }
-  .pm-placeholder { width: 140px; height: 104px; }
-  .pm-placeholder:nth-child(3n) { width: 180px; }
 }
 
 /* Kind Words avatars */
@@ -291,31 +270,28 @@ body {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(13, 13, 24, 0.7));
 }
 
-/* Trusted-by logos */
+/* Trusted-by logos: normalize mixed dark/light/colored marks to a uniform white
+   silhouette so they read on the dark strip. */
 .tb-logo {
-  height: 30px;
+  height: 28px;
   width: auto;
   max-width: 150px;
   object-fit: contain;
-  opacity: 0.55;
-  filter: grayscale(1);
-  transition: opacity 200ms ease, filter 200ms ease;
+  filter: brightness(0) invert(1);
+  opacity: 0.62;
+  transition: opacity 200ms ease;
 }
 .tb-logo:hover {
   opacity: 1;
-  filter: grayscale(0);
 }
-.tb-logo-ph {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 120px;
-  height: 30px;
-  border: 1px dashed rgba(124, 58, 237, 0.25);
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.10), rgba(13, 13, 24, 0.6));
-  opacity: 1;
+/* Logos with a baked solid background can't be silhouetted; show them on a light chip. */
+.tb-logo--chip {
   filter: none;
+  opacity: 0.9;
+  height: 34px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: #f1f1f4;
+  box-sizing: border-box;
 }
-.tb-logo-ph svg { width: 20px; height: 20px; color: rgba(167, 139, 250, 0.5); }
-.tb-logo-ph:hover { opacity: 1; filter: none; }
+.tb-logo--chip:hover { opacity: 1; }

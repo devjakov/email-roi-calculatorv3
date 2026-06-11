@@ -581,7 +581,7 @@ function MosaicMarquee({
           aria-label={`${alt}, view ${i + 1} of ${items.length}`}
           tabIndex={ariaHidden ? -1 : 0}
         >
-          <img src={`/images/proof/${folder}/${img}`} alt={alt} loading="lazy" decoding="async" />
+          <img src={`/images/proof/${folder}/${encodeURIComponent(img)}`} alt={alt} loading="lazy" decoding="async" />
         </button>
       ))}
     </div>
@@ -639,7 +639,7 @@ function Lightbox({
       )}
       <img
         className="lightbox-img"
-        src={`${basePath}/${items[index]}`}
+        src={`${basePath}/${encodeURIComponent(items[index])}`}
         alt={alt}
         onClick={(e) => e.stopPropagation()}
       />
@@ -656,26 +656,24 @@ function Lightbox({
 // Trusted-by logo strip fed by a single flat manifest folder. Shows brand logos when
 // present, otherwise placeholder logo tiles.
 function TrustedByLogos({ images }: { images: string[] }) {
-  if (!images.length) {
-    return (
-      <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-10 gap-y-4" aria-hidden>
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="tb-logo tb-logo-ph">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="m21 15-5-5L5 21" />
-            </svg>
-          </div>
-        ))}
-      </div>
-    )
-  }
+  if (!images.length) return null
   return (
-    <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-10 gap-y-4">
-      {images.map((img, i) => (
-        <img key={i} className="tb-logo" src={`/images/trusted-by/${img}`} alt="Brand logo" loading="lazy" decoding="async" />
-      ))}
+    <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-9 gap-y-4">
+      {images.map((img, i) => {
+        // Logos with a baked solid background can't be normalized to a white silhouette,
+        // so they sit on a light chip instead.
+        const chip = /cerberus/i.test(img)
+        return (
+          <img
+            key={i}
+            className={chip ? 'tb-logo tb-logo--chip' : 'tb-logo'}
+            src={`/images/trusted-by/${encodeURIComponent(img)}`}
+            alt="Brand logo"
+            loading="lazy"
+            decoding="async"
+          />
+        )
+      })}
     </div>
   )
 }
@@ -684,48 +682,34 @@ function TrustedByLogos({ images }: { images: string[] }) {
 // a placeholder with the person's initials.
 function Avatar({ basePath, image, name }: { basePath: string; image?: string; name: string }) {
   if (image) {
-    return <img className="kw-avatar" src={`${basePath}/${image}`} alt={name} loading="lazy" decoding="async" />
+    return <img className="kw-avatar" src={`${basePath}/${encodeURIComponent(image)}`} alt={name} loading="lazy" decoding="async" />
   }
   const initials = name.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase()
   return <div className="kw-avatar kw-avatar-ph" aria-hidden>{initials}</div>
 }
 
 // Static image mosaic fed by a manifest folder. Renders clickable tiles (opening the
-// shared Lightbox) when images exist, or placeholder tiles while the folder is empty.
+// shared Lightbox). Renders nothing until the folder has images.
 function ProofMosaic({
   basePath,
   images,
   alt,
-  placeholderCount = 6,
+  label,
   size = 'md',
 }: {
   basePath: string
   images: string[]
   alt: string
-  placeholderCount?: number
+  label?: string
   size?: 'sm' | 'md'
 }) {
   const [index, setIndex] = useState<number | null>(null)
+  if (!images.length) return null
   const gridClass = `pm-grid${size === 'sm' ? ' pm-grid-sm' : ''}`
 
-  if (!images.length) {
-    return (
-      <div className={gridClass} aria-hidden>
-        {Array.from({ length: placeholderCount }).map((_, i) => (
-          <div key={i} className="pm-tile pm-placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="m21 15-5-5L5 21" />
-            </svg>
-          </div>
-        ))}
-      </div>
-    )
-  }
-
   return (
-    <>
+    <div className={size === 'sm' ? 'mt-5' : 'mt-7'}>
+      {label && <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">{label}</div>}
       <div className={gridClass}>
         {images.map((img, i) => (
           <button
@@ -735,7 +719,7 @@ function ProofMosaic({
             onClick={() => setIndex(i)}
             aria-label={`${alt}, image ${i + 1} of ${images.length}`}
           >
-            <img src={`${basePath}/${img}`} alt={alt} loading="lazy" decoding="async" />
+            <img src={`${basePath}/${encodeURIComponent(img)}`} alt={alt} loading="lazy" decoding="async" />
           </button>
         ))}
       </div>
@@ -749,7 +733,7 @@ function ProofMosaic({
           onIndex={setIndex}
         />
       )}
-    </>
+    </div>
   )
 }
 
@@ -1439,15 +1423,12 @@ function Home() {
                       ))}
                     </ul>
                   </div>
-                  <div className="mt-7">
-                    <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Proof</div>
-                    <ProofMosaic
-                      basePath={`/images/case-studies/${cs.folder}`}
-                      images={caseImages[cs.folder] || []}
-                      alt={`${cs.brand} case study proof`}
-                      placeholderCount={6}
-                    />
-                  </div>
+                  <ProofMosaic
+                    basePath={`/images/case-studies/${cs.folder}`}
+                    images={caseImages[cs.folder] || []}
+                    alt={`${cs.brand} case study proof`}
+                    label="Proof"
+                  />
                   <div className="mt-8 flex justify-center">
                     <a
                       href={cs.href}
@@ -1496,10 +1477,7 @@ function Home() {
                   <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
                   <p className="text-gray-400 text-sm leading-relaxed">Monthly calendar approved one week before each month. Mix of plain-text and design emails, YouTube videos repurposed into value-based content, zero discounts to protect margins.</p>
                 </div>
-                <div className="mt-5">
-                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Proof</div>
-                  <ProofMosaic basePath="/images/brand-results/fitness" images={brandImages['fitness'] || []} alt="Fitness brand proof" placeholderCount={3} size="sm" />
-                </div>
+                <ProofMosaic basePath="/images/brand-results/fitness" images={brandImages['fitness'] || []} alt="Fitness brand proof" label="Proof" size="sm" />
               </div>
             </div>
 
@@ -1533,10 +1511,7 @@ function Home() {
                   <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
                   <p className="text-gray-400 text-sm leading-relaxed">They were sending zero emails. We started at 4/week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
                 </div>
-                <div className="mt-5">
-                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Proof</div>
-                  <ProofMosaic basePath="/images/brand-results/luxury" images={brandImages['luxury'] || []} alt="Luxury brand proof" placeholderCount={3} size="sm" />
-                </div>
+                <ProofMosaic basePath="/images/brand-results/luxury" images={brandImages['luxury'] || []} alt="Luxury brand proof" label="Proof" size="sm" />
               </div>
             </div>
 
@@ -1590,10 +1565,7 @@ function Home() {
                     </div>
                   </div>
                 </div>
-                <div>
-                  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Proof</div>
-                  <ProofMosaic basePath="/images/brand-results/supplement" images={brandImages['supplement'] || []} alt="Supplement brand proof" placeholderCount={4} size="sm" />
-                </div>
+                <ProofMosaic basePath="/images/brand-results/supplement" images={brandImages['supplement'] || []} alt="Supplement brand proof" label="Proof" size="sm" />
               </div>
             </div>
 

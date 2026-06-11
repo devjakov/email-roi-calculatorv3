@@ -1,5 +1,13 @@
 {
-  "fitness": [],
-  "luxury": [],
+  "fitness": [
+    "fitnesspreviousyear.png",
+    "newpopup.png"
+  ],
+  "luxury": [
+    "Screenshot 2026-06-10 124808.png",
+    "emailopenrates.png",
+    "luxury brand month 5.png",
+    "retention75percent.png"
+  ],
   "supplement": []
 }

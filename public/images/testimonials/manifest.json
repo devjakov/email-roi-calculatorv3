@@ -1,7 +1,17 @@
 {
-  "brando-monetti": [],
-  "daniel-filipe": [],
-  "marvin-sangines": [],
-  "mason-doerr": [],
-  "thom-benny": []
+  "brando-monetti": [
+    "brandomonetti.jpg"
+  ],
+  "daniel-filipe": [
+    "danielfilipe.jpg"
+  ],
+  "marvin-sangines": [
+    "marvinsangines.jpg"
+  ],
+  "mason-doerr": [
+    "masondoerr.jpg"
+  ],
+  "thom-benny": [
+    "thombenny.jpg"
+  ]
 }
