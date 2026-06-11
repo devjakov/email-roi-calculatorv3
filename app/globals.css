@@ -204,16 +204,27 @@ body {
   transform: none;
 }
 
-/* Proof mosaic (case studies + brand results) */
+/* Proof mosaic (case studies + brand results): column masonry that fills the block,
+   each image rendered at its native aspect ratio at the column's width. */
 .pm-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
+  column-count: 2;
+  column-gap: 12px;
+}
+.pm-grid-sm {
+  column-count: 2;
+  column-gap: 12px;
+}
+@media (max-width: 480px) {
+  .pm-grid,
+  .pm-grid-sm { column-count: 1; }
 }
 .pm-tile {
   display: block;
+  width: 100%;
+  margin: 0 0 12px;
   padding: 0;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
   border: 1px solid rgba(124, 58, 237, 0.18);
   border-radius: 10px;
   overflow: hidden;
@@ -221,12 +232,10 @@ body {
   cursor: zoom-in;
   line-height: 0;
   transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
-              transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
               box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pm-tile:hover {
   border-color: rgba(124, 58, 237, 0.55);
-  transform: translateY(-2px);
   box-shadow: 0 0 24px rgba(124, 58, 237, 0.22);
 }
 .pm-tile:focus-visible {
@@ -236,18 +245,8 @@ body {
 }
 .pm-tile img {
   display: block;
-  width: auto;
+  width: 100%;
   height: auto;
-  max-width: 220px;
-  max-height: 150px;
-}
-.pm-grid-sm .pm-tile img {
-  max-width: 150px;
-  max-height: 104px;
-}
-
-@media (max-width: 640px) {
-  .pm-tile img { max-width: 150px; max-height: 110px; }
 }
 
 /* Kind Words avatars */
