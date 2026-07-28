@@ -661,7 +661,7 @@ function MosaicMarquee({
 
   return (
     <div>
-      <p className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">{label}</p>
+      <h3 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">{label}</h3>
       <div
         ref={viewportRef}
         className="overflow-hidden carousel-mask mosaic-viewport"
