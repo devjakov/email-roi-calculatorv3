@@ -57,11 +57,31 @@ body {
   mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
 }
+/* pan-y hands vertical gestures back to the browser, so dragging the carousel
+   sideways never blocks scrolling the page on a phone. */
+.mosaic-viewport {
+  touch-action: pan-y;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* The tiles set cursor: zoom-in, so the drag cursor has to win over them too. */
+.mosaic-viewport:active,
+.mosaic-viewport:active .mosaic-tile {
+  cursor: grabbing;
+}
 .mosaic-track {
   display: flex;
   column-gap: 14px;
   width: max-content;
   will-change: transform;
+}
+/* Without this a mouse drag starting on a tile begins a native image drag
+   instead of scrubbing the carousel. */
+.mosaic-viewport img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
 }
 .mosaic-panel {
   display: flex;

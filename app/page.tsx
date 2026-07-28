@@ -517,10 +517,14 @@ function MosaicMarquee({
 }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
   const offsetRef = useRef(0)
   const distanceRef = useRef(0)
   const speedRef = useRef(0)
   const targetRef = useRef(0)
+  const draggingRef = useRef(false)
+  const inertiaRef = useRef(0)
+  const suppressClickRef = useRef(false)
 
   const BASE_SPEED = 40 // px/sec at rest
   const HOVER_SPEED = 10 // px/sec while hovered (slows, never stops)
@@ -533,6 +537,7 @@ function MosaicMarquee({
     speedRef.current = reduce ? 0 : BASE_SPEED
 
     const panel = panelRef.current
+    const viewport = viewportRef.current
     const measure = () => {
       if (!panel) return
       const parent = panel.parentElement
@@ -543,24 +548,112 @@ function MosaicMarquee({
     const ro = new ResizeObserver(measure)
     if (panel) ro.observe(panel)
 
+    // Offset is wrapped into [0, d) so the two identical panels loop seamlessly
+    // no matter how far a drag or a wheel throw pushes it.
+    const wrap = (v: number) => {
+      const d = distanceRef.current
+      return d > 0 ? ((v % d) + d) % d : v
+    }
+    const draw = () => {
+      if (trackRef.current) trackRef.current.style.transform = `translate3d(${-offsetRef.current}px,0,0)`
+    }
+
     let raf = 0
     let last = performance.now()
     const tick = (now: number) => {
       const dt = Math.min((now - last) / 1000, 0.05)
       last = now
-      speedRef.current += (targetRef.current - speedRef.current) * Math.min(dt * 6, 1)
-      const d = distanceRef.current
-      if (d > 0) {
-        offsetRef.current = ((offsetRef.current + dirSign * speedRef.current * dt) % d + d) % d
-        if (trackRef.current) trackRef.current.style.transform = `translate3d(${-offsetRef.current}px,0,0)`
+      const auto = draggingRef.current ? 0 : speedRef.current
+      speedRef.current += ((draggingRef.current ? 0 : targetRef.current) - speedRef.current) * Math.min(dt * 6, 1)
+      if (distanceRef.current > 0) {
+        offsetRef.current = wrap(offsetRef.current + dirSign * auto * dt + inertiaRef.current * dt)
+        draw()
+      }
+      // Exponential decay: ~99.8% of the throw is spent after one second.
+      if (inertiaRef.current) {
+        inertiaRef.current *= Math.pow(0.002, dt)
+        if (Math.abs(inertiaRef.current) < 2) inertiaRef.current = 0
       }
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
 
+    // Wheel. Trackpad horizontal swipes report deltaX; a plain wheel reports
+    // deltaY, and we scrub with whichever axis the gesture leans on.
+    const onWheel = (e: WheelEvent) => {
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
+      if (!delta) return
+      e.preventDefault()
+      inertiaRef.current = 0
+      offsetRef.current = wrap(offsetRef.current + delta)
+      draw()
+    }
+
+    // Pointer drag covers mouse and touch alike. touch-action: pan-y on the
+    // viewport keeps vertical page scrolling with the browser, so only the
+    // horizontal component ever reaches us.
+    let lastX = 0
+    let lastT = 0
+    let travelled = 0
+    let velocity = 0
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return
+      draggingRef.current = true
+      suppressClickRef.current = false
+      inertiaRef.current = 0
+      travelled = 0
+      lastX = e.clientX
+      lastT = performance.now()
+      viewport?.setPointerCapture(e.pointerId)
+    }
+    const onPointerMove = (e: PointerEvent) => {
+      if (!draggingRef.current) return
+      const dx = e.clientX - lastX
+      if (!dx) return
+      const now = performance.now()
+      const dt = Math.max((now - lastT) / 1000, 1 / 240)
+      lastX = e.clientX
+      lastT = now
+      travelled += Math.abs(dx)
+      if (travelled > 5) suppressClickRef.current = true
+      inertiaRef.current = 0
+      offsetRef.current = wrap(offsetRef.current - dx)
+      draw()
+      // Keep the last frame's velocity so release can throw the track.
+      velocity = -dx / dt
+    }
+    const endDrag = (e: PointerEvent) => {
+      if (!draggingRef.current) return
+      draggingRef.current = false
+      if (viewport?.hasPointerCapture(e.pointerId)) viewport.releasePointerCapture(e.pointerId)
+      inertiaRef.current = Math.max(-2600, Math.min(2600, velocity))
+      velocity = 0
+    }
+
+    // A drag that ends on a tile must not also open the lightbox.
+    const onClickCapture = (e: MouseEvent) => {
+      if (!suppressClickRef.current) return
+      suppressClickRef.current = false
+      e.preventDefault()
+      e.stopPropagation()
+    }
+
+    viewport?.addEventListener('wheel', onWheel, { passive: false })
+    viewport?.addEventListener('pointerdown', onPointerDown)
+    viewport?.addEventListener('pointermove', onPointerMove)
+    viewport?.addEventListener('pointerup', endDrag)
+    viewport?.addEventListener('pointercancel', endDrag)
+    viewport?.addEventListener('click', onClickCapture, true)
+
     return () => {
       cancelAnimationFrame(raf)
       ro.disconnect()
+      viewport?.removeEventListener('wheel', onWheel)
+      viewport?.removeEventListener('pointerdown', onPointerDown)
+      viewport?.removeEventListener('pointermove', onPointerMove)
+      viewport?.removeEventListener('pointerup', endDrag)
+      viewport?.removeEventListener('pointercancel', endDrag)
+      viewport?.removeEventListener('click', onClickCapture, true)
     }
   }, [direction, items.length])
 
@@ -590,7 +683,12 @@ function MosaicMarquee({
   return (
     <div>
       <p className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">{label}</p>
-      <div className="overflow-hidden carousel-mask" onMouseEnter={slow} onMouseLeave={resume}>
+      <div
+        ref={viewportRef}
+        className="overflow-hidden carousel-mask mosaic-viewport"
+        onMouseEnter={slow}
+        onMouseLeave={resume}
+      >
         <div ref={trackRef} className="mosaic-track">
           {renderPanel('a', false)}
           {renderPanel('b', true)}
