@@ -737,6 +737,55 @@ function ProofMosaic({
   )
 }
 
+/* Numbered input stage inside the ROI calculator. Label rail on the left,
+   controls on the right; collapses to a single column below lg. */
+function CalcStep({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
+  return (
+    <div className="grid lg:grid-cols-[13rem_minmax(0,1fr)] gap-x-10 gap-y-6 py-10 first:pt-0 last:pb-0 border-t border-white/[0.08] first:border-t-0">
+      <div className="flex items-baseline gap-4 lg:block">
+        <div className="text-2xl font-extrabold tabular-nums text-purple-500/40 leading-none lg:mb-3">{n}</div>
+        <h3 className="text-lg font-semibold text-white">{title}</h3>
+      </div>
+      <div className="space-y-6">{children}</div>
+    </div>
+  )
+}
+
+/* Range control: name on the left, live value on the right, bounds underneath. */
+function CalcSlider({ label, display, value, min, max, step = 1, minLabel, maxLabel, onChange }: {
+  label: string
+  display: string
+  value: number
+  min: number
+  max: number
+  step?: number
+  minLabel: string
+  maxLabel: string
+  onChange: (v: number) => void
+}) {
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-4 mb-2.5">
+        <label className="text-sm text-gray-400">{label}</label>
+        <span className="text-sm font-semibold text-white tabular-nums">{display}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-purple-500"
+      />
+      <div className="flex justify-between text-[0.6875rem] text-gray-600 mt-2 tabular-nums">
+        <span>{minLabel}</span>
+        <span>{maxLabel}</span>
+      </div>
+    </div>
+  )
+}
+
 export default function Page() {
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>}>
@@ -1410,7 +1459,7 @@ function Home() {
                     <span className="block text-[1.7rem] md:text-4xl leading-[1.1] glow-text-purple">{cs.headlineBig}</span>
                     <span className="block mt-3 text-base md:text-lg font-semibold text-gray-400 leading-snug">{cs.headlineSub}</span>
                   </h3>
-                  <div className="rounded-xl bg-white/5 border border-white/8 p-5 md:p-6">
+                  <div className="rounded-xl bg-white/5 border border-white/[0.08] p-5 md:p-6">
                     <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">What We Did</div>
                     <ul className="space-y-3.5">
                       {cs.bullets.map((b, j) => (
@@ -1470,7 +1519,7 @@ function Home() {
                     <p className="text-gray-300 text-sm">4-5 emails/week, <strong className="text-white">$98K monthly</strong>. +112% YoY.</p>
                   </div>
                 </div>
-                <div className="bg-white/5 rounded-xl p-4 border border-white/8">
+                <div className="bg-white/5 rounded-xl p-4 border border-white/[0.08]">
                   <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
                   <p className="text-gray-400 text-sm leading-relaxed">Monthly calendar approved one week before each month. Mix of plain-text and design emails, YouTube videos repurposed into value-based content, zero discounts to protect margins.</p>
                 </div>
@@ -1504,7 +1553,7 @@ function Home() {
                     </ul>
                   </div>
                 </div>
-                <div className="bg-white/5 rounded-xl p-4 border border-white/8">
+                <div className="bg-white/5 rounded-xl p-4 border border-white/[0.08]">
                   <div className="text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">What We Did</div>
                   <p className="text-gray-400 text-sm leading-relaxed">They were sending zero emails. We started at 4/week, got them out of spam and into primary inboxes - and they started generating revenue right in time for BFCM.</p>
                 </div>
@@ -1523,7 +1572,7 @@ function Home() {
                 <div>
                   <div className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">Plain Text vs Design Email</div>
                   <div className="grid grid-cols-2 gap-3 mb-3">
-                    <div className="bg-white/5 rounded-xl p-3 border border-white/8">
+                    <div className="bg-white/5 rounded-xl p-3 border border-white/[0.08]">
                       <div className="text-xs text-gray-500 mb-1">Design Email</div>
                       <div className="text-gray-300 text-sm"><strong className="text-white">$9.3K</strong> - 9.42% CVR</div>
                     </div>
@@ -1617,7 +1666,7 @@ function Home() {
             ].map((item, i) => (
               <li
                 key={i}
-                className="group flex items-start gap-6 sm:gap-8 py-7 border-t border-white/8 first:border-t-0 first:pt-0"
+                className="group flex items-start gap-6 sm:gap-8 py-7 border-t border-white/[0.08] first:border-t-0 first:pt-0"
               >
                 <span className="shrink-0 w-10 text-2xl font-extrabold tabular-nums text-purple-500/45 leading-snug transition-colors duration-300 group-hover:text-purple-400">
                   {String(i + 1).padStart(2, '0')}
@@ -1680,7 +1729,7 @@ function Home() {
             <h2 className="text-4xl font-bold text-white mb-3">Frequently Asked Questions</h2>
             <p className="text-gray-500">Everything you need to know before booking a call.</p>
           </div>
-          <div className="divide-y divide-white/8">
+          <div className="divide-y divide-white/[0.08]">
             {[
               {
                 q: 'What if we’re already working with an email agency?',
@@ -1901,326 +1950,237 @@ function Home() {
             See where you stand vs industry benchmarks · Based on Klaviyo data from 325B+ emails
           </p>
         </div>
-        {/* Dark container wrapping all calculator content */}
-        <div className="rounded-2xl border border-purple-900/40 bg-gradient-to-br from-[#0d0d1a] to-[#080810] p-8 shadow-2xl max-h-[82vh] overflow-y-auto scrollbar-thin scrollbar-thumb-purple-800 scrollbar-track-transparent">
+        {/* ---------- STAGE 1: INPUTS ---------- */}
+        <div className="rounded-2xl border border-purple-900/40 bg-[#0b0b16] p-7 sm:p-10">
 
-        {/* Industry Selector */}
-        <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-white mb-4">📊 Select Your Industry</h2>
-          <select
-            value={selectedIndustry}
-            onChange={(e) => setSelectedIndustry(e.target.value as keyof typeof INDUSTRY_BENCHMARKS)}
-            className="w-full px-4 py-3 bg-[#080810] border border-purple-800/40 text-white rounded-lg text-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          >
-            {Object.entries(INDUSTRY_BENCHMARKS).map(([key, data]) => (
-              <option key={key} value={key} className="bg-[#0d0d1a]">{data.name}</option>
-            ))}
-          </select>
-          <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-            <div className="bg-purple-950/40 rounded-lg p-3 border border-purple-800/20">
-              <div className="text-purple-400 font-medium">Campaign RPR</div>
-              <div className="text-2xl font-bold text-white">${formatNumber(industry.campaignRPR, 3)}</div>
-              <div className="text-purple-400 text-xs">per recipient</div>
+          {/* Industry */}
+          <CalcStep n="01" title="📊 Select Your Industry">
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(INDUSTRY_BENCHMARKS).map(([key, data]) => {
+                const active = selectedIndustry === key
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setSelectedIndustry(key as keyof typeof INDUSTRY_BENCHMARKS)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors duration-200 ${
+                      active
+                        ? 'bg-purple-600 border-purple-500 text-white'
+                        : 'bg-white/[0.03] border-white/10 text-gray-400 hover:border-purple-700/60 hover:text-white'
+                    }`}
+                  >
+                    {data.name}
+                  </button>
+                )
+              })}
             </div>
-            <div className="bg-violet-950/40 rounded-lg p-3 border border-violet-800/20">
-              <div className="text-violet-400 font-medium">Flow RPR</div>
-              <div className="text-2xl font-bold text-white">${formatNumber(industry.flowRPR, 2)}</div>
-              <div className="text-violet-400 text-xs">per recipient</div>
+            <div className="grid grid-cols-2 gap-3 max-w-md">
+              <div className="rounded-lg bg-white/[0.03] border border-white/[0.08] p-4">
+                <div className="text-xs text-gray-500 mb-1">Campaign RPR</div>
+                <div className="text-2xl font-bold text-white tabular-nums">${formatNumber(industry.campaignRPR, 3)}</div>
+                <div className="text-xs text-gray-600 mt-0.5">per recipient</div>
+              </div>
+              <div className="rounded-lg bg-white/[0.03] border border-white/[0.08] p-4">
+                <div className="text-xs text-gray-500 mb-1">Flow RPR</div>
+                <div className="text-2xl font-bold text-white tabular-nums">${formatNumber(industry.flowRPR, 2)}</div>
+                <div className="text-xs text-gray-600 mt-0.5">per recipient</div>
+              </div>
             </div>
-          </div>
-        </div>
+          </CalcStep>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Panel - Inputs */}
-          <div className="space-y-6">
-            {/* Business Inputs */}
-            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
-              <h2 className="text-xl font-semibold text-white mb-4">💼 Your Business</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Email List Size: {emailListSize.toLocaleString()} profiles
-                  </label>
-                  <input
-                    type="range"
-                    min="500"
-                    max="500000"
-                    step="500"
-                    value={emailListSize}
-                    onChange={(e) => setEmailListSize(Number(e.target.value))}
-                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  />
-                  <div className="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>500</span>
-                    <span>500k</span>
-                  </div>
-                  <div className="mt-2 text-sm text-purple-400">
-                    Klaviyo Cost: {formatCurrency(klaviyoCost)}/month
-                  </div>
-                  <div className="mt-3 bg-amber-950/30 border border-amber-700/30 rounded-lg p-3">
-                    <div className="text-xs font-semibold text-amber-300 mb-1">📊 Engaged List Size</div>
-                    <div className="text-lg font-bold text-amber-200">{engagedListSize.toLocaleString()} profiles (40%)</div>
-                    <div className="text-xs text-amber-400/80 mt-1">
-                      Your "true" list size is typically 30-40% of your total list. This is your engaged segment
-                      (90-240 day active subscribers) and is what we use for all revenue calculations.
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Total Monthly Revenue
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-3 text-gray-400">$</span>
-                    <input
-                      type="number"
-                      value={totalMonthlyRevenue}
-                      onChange={(e) => setTotalMonthlyRevenue(Number(e.target.value))}
-                      className="w-full pl-8 pr-4 py-2 bg-[#080810] border border-purple-800/40 text-white rounded-lg"
-                    />
-                  </div>
-                  <div className="mt-2 text-xs text-gray-500">
+          {/* Business */}
+          <CalcStep n="02" title="💼 Your Business">
+            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
+              <CalcSlider
+                label="Email List Size"
+                display={`${emailListSize.toLocaleString()} profiles`}
+                value={emailListSize} min={500} max={500000} step={500}
+                minLabel="500" maxLabel="500k"
+                onChange={setEmailListSize}
+              />
+              <div>
+                <div className="flex items-baseline justify-between gap-4 mb-2.5">
+                  <label htmlFor="totalMonthlyRevenue" className="text-sm text-gray-400">Total Monthly Revenue</label>
+                  <span className="text-xs text-gray-600 tabular-nums">
                     Annual: {formatCurrency(calculations.annualRevenue)}
                     <span className="ml-2 font-semibold text-purple-400">
                       ({calculations.annualRevenue < 1000000 ? '$0-1M' : calculations.annualRevenue < 5000000 ? '$1M-5M' : '$5M-20M'} bracket)
                     </span>
-                  </div>
+                  </span>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Average Order Value (AOV): {formatCurrency(averageOrderValue)}
-                  </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                   <input
-                    type="range"
-                    min="20"
-                    max="300"
-                    step="5"
-                    value={averageOrderValue}
-                    onChange={(e) => setAverageOrderValue(Number(e.target.value))}
-                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                    id="totalMonthlyRevenue"
+                    type="number"
+                    value={totalMonthlyRevenue}
+                    onChange={(e) => setTotalMonthlyRevenue(Number(e.target.value))}
+                    className="w-full pl-8 pr-4 py-2.5 bg-black/40 border border-white/10 text-white rounded-lg tabular-nums focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
                   />
-                  <div className="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>$20</span>
-                    <span>$300</span>
-                  </div>
                 </div>
+              </div>
+              <CalcSlider
+                label="Average Order Value (AOV)"
+                display={formatCurrency(averageOrderValue)}
+                value={averageOrderValue} min={20} max={300} step={5}
+                minLabel="$20" maxLabel="$300"
+                onChange={setAverageOrderValue}
+              />
+              <CalcSlider
+                label="Gross Profit Margin"
+                display={`${grossMargin}%`}
+                value={grossMargin} min={20} max={90}
+                minLabel="20%" maxLabel="90%"
+                onChange={setGrossMargin}
+              />
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Gross Profit Margin: {grossMargin}%
-                  </label>
-                  <input
-                    type="range"
-                    min="20"
-                    max="90"
-                    value={grossMargin}
-                    onChange={(e) => setGrossMargin(Number(e.target.value))}
-                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  />
-                  <div className="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>20%</span>
-                    <span>90%</span>
-                  </div>
-                </div>
+            <div className="grid sm:grid-cols-[auto_minmax(0,1fr)] gap-x-8 gap-y-3 items-baseline rounded-lg bg-white/[0.03] border border-white/[0.08] p-5">
+              <div>
+                <div className="text-xs text-gray-500 mb-1">📊 Engaged List Size</div>
+                <div className="text-xl font-bold text-white tabular-nums whitespace-nowrap">{engagedListSize.toLocaleString()} profiles (40%)</div>
+              </div>
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Your "true" list size is typically 30-40% of your total list. This is your engaged segment
+                (90-240 day active subscribers) and is what we use for all revenue calculations.
+              </p>
+              <div className="sm:col-span-2 text-xs text-gray-500 border-t border-white/[0.08] pt-3">
+                Klaviyo Cost: <span className="font-semibold text-purple-400 tabular-nums">{formatCurrency(klaviyoCost)}/month</span>
+              </div>
+            </div>
+          </CalcStep>
+
+          {/* Traffic & Pop-up */}
+          <CalcStep n="03" title="🌐 Website Traffic & Pop-up">
+            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
+              <CalcSlider
+                label="Monthly Website Visitors"
+                display={monthlyTraffic.toLocaleString()}
+                value={monthlyTraffic} min={1000} max={500000} step={1000}
+                minLabel="1k" maxLabel="500k"
+                onChange={setMonthlyTraffic}
+              />
+              <CalcSlider
+                label="Pop-up Conversion Rate"
+                display={`${popupConversionRate.toFixed(1)}%`}
+                value={popupConversionRate} min={1} max={20} step={0.5}
+                minLabel="1%" maxLabel="20%"
+                onChange={setPopupConversionRate}
+              />
+            </div>
+
+            <div className="rounded-lg border border-purple-700/40 bg-purple-950/30 p-5">
+              <div className="text-sm font-semibold text-purple-300 mb-2">
+                📊 New Subscribers Per Month
+              </div>
+              <div className="text-3xl font-bold text-white tabular-nums">
+                {calculations.newSubscribersPerMonth.toLocaleString()}
+              </div>
+              <div className="text-xs text-purple-300/70 mt-2 leading-relaxed">
+                These {calculations.newSubscribersPerMonth.toLocaleString()} new subscribers enter your flows each month.
+                <br/>
+                <span className="font-semibold text-purple-300">Without traffic, there is no flow revenue.</span>
               </div>
             </div>
 
-            {/* Traffic & Pop-up Performance */}
-            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
-              <h2 className="text-xl font-semibold text-white mb-4">🌐 Website Traffic & Pop-up</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Monthly Website Visitors: {monthlyTraffic.toLocaleString()}
-                  </label>
-                  <input
-                    type="range"
-                    min="1000"
-                    max="500000"
-                    step="1000"
-                    value={monthlyTraffic}
-                    onChange={(e) => setMonthlyTraffic(Number(e.target.value))}
-                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  />
-                  <div className="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>1k</span>
-                    <span>500k</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Pop-up Conversion Rate: {popupConversionRate.toFixed(1)}%
-                  </label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="20"
-                    step="0.5"
-                    value={popupConversionRate}
-                    onChange={(e) => setPopupConversionRate(Number(e.target.value))}
-                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  />
-                  <div className="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>1%</span>
-                    <span>20%</span>
-                  </div>
-                </div>
-
-                <div className="bg-purple-950/40 border border-purple-700/40 rounded-lg p-4">
-                  <div className="text-sm font-semibold text-purple-300 mb-2">
-                    📊 New Subscribers Per Month
-                  </div>
-                  <div className="text-3xl font-bold text-white">
-                    {calculations.newSubscribersPerMonth.toLocaleString()}
-                  </div>
-                  <div className="text-xs text-purple-400 mt-2">
-                    These {calculations.newSubscribersPerMonth.toLocaleString()} new subscribers enter your flows each month.
-                    <br/>
-                    <span className="font-semibold text-purple-300">Without traffic, there is no flow revenue.</span>
-                  </div>
-                </div>
-
-                <div className="bg-violet-950/40 border border-violet-800/30 rounded-lg p-3">
-                  <div className="text-xs text-violet-300">
-                    <span className="font-semibold">💡 Pop-up Benchmarks:</span>
-                    <br/>• 1-3%: Typical (most brands)
-                    <br/>• 5-8%: Good performance
-                    <br/>• 10%+: Excellent (good offer/audience match)
-                  </div>
-                </div>
-
-                {calculations.campaignMultiplier > 1 && (
-                  <div className="bg-green-950/40 border border-green-800/30 rounded-lg p-3">
-                    <div className="text-xs text-green-300">
-                      <span className="font-semibold">🔥 Campaign Multiplier Active:</span>
-                      <br/>Your {campaignsPerMonth} campaigns/month are boosting flow revenue by{' '}
-                      <span className="font-bold">{((calculations.campaignMultiplier - 1) * 100).toFixed(1)}%</span>
-                      <br/>(More campaigns = more people re-triggering flows)
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Email Strategy */}
-            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
-              <h2 className="text-xl font-semibold text-white mb-4">📧 Your Email Strategy</h2>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Campaigns per Month: {campaignsPerMonth}
-                  </label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="30"
-                    value={campaignsPerMonth}
-                    onChange={(e) => setCampaignsPerMonth(Number(e.target.value))}
-                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  />
-                  <div className="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>1</span>
-                    <span>30</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Number of Active Flows: {numberOfFlows}
-                  </label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="20"
-                    value={numberOfFlows}
-                    onChange={(e) => setNumberOfFlows(Number(e.target.value))}
-                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  />
-                  <div className="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>1</span>
-                    <span>20</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Monthly Retainer: {formatCurrency(monthlyRetainer)}
-                  </label>
-                  <input
-                    type="range"
-                    min="2000"
-                    max="10000"
-                    step="500"
-                    value={monthlyRetainer}
-                    onChange={(e) => setMonthlyRetainer(Number(e.target.value))}
-                    className="w-full h-2 bg-purple-900/40 rounded-lg appearance-none cursor-pointer accent-purple-500"
-                  />
-                  <div className="flex justify-between text-xs text-gray-600 mt-1">
-                    <span>$2k</span>
-                    <span>$10k</span>
-                  </div>
-                </div>
-
-                {/* Manual Overrides */}
-                <div className="border-t border-white/10 pt-4 mt-4">
-                  <h3 className="text-sm font-semibold text-gray-400 mb-3">🎯 Manual Overrides (Optional)</h3>
-
-                  <div className="space-y-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <input
-                          type="checkbox"
-                          id="manualCampaign"
-                          checked={useManualCampaignRev}
-                          onChange={(e) => {
-                            setUseManualCampaignRev(e.target.checked)
-                            if (e.target.checked && manualAvgCampaignRev === 0) {
-                              setManualAvgCampaignRev(calculations.avgCampaignRev)
-                            }
-                          }}
-                          className="w-4 h-4 accent-purple-500"
-                        />
-                        <label htmlFor="manualCampaign" className="text-sm font-medium text-gray-300">
-                          Set Average Campaign Revenue
-                        </label>
-                      </div>
-                      {useManualCampaignRev && (
-                        <div className="relative">
-                          <span className="absolute left-3 top-3 text-gray-400">$</span>
-                          <input
-                            type="number"
-                            value={manualAvgCampaignRev}
-                            onChange={(e) => setManualAvgCampaignRev(Number(e.target.value))}
-                            className="w-full pl-8 pr-4 py-2 bg-[#080810] border border-purple-800/40 text-white rounded-lg"
-                            placeholder={`Default: ${formatCurrency(calculations.avgCampaignRev)}`}
-                          />
-                        </div>
-                      )}
-                      {!useManualCampaignRev && (
-                        <div className="text-xs text-gray-600 ml-6">
-                          Default: {formatCurrency(industry.campaignRPR * engagedListSize)} per campaign
-                        </div>
-                      )}
-                    </div>
-                  </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div className="rounded-lg bg-white/[0.03] border border-white/[0.08] p-4">
+                <div className="text-xs text-gray-500 leading-relaxed">
+                  <span className="font-semibold text-gray-400">💡 Pop-up Benchmarks:</span>
+                  <br/>• 1-3%: Typical (most brands)
+                  <br/>• 5-8%: Good performance
+                  <br/>• 10%+: Excellent (good offer/audience match)
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Right Panel - Results */}
+              {calculations.campaignMultiplier > 1 && (
+                <div className="rounded-lg bg-green-950/25 border border-green-800/30 p-4">
+                  <div className="text-xs text-green-300/80 leading-relaxed">
+                    <span className="font-semibold text-green-300">🔥 Campaign Multiplier Active:</span>
+                    <br/>Your {campaignsPerMonth} campaigns/month are boosting flow revenue by{' '}
+                    <span className="font-bold text-green-200">{((calculations.campaignMultiplier - 1) * 100).toFixed(1)}%</span>
+                    <br/>(More campaigns = more people re-triggering flows)
+                  </div>
+                </div>
+              )}
+            </div>
+          </CalcStep>
+
+          {/* Email Strategy */}
+          <CalcStep n="04" title="📧 Your Email Strategy">
+            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
+              <CalcSlider
+                label="Campaigns per Month"
+                display={String(campaignsPerMonth)}
+                value={campaignsPerMonth} min={1} max={30}
+                minLabel="1" maxLabel="30"
+                onChange={setCampaignsPerMonth}
+              />
+              <CalcSlider
+                label="Number of Active Flows"
+                display={String(numberOfFlows)}
+                value={numberOfFlows} min={1} max={20}
+                minLabel="1" maxLabel="20"
+                onChange={setNumberOfFlows}
+              />
+              <CalcSlider
+                label="Monthly Retainer"
+                display={formatCurrency(monthlyRetainer)}
+                value={monthlyRetainer} min={2000} max={10000} step={500}
+                minLabel="$2k" maxLabel="$10k"
+                onChange={setMonthlyRetainer}
+              />
+            </div>
+
+            {/* Manual Overrides */}
+            <div className="border-t border-white/[0.08] pt-5">
+              <h4 className="text-sm font-semibold text-gray-400 mb-3">🎯 Manual Overrides (Optional)</h4>
+              <div className="flex items-center gap-2 mb-2">
+                <input
+                  type="checkbox"
+                  id="manualCampaign"
+                  checked={useManualCampaignRev}
+                  onChange={(e) => {
+                    setUseManualCampaignRev(e.target.checked)
+                    if (e.target.checked && manualAvgCampaignRev === 0) {
+                      setManualAvgCampaignRev(calculations.avgCampaignRev)
+                    }
+                  }}
+                  className="w-4 h-4 accent-purple-500"
+                />
+                <label htmlFor="manualCampaign" className="text-sm text-gray-300">
+                  Set Average Campaign Revenue
+                </label>
+              </div>
+              {useManualCampaignRev ? (
+                <div className="relative max-w-xs">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                  <input
+                    type="number"
+                    value={manualAvgCampaignRev}
+                    onChange={(e) => setManualAvgCampaignRev(Number(e.target.value))}
+                    className="w-full pl-8 pr-4 py-2.5 bg-black/40 border border-white/10 text-white rounded-lg tabular-nums focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                    placeholder={`Default: ${formatCurrency(calculations.avgCampaignRev)}`}
+                  />
+                </div>
+              ) : (
+                <div className="text-xs text-gray-600 ml-6">
+                  Default: {formatCurrency(industry.campaignRPR * engagedListSize)} per campaign
+                </div>
+              )}
+            </div>
+          </CalcStep>
+        </div>
+
+        {/* ---------- STAGE 2: RESULTS ---------- */}
+        <div className="mt-8 space-y-6">
           <div className="space-y-6">
             {/* Current Performance */}
             <div className="bg-gradient-to-br from-purple-900 to-violet-950 rounded-xl border border-purple-700/40 p-6 text-white glow-purple-sm">
               <h2 className="text-2xl font-bold mb-6">📈 Your Current Performance (Monthly)</h2>
-              
-              <div className="grid grid-cols-2 gap-4 mb-4">
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-white/10 rounded-lg p-4 backdrop-blur">
                   <div className="text-sm opacity-90 mb-1">Campaign Revenue</div>
                   <div className="text-2xl font-bold">{formatCurrency(calculations.campaignRevenue)}</div>
@@ -2244,7 +2204,7 @@ function Home() {
                 </div>
 
                 {/* Total Revenue with green email-contribution bar */}
-                <div className="bg-white/10 rounded-lg p-4 backdrop-blur col-span-2">
+                <div className="bg-white/10 rounded-lg p-4 backdrop-blur sm:col-span-2">
                   <div className="flex justify-between items-baseline mb-1">
                     <div className="text-sm opacity-90">Total Monthly Revenue</div>
                     <div className="text-xs opacity-60 italic">business + email</div>
@@ -2268,7 +2228,7 @@ function Home() {
                         <div
                           className="flex-1 bg-gradient-to-r from-green-400 via-emerald-400 to-green-300 flex items-center justify-center text-xs font-bold text-emerald-900 overflow-hidden whitespace-nowrap px-2"
                         >
-                          +{formatCurrency(calculations.incrementalEmailRevenue)} email&nbsp;·&nbsp;{formatNumber(calculations.emailAttributedPercent, 1)}% of total*
+                          +{formatCurrency(calculations.incrementalEmailRevenue)} email&nbsp;·&nbsp;{formatNumber(calculations.emailAttributedPercent, 1)}% of total
                         </div>
                       </div>
                     )
@@ -2292,7 +2252,7 @@ function Home() {
                   <div className="text-xs opacity-75 mt-1">revenue</div>
                 </div>
 
-                <div className="bg-white/10 rounded-lg p-4 backdrop-blur col-span-2">
+                <div className="bg-white/10 rounded-lg p-4 backdrop-blur sm:col-span-2">
                   <div className="text-sm opacity-90 mb-1">Net Profit from Email</div>
                   <div className="text-3xl font-bold">{formatCurrency(calculations.netProfitFromEmail)}</div>
                   <div className="text-xs opacity-75 mt-1">
@@ -2302,8 +2262,9 @@ function Home() {
               </div>
             </div>
 
+            <div className="grid lg:grid-cols-2 gap-6">
             {/* Campaign Revenue Chart */}
-            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
+            <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-6">
               <h2 className="text-xl font-semibold text-white mb-2">
                 📈 Campaign Volume vs Revenue
               </h2>
@@ -2372,15 +2333,15 @@ function Home() {
                   </svg>
                 )
               })()}
-              <div className="bg-purple-950/40 border border-purple-700/30 rounded-lg p-3 mt-3">
-                <p className="text-xs text-gray-400">
+              <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 mt-4">
+                <p className="text-xs text-gray-500 leading-relaxed">
                   <span className="font-semibold text-purple-400">Two performance peaks:</span> Most brands hit a first revenue peak at <strong className="text-white">10–12 campaigns/month</strong> - the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong className="text-white">second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new offers, not just higher frequency.
                 </p>
               </div>
             </div>
 
             {/* Flow Revenue Chart */}
-            <div className="bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-6">
+            <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-6">
               <h2 className="text-xl font-semibold text-white mb-2">
                 ⚙️ Flow Count vs Revenue
               </h2>
@@ -2448,18 +2409,19 @@ function Home() {
                   </svg>
                 )
               })()}
-              <div className="bg-violet-950/40 border border-violet-700/30 rounded-lg p-3 mt-3">
-                <p className="text-xs text-gray-400">
+              <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 mt-4">
+                <p className="text-xs text-gray-500 leading-relaxed">
                   <span className="font-semibold text-violet-400">40% from the first 8 flows. 60% from going further.</span> The first <strong>8 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset, and a couple more) build your foundation linearly - each one adds predictable, meaningful revenue. But that only unlocks <strong>40% of what email can do</strong>. The other 60% is hidden revenue that 90% of brands never touch. Top performers keep building flows because that's where true retention lives: cross-sell sequences, upsell flows, different offers for non-buyers, segment-specific win-backs, re-engagement for lapsed customers. Email is uniquely suited for this because you can test different offers with different segments at near-zero cost - no ad spend, no risk.
                 </p>
               </div>
             </div>
+            </div>{/* end chart pair */}
 
           </div>
         </div>
 
         {/* Industry Performance Spectrum - Full Width */}
-        <div className="mt-8 bg-[#0d0d1a] rounded-xl border border-purple-900/30 p-8">
+        <div className="mt-8 bg-[#0b0b16] rounded-xl border border-white/[0.08] p-7 sm:p-9">
           <h2 className="text-3xl font-bold text-white mb-2">
             🎯 Industry Performance Spectrum
           </h2>
@@ -2544,11 +2506,11 @@ function Home() {
             ))}
           </div>
 
-          <div className="mt-8 bg-purple-950/30 border border-purple-800/40 rounded-lg p-6">
+          <div className="mt-10 pt-8 border-t border-white/[0.08]">
             <div className="font-bold text-purple-300 mb-4 text-2xl">💡 Opportunity Analysis</div>
 
             <div className="space-y-3 mb-5">
-              <div className="bg-white/5 rounded-lg p-4 border border-purple-800/30">
+              <div className="bg-white/[0.03] rounded-lg p-4 border border-white/[0.08]">
                 <div className="flex justify-between items-center">
                   <div className="text-base text-gray-300">
                     <span className="font-semibold text-red-400">90% of Brands</span> → <span className="font-semibold text-purple-400">Good Performance</span>
@@ -2562,7 +2524,7 @@ function Home() {
                 </div>
               </div>
 
-              <div className="bg-white/5 rounded-lg p-4 border border-purple-800/30">
+              <div className="bg-white/[0.03] rounded-lg p-4 border border-white/[0.08]">
                 <div className="flex justify-between items-center">
                   <div className="text-base text-gray-300">
                     <span className="font-semibold text-red-400">90% of Brands</span> → <span className="font-semibold text-green-400">Best-in-Class (Top 1%)</span>
@@ -2645,17 +2607,17 @@ function Home() {
         </div>
 
         {/* Per $1 Invested Callout */}
-        <div className="mt-6 rounded-xl border border-purple-700/30 bg-[#0d0d1a] p-8 text-center">
+        <div className="mt-6 rounded-xl border border-white/[0.08] bg-[#0b0b16] p-8 text-center">
           <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-3">Your Email ROI</p>
           <p className="text-2xl text-gray-300 leading-relaxed">
             For every{' '}
             <span className="font-bold text-white">$1</span>
             {' '}invested in email marketing, you get back{' '}
-            <span className="font-extrabold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
+            <span className="font-extrabold text-3xl text-purple-300 tabular-nums">
               ${formatNumber(scenarioData[2].netROI, 2)}
             </span>
             {' '}–{' '}
-            <span className="font-extrabold text-3xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
+            <span className="font-extrabold text-3xl text-purple-300 tabular-nums">
               ${formatNumber(scenarioData[3].netROI, 2)}
             </span>
           </p>
@@ -2666,16 +2628,7 @@ function Home() {
         <div className="mt-12 text-center text-sm text-gray-600">
           <p>Based on Klaviyo benchmarks from 325B+ emails • RPR = Revenue Per Recipient</p>
           <p className="mt-2">Profit ROI accounts for gross margins. Revenue ROI is typically 4-5x higher.</p>
-          <p className="mt-3 text-xs text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            * <strong>Last-touch attribution note:</strong> Klaviyo attributes a purchase to email whenever a customer clicks
-            an email within the attribution window - even if they would have purchased without it. Approximately 20% of
-            Klaviyo-reported email revenue falls into this category (most commonly attributed to welcome flows, where a
-            new customer was already intending to buy). The dashboard deducts this 20% and adds only the remaining 80%
-            (truly incremental revenue) on top of your base business revenue to calculate the correct total and
-            email-attributed percentage.
-          </p>
         </div>
-        </div>{/* end dark calculator container */}
       </div>
     </section>
 
@@ -2710,7 +2663,7 @@ function Home() {
       </section>
 
       {/* ==================== FOOTER ==================== */}
-      <footer className="bg-[#08080f] border-t border-white/8 px-6 pt-8 pb-6">
+      <footer className="bg-[#08080f] border-t border-white/[0.08] px-6 pt-8 pb-6">
         <div className="max-w-7xl mx-auto">
           {/* Main footer row */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-5 mb-6">
