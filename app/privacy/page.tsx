@@ -26,51 +26,51 @@ export default function PrivacyPage() {
 
       {/* Content */}
       <main className="max-w-2xl mx-auto px-6 pt-32 pb-24">
-        <h1 className="text-4xl font-bold text-white mb-2">Privacy Policy</h1>
+        <h1 className="text-4xl font-normal text-white mb-2">Privacy Policy</h1>
         <p className="text-sm text-gray-500 mb-12">Last updated: January 2026</p>
 
         <div className="space-y-10 text-gray-300 leading-relaxed">
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Who we are</h2>
+            <h2 className="text-lg font-normal text-white mb-3">Who we are</h2>
             <p>Mars Copywriting j.d.o.o., registered at Topoljska ulica 15B, 10255, Donji Stupnik, Croatia.</p>
             <p className="mt-2">Contact: <a href="mailto:jacob@marscopywriting.com" className="text-purple-400 hover:text-purple-300 transition-colors">jacob@marscopywriting.com</a></p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">What we collect and why</h2>
+            <h2 className="text-lg font-normal text-white mb-3">What we collect and why</h2>
             <p>When you fill out a booking or contact form on this website, we collect your name, email address, and any information you choose to share about your business. We use this only to respond to your enquiry and, if you become a client, to manage our working relationship.</p>
             <p className="mt-3">We do not collect data through newsletter signups. We do not run a public email list.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Cookies and analytics</h2>
+            <h2 className="text-lg font-normal text-white mb-3">Cookies and analytics</h2>
             <p>This website may use basic analytics (such as Google Analytics) to understand how visitors use the site. This may involve cookies that collect anonymised data like pages visited and time on site. No personally identifiable information is collected through analytics. You can disable cookies in your browser settings at any time.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Third-party tools</h2>
+            <h2 className="text-lg font-normal text-white mb-3">Third-party tools</h2>
             <p>We use Klaviyo to manage email marketing on behalf of our clients. Klaviyo processes data under its own privacy policy, available at <a href="https://www.klaviyo.com/legal/privacy" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:text-purple-300 transition-colors">klaviyo.com/legal/privacy</a>. We do not share your personal data with Klaviyo or any other third party for our own marketing purposes.</p>
             <p className="mt-3">We may use tools like Calendly or a similar booking platform to schedule calls. If you book through a third-party tool, their privacy policy applies to that interaction.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Data storage and security</h2>
+            <h2 className="text-lg font-normal text-white mb-3">Data storage and security</h2>
             <p>Your data is stored securely and accessed only by us. We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">How long we keep your data</h2>
+            <h2 className="text-lg font-normal text-white mb-3">How long we keep your data</h2>
             <p>If you contact us but do not become a client, we retain your information for up to 12 months, after which it is deleted. If you become a client, we retain relevant business records for as long as legally required.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Your rights (GDPR)</h2>
+            <h2 className="text-lg font-normal text-white mb-3">Your rights (GDPR)</h2>
             <p>You have the right to access the personal data we hold about you, request corrections, request deletion, and withdraw consent at any time. To exercise any of these rights, email us at <a href="mailto:jacob@marscopywriting.com" className="text-purple-400 hover:text-purple-300 transition-colors">jacob@marscopywriting.com</a>. We will respond within 30 days.</p>
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-white mb-3">Changes to this policy</h2>
+            <h2 className="text-lg font-normal text-white mb-3">Changes to this policy</h2>
             <p>We may update this policy occasionally. The date at the top of this page reflects the most recent revision.</p>
           </section>
 

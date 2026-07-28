@@ -26,23 +26,23 @@ export default function RefundCancellationPage() {
 
       {/* Content */}
       <main className="max-w-2xl mx-auto px-6 pt-32 pb-24">
-        <h1 className="text-4xl font-bold text-white mb-2">Refund &amp; Cancellation Policy</h1>
+        <h1 className="text-4xl font-normal text-white mb-2">Refund &amp; Cancellation Policy</h1>
         <p className="text-sm text-gray-500 mb-12">Last updated: July 2026 · Mars Copywriting j.d.o.o.</p>
 
         <div className="space-y-10 text-gray-300 leading-relaxed">
 
           {/* ── CANCELLATION ── */}
           <section>
-            <h2 className="text-xl font-bold text-white mb-5">Cancellation Policy</h2>
+            <h2 className="text-xl font-normal text-white mb-5">Cancellation Policy</h2>
 
             <div className="space-y-6">
               <div>
-                <h3 className="text-base font-semibold text-white mb-2">Month-to-month billing</h3>
+                <h3 className="text-base font-normal text-white mb-2">Month-to-month billing</h3>
                 <p>Services are billed monthly. There are no long-term contracts or lock-in periods. You may cancel at any time before your next billing cycle and you will not be charged again.</p>
               </div>
 
               <div>
-                <h3 className="text-base font-semibold text-white mb-2">How to cancel</h3>
+                <h3 className="text-base font-normal text-white mb-2">How to cancel</h3>
                 <p>To cancel your retainer, simply email us at <a href="mailto:jacob@marscopywriting.com" className="text-purple-400 hover:text-purple-300 transition-colors">jacob@marscopywriting.com</a> before your next billing date. We will confirm your cancellation in writing.</p>
                 <p className="mt-3">Cancellations take effect at the end of the period already paid for.</p>
               </div>
@@ -54,38 +54,38 @@ export default function RefundCancellationPage() {
 
           {/* ── REFUNDS ── */}
           <section>
-            <h2 className="text-xl font-bold text-white mb-5">Refund Policy</h2>
+            <h2 className="text-xl font-normal text-white mb-5">Refund Policy</h2>
 
             <div className="space-y-6">
               <div className="rounded-xl border border-purple-700/40 bg-purple-950/25 p-6">
-                <h3 className="text-base font-semibold text-white mb-2">90-Day Performance Guarantee</h3>
+                <h3 className="text-base font-normal text-white mb-2">90-Day Performance Guarantee</h3>
                 <p>If we don&rsquo;t hit $50,000 in attributed revenue as measured in your Klaviyo dashboard within the first 90 days, you get every dollar back.</p>
                 <p className="mt-3">The guarantee applies to brands doing at least $1M per year in store revenue. If you&rsquo;re not happy after 90 days and we didn&rsquo;t hit the guarantee, you get a full refund and you can walk away.</p>
                 <p className="mt-3 text-sm text-purple-300/80">Attributed revenue is measured in your own Klaviyo dashboard, over the 90 days beginning on your first billing date. This guarantee takes precedence over the general refund terms below.</p>
               </div>
 
               <div>
-                <h3 className="text-base font-semibold text-white mb-2">General policy</h3>
+                <h3 className="text-base font-normal text-white mb-2">General policy</h3>
                 <p>Except as provided under the 90-Day Performance Guarantee above, all payments for email copywriting and email marketing services are non-refundable once work has commenced.</p>
               </div>
 
               <div>
-                <h3 className="text-base font-semibold text-white mb-2">If we cannot deliver</h3>
+                <h3 className="text-base font-normal text-white mb-2">If we cannot deliver</h3>
                 <p>If we are unable to deliver the agreed services, you will receive a full refund for the undelivered work.</p>
               </div>
 
               <div>
-                <h3 className="text-base font-semibold text-white mb-2">No guarantee of results beyond the 90-Day Performance Guarantee</h3>
+                <h3 className="text-base font-normal text-white mb-2">No guarantee of results beyond the 90-Day Performance Guarantee</h3>
                 <p>Other than the 90-Day Performance Guarantee set out above, we do not guarantee specific revenue results, open rates, or other performance outcomes, as these depend on factors outside our control — including list quality, audience, offer, and market conditions.</p>
               </div>
 
               <div>
-                <h3 className="text-base font-semibold text-white mb-2">How refunds are processed</h3>
+                <h3 className="text-base font-normal text-white mb-2">How refunds are processed</h3>
                 <p>Refunds, where applicable, are returned to the original payment method within 5–10 business days.</p>
               </div>
 
               <div>
-                <h3 className="text-base font-semibold text-white mb-2">Refund requests</h3>
+                <h3 className="text-base font-normal text-white mb-2">Refund requests</h3>
                 <p>To request a refund, contact us at <a href="mailto:jacob@marscopywriting.com" className="text-purple-400 hover:text-purple-300 transition-colors">jacob@marscopywriting.com</a>.</p>
               </div>
             </div>

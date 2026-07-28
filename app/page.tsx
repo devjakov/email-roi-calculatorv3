@@ -661,7 +661,7 @@ function MosaicMarquee({
 
   return (
     <div>
-      <h3 className="text-3xl md:text-4xl font-bold text-white mb-6 text-center">{label}</h3>
+      <h3 className="text-3xl md:text-4xl font-normal text-white mb-6 text-center">{label}</h3>
       <div
         ref={viewportRef}
         className="overflow-hidden carousel-mask mosaic-viewport"
@@ -835,7 +835,7 @@ function CalcStep({ n, title, children }: { n: string; title: string; children: 
     <div className="grid lg:grid-cols-[13rem_minmax(0,1fr)] gap-x-10 gap-y-6 py-10 first:pt-0 last:pb-0 border-t border-white/[0.08] first:border-t-0">
       <div className="flex items-baseline gap-4 lg:block">
         <div className="text-2xl font-extrabold tabular-nums text-purple-500/40 leading-none lg:mb-3">{n}</div>
-        <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <h3 className="text-lg font-normal text-white">{title}</h3>
       </div>
       <div className="space-y-6">{children}</div>
     </div>
@@ -1428,7 +1428,7 @@ function Home() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-[2rem] sm:text-5xl lg:text-[3.75rem] font-extrabold text-white leading-[1.05] tracking-[-0.03em] glow-text-purple mb-5 text-balance">
+          <h1 className="text-[2rem] sm:text-5xl lg:text-[3.75rem] font-normal text-white leading-[1.05] tracking-[-0.03em] glow-text-purple mb-5 text-balance">
             We&rsquo;ll Add <span className="key-result">$50,000-$100,000</span> Per Month in New Email Revenue in 90 Days{' '}
             <span className="whitespace-nowrap border-b-[3px] border-purple-500 pb-1">or You Don&rsquo;t Pay</span>
           </h1>
@@ -1493,7 +1493,7 @@ function Home() {
       {/* ==================== CASE STUDIES ==================== */}
       <section id="results" className="bg-[#08080f] py-24 px-6 border-t border-white/5">
           <div className="reveal max-w-2xl mx-auto text-center mb-14">
-            <h2 className="text-4xl font-bold text-white mb-3">Real Results From Real Brands</h2>
+            <h2 className="text-4xl font-normal text-white mb-3">Real Results From Real Brands</h2>
             <p className="text-gray-500">What happens when email is done right.</p>
           </div>
 
@@ -1541,7 +1541,7 @@ function Home() {
                     <span className="h-px flex-1 bg-white/10"></span>
                     <span className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">{cs.brand}</span>
                   </div>
-                  <h3 className="font-extrabold text-white mb-7">
+                  <h3 className="font-normal text-white mb-7">
                     <span className="block text-[1.7rem] md:text-4xl leading-[1.1]"><span className="key-result">{cs.keyResult}</span><span className="glow-text-purple">{cs.headlineBig}</span></span>
                     <span className="block mt-3 text-base md:text-lg font-semibold text-gray-400 leading-snug">{cs.headlineSub}</span>
                   </h3>
@@ -1580,7 +1580,7 @@ function Home() {
           <SocialProofCarousels />
 
           <div className="reveal max-w-2xl mx-auto text-center mb-12 mt-24">
-            <h3 className="text-3xl md:text-4xl font-bold text-white mb-3">More Wins Across Brands</h3>
+            <h3 className="text-3xl md:text-4xl font-normal text-white mb-3">More Wins Across Brands</h3>
             <p className="text-gray-500">Fitness, luxury, and supplement brands, by the numbers.</p>
           </div>
 
@@ -1709,7 +1709,7 @@ function Home() {
       <section id="reviews" className="bg-[#0d0d18] py-24 px-6 border-t border-white/5">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-4xl font-bold text-white mb-3">Kind Words</h2>
+            <h2 className="text-4xl font-normal text-white mb-3">Kind Words</h2>
             <p className="text-gray-500">From founders and agency owners who've worked with Jacob.</p>
           </div>
           <div className="space-y-5">
@@ -1739,7 +1739,7 @@ function Home() {
       {/* ==================== FIT SECTION ==================== */}
       <section id="fit" className="bg-[#08080f] py-24 px-6 border-t border-white/5">
         <div className="max-w-4xl mx-auto">
-          <h2 className="reveal text-4xl font-bold text-white mb-14">This is for you if:</h2>
+          <h2 className="reveal text-4xl font-normal text-white mb-14">This is for you if:</h2>
 
           <ol className="reveal">
             {[
@@ -1764,7 +1764,7 @@ function Home() {
 
           {/* Not a fit */}
           <div className="reveal mt-16 pt-10 border-t border-red-900/30">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-red-400/80 mb-5">Not a fit if...</h3>
+            <h3 className="text-sm font-normal uppercase tracking-[0.12em] text-red-400/80 mb-5">Not a fit if...</h3>
             <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-3">
               {[
                 "You're not running an ecommerce store",
@@ -1786,7 +1786,7 @@ function Home() {
       <section id="services" className="bg-[#0d0d18] py-24 px-6 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
           <div className="reveal text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">What We Do</h2>
+            <h2 className="text-4xl font-normal text-white mb-4">What We Do</h2>
             <p className="text-gray-400 text-lg max-w-xl mx-auto">End-to-end email marketing for ecommerce brands that want revenue without burning margins on discounts.</p>
           </div>
           <div className="reveal grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -1812,7 +1812,7 @@ function Home() {
       <section className="bg-[#08080f] py-24 px-6 border-t border-white/5">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-14">
-            <h2 className="text-4xl font-bold text-white mb-3">Frequently Asked Questions</h2>
+            <h2 className="text-4xl font-normal text-white mb-3">Frequently Asked Questions</h2>
             <p className="text-gray-500">Everything you need to know before booking a call.</p>
           </div>
           <div className="divide-y divide-white/[0.08]">
@@ -1858,7 +1858,7 @@ function Home() {
                     aria-controls={`faq-panel-${i}`}
                     className="w-full flex items-start justify-between text-left gap-6 py-6 group"
                   >
-                    <span className="text-lg font-semibold text-white group-hover:text-purple-200 transition-colors duration-200">{item.q}</span>
+                    <span className="text-lg font-normal text-white group-hover:text-purple-200 transition-colors duration-200">{item.q}</span>
                     <svg
                       className={`w-6 h-6 mt-0.5 shrink-0 transition-[transform,color] duration-300 ease-out ${openFaq === i ? 'rotate-180 text-purple-400' : 'text-gray-600 group-hover:text-gray-400'}`}
                       fill="none"
@@ -1894,7 +1894,7 @@ function Home() {
               <div className="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">
                 Free Strategy Preview
               </div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              <h1 className="text-4xl font-normal text-gray-900 mb-4">
                 Email Deliverables for {prospectName}
               </h1>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -1927,7 +1927,7 @@ function Home() {
                   {/* Campaign Emails */}
                   <div className="mb-12">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                      <h2 className="text-2xl font-normal text-gray-900 flex items-center gap-3">
                         <span className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-xl">📧</span>
                         Campaign Emails ({campaignSections.length})
                       </h2>
@@ -1967,7 +1967,7 @@ function Home() {
                   {/* Flow Automations */}
                   <div className="mb-12">
                     <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                      <h2 className="text-2xl font-normal text-gray-900 flex items-center gap-3">
                         <span className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-xl">⚙️</span>
                         Flow Automations ({flowSections.length})
                       </h2>
@@ -2006,7 +2006,7 @@ function Home() {
 
                   {/* CTA */}
                   <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-center text-white">
-                    <h3 className="text-2xl font-bold mb-3">Ready to deploy these for {prospectName}?</h3>
+                    <h3 className="text-2xl font-normal mb-3">Ready to deploy these for {prospectName}?</h3>
                     <p className="text-white/90 mb-6 max-w-lg mx-auto">
                       These deliverables are ready to go live in 14 days. Check the ROI calculator to see the projected impact.
                     </p>
@@ -2028,7 +2028,7 @@ function Home() {
     <section id="calculator" className={`bg-[#08080f] py-16 sm:py-20 px-4 sm:px-6 border-t border-white/5 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+          <h2 className="text-3xl sm:text-4xl font-normal text-white mb-3">
             Email Marketing ROI Calculator
             {prospectSlug && <span className="text-purple-400"> — {prospectName}</span>}
           </h2>
@@ -2264,7 +2264,7 @@ function Home() {
           <div className="space-y-6">
             {/* Current Performance */}
             <div className="bg-gradient-to-br from-purple-900 to-violet-950 rounded-xl border border-purple-700/40 p-6 text-white glow-purple-sm">
-              <h2 className="text-2xl font-bold mb-6">📈 Your Current Performance (Monthly)</h2>
+              <h2 className="text-2xl font-normal mb-6">📈 Your Current Performance (Monthly)</h2>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-white/10 rounded-lg p-4 backdrop-blur">
@@ -2361,7 +2361,7 @@ function Home() {
 
             {/* Campaign Revenue Chart */}
             <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-4 sm:p-6">
-              <h2 className="text-xl font-semibold text-white mb-2">
+              <h2 className="text-xl font-normal text-white mb-2">
                 📈 Campaign Volume vs Revenue
               </h2>
               {(() => {
@@ -2444,7 +2444,7 @@ function Home() {
 
             {/* Flow Revenue Chart */}
             <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-4 sm:p-6">
-              <h2 className="text-xl font-semibold text-white mb-2">
+              <h2 className="text-xl font-normal text-white mb-2">
                 ⚙️ Flow Count vs Revenue
               </h2>
               {(() => {
@@ -2529,7 +2529,7 @@ function Home() {
 
         {/* You Vs Other Brands - Full Width */}
         <div className="mt-8 bg-[#0b0b16] rounded-xl border border-white/[0.08] p-7 sm:p-9">
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <h2 className="text-3xl font-normal text-white mb-2">
             🎯 You Vs Other Brands
           </h2>
 
@@ -2684,7 +2684,7 @@ function Home() {
 
         {/* Bottom Line - Full Width */}
         <div className="mt-6 bg-gradient-to-br from-purple-900 to-violet-950 rounded-xl border border-purple-700/40 p-6 sm:p-10 text-white glow-purple-sm">
-          <h3 className="text-2xl sm:text-3xl font-bold mb-5">✅ Bottom Line</h3>
+          <h3 className="text-2xl sm:text-3xl font-normal mb-5">✅ Bottom Line</h3>
           <p className="leading-relaxed text-xl sm:text-2xl font-semibold max-w-[38ch]">
             Your email could be generating between{' '}
             <span className="font-extrabold text-2xl sm:text-4xl tabular-nums">{formatCurrency(scenarioData[2].netProfit)}</span>
@@ -2740,7 +2740,7 @@ function Home() {
       <section className="bg-[#08080f] py-24 px-6 border-t border-white/5">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-purple-400 text-sm font-semibold tracking-widest uppercase mb-4">Ready to grow?</p>
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-4xl sm:text-5xl font-normal text-white mb-6 leading-tight">
             Let's turn your email list<br className="hidden sm:block" /> into your #1 revenue channel.
           </h2>
           <p className="text-gray-400 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
