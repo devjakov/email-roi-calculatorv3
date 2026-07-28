@@ -2,7 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Refund & Cancellation Policy — Mars Copywriting',
+  // The root layout appends the brand via its title template.
+  title: 'Refund & Cancellation Policy',
+  description: 'Month-to-month billing, the 90-day performance guarantee, and how refunds are processed at Mars Copywriting.',
+  alternates: { canonical: '/refund-cancellation' },
 }
 
 export default function RefundCancellationPage() {

@@ -2,7 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Mars Copywriting',
+  // The root layout appends the brand via its title template.
+  title: 'Privacy Policy',
+  description: 'How Mars Copywriting collects, uses, and protects your data.',
+  alternates: { canonical: '/privacy' },
 }
 
 export default function PrivacyPage() {
