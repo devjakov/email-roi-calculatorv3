@@ -8,7 +8,7 @@
   --bg-dark-2: #0d0d18;
   --purple-glow: rgba(124, 58, 237, 0.35);
   --purple-glow-soft: rgba(124, 58, 237, 0.12);
-  --font-display: "Times New Roman", Times, ui-serif, Georgia, Cambria, serif;
+  --font-display: Georgia, Cambria, ui-serif, serif;
 }
 
 /* Headings carry the serif; body copy and UI stay on the system sans. */
