@@ -17,6 +17,34 @@ h1, h2, h3 {
   letter-spacing: -0.015em;
 }
 
+/* Calculator fields share one vertical rhythm: label row, control row, note row.
+   Without fixed band heights a slider (track + min/max) and a number input sit at
+   different heights, so neighbouring controls in the grid never line up. */
+.calc-field {
+  display: flex;
+  flex-direction: column;
+}
+.calc-field-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 1.25rem;
+  margin-bottom: 0.625rem;
+}
+.calc-field-control {
+  display: flex;
+  align-items: center;
+  height: 2.625rem;
+}
+.calc-field-foot {
+  min-height: 1rem;
+  margin-top: 0.375rem;
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  color: #6b7280;
+}
+
 /* Key result: the headline money figure. Purple runs from light to the brand
    #7c3aed the CTAs use, so it reads purple rather than the pale lavender it
    replaced. Kept on one line, since a clipped gradient restarts per line box. */

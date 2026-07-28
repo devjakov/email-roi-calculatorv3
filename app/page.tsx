@@ -855,21 +855,23 @@ function CalcSlider({ label, display, value, min, max, step = 1, minLabel, maxLa
   onChange: (v: number) => void
 }) {
   return (
-    <div>
-      <div className="flex items-baseline justify-between gap-4 mb-2.5">
+    <div className="calc-field">
+      <div className="calc-field-head">
         <label className="text-sm text-gray-400">{label}</label>
         <span className="text-sm font-semibold text-white tabular-nums">{display}</span>
       </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-purple-500"
-      />
-      <div className="flex justify-between text-[0.6875rem] text-gray-600 mt-2 tabular-nums">
+      <div className="calc-field-control">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-purple-500"
+        />
+      </div>
+      <div className="calc-field-foot flex justify-between tabular-nums">
         <span>{minLabel}</span>
         <span>{maxLabel}</span>
       </div>
@@ -2026,7 +2028,7 @@ function Home() {
 
       {/* ==================== CALCULATOR SECTION ==================== */}
     <section id="calculator" className={`bg-[#08080f] py-16 sm:py-20 px-4 sm:px-6 border-t border-white/5 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-normal text-white mb-3">
             Email Marketing ROI Calculator
@@ -2085,25 +2087,25 @@ function Home() {
                 minLabel="500" maxLabel="500k"
                 onChange={setEmailListSize}
               />
-              <div>
-                <div className="flex items-baseline justify-between gap-4 mb-2.5">
+              <div className="calc-field">
+                <div className="calc-field-head">
                   <label htmlFor="totalMonthlyRevenue" className="text-sm text-gray-400">Total Monthly Revenue</label>
-                  <span className="text-xs text-gray-600 tabular-nums">
-                    Annual: {formatCurrency(calculations.annualRevenue)}
-                    <span className="ml-2 font-semibold text-purple-400">
-                      ({calculations.annualRevenue < 1000000 ? '$0-1M' : calculations.annualRevenue < 5000000 ? '$1M-5M' : '$5M-20M'} bracket)
-                    </span>
-                  </span>
                 </div>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
+                <div className="calc-field-control relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">$</span>
                   <input
                     id="totalMonthlyRevenue"
                     type="number"
                     value={totalMonthlyRevenue}
                     onChange={(e) => setTotalMonthlyRevenue(Number(e.target.value))}
-                    className="w-full pl-8 pr-4 py-2.5 bg-black/40 border border-white/10 text-white rounded-lg tabular-nums focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full h-full pl-8 pr-4 bg-black/40 border border-white/10 text-white rounded-lg tabular-nums focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
                   />
+                </div>
+                <div className="calc-field-foot tabular-nums">
+                  Annual: {formatCurrency(calculations.annualRevenue)}
+                  <span className="ml-2 font-semibold text-purple-400">
+                    ({calculations.annualRevenue < 1000000 ? '$0-1M' : calculations.annualRevenue < 5000000 ? '$1M-5M' : '$5M-20M'} bracket)
+                  </span>
                 </div>
               </div>
               <CalcSlider
@@ -2359,6 +2361,11 @@ function Home() {
               </div>
             </div>
 
+          </div>
+        </div>
+
+        {/* Charts and everything below sit at the narrower reading width */}
+        <div className="max-w-3xl mx-auto">
             {/* Campaign Revenue Chart */}
             <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-4 sm:p-6">
               <h2 className="text-xl font-normal text-white mb-2">
@@ -2443,7 +2450,7 @@ function Home() {
             </div>
 
             {/* Flow Revenue Chart */}
-            <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-4 sm:p-6">
+            <div className="mt-6 bg-[#0b0b16] rounded-xl border border-white/[0.08] p-4 sm:p-6">
               <h2 className="text-xl font-normal text-white mb-2">
                 ⚙️ Flow Count vs Revenue
               </h2>
@@ -2523,9 +2530,6 @@ function Home() {
                 </p>
               </div>
             </div>
-
-          </div>
-        </div>
 
         {/* You Vs Other Brands - Full Width */}
         <div className="mt-8 bg-[#0b0b16] rounded-xl border border-white/[0.08] p-7 sm:p-9">
@@ -2733,6 +2737,7 @@ function Home() {
           <p>Based on Klaviyo benchmarks from 325B+ emails • RPR = Revenue Per Recipient</p>
           <p className="mt-2">Profit ROI accounts for gross margins. Revenue ROI is typically 4-5x higher.</p>
         </div>
+        </div>{/* end narrow column */}
       </div>
     </section>
 
