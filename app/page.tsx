@@ -566,22 +566,32 @@ function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel 
     // Pointer drag covers mouse and touch alike. touch-action: pan-y on the
     // viewport keeps vertical page scrolling with the browser, so only the
     // horizontal component ever reaches us.
+    const DRAG_THRESHOLD = 5 // px before a press counts as a drag rather than a tap
     let lastX = 0
     let lastT = 0
     let travelled = 0
     let velocity = 0
+    let pressed = false
+    let captured = false
+
     const onPointerDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return
+      // Deliberately no setPointerCapture here. Capturing on pointerdown
+      // retargets the compatibility mouse events to the viewport, so the click
+      // never reaches the tile underneath and the lightbox never opens. Capture
+      // is taken only once the pointer has actually moved far enough to drag.
+      pressed = true
+      captured = false
       draggingRef.current = true
       suppressClickRef.current = false
       inertiaRef.current = 0
       travelled = 0
+      velocity = 0
       lastX = e.clientX
       lastT = performance.now()
-      viewport?.setPointerCapture(e.pointerId)
     }
     const onPointerMove = (e: PointerEvent) => {
-      if (!draggingRef.current) return
+      if (!pressed) return
       const dx = e.clientX - lastX
       if (!dx) return
       const now = performance.now()
@@ -589,7 +599,15 @@ function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel 
       lastX = e.clientX
       lastT = now
       travelled += Math.abs(dx)
-      if (travelled > 5) suppressClickRef.current = true
+
+      if (!captured) {
+        if (travelled <= DRAG_THRESHOLD) return // still could be a tap; leave the track alone
+        captured = true
+        draggingRef.current = true
+        suppressClickRef.current = true
+        try { viewport?.setPointerCapture(e.pointerId) } catch {}
+      }
+
       inertiaRef.current = 0
       offsetRef.current = wrap(offsetRef.current - dx)
       draw()
@@ -597,10 +615,14 @@ function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel 
       velocity = -dx / dt
     }
     const endDrag = (e: PointerEvent) => {
-      if (!draggingRef.current) return
+      if (!pressed) return
+      pressed = false
       draggingRef.current = false
-      if (viewport?.hasPointerCapture(e.pointerId)) viewport.releasePointerCapture(e.pointerId)
-      inertiaRef.current = Math.max(-2600, Math.min(2600, velocity))
+      if (captured) {
+        if (viewport?.hasPointerCapture(e.pointerId)) viewport.releasePointerCapture(e.pointerId)
+        inertiaRef.current = Math.max(-2600, Math.min(2600, velocity))
+      }
+      captured = false
       velocity = 0
     }
 
@@ -724,8 +746,8 @@ function Lightbox({
 
   return (
     <div className="lightbox-backdrop" role="dialog" aria-modal="true" aria-label={alt} onClick={onClose}>
-      <button className="lightbox-btn lightbox-close" onClick={onClose} aria-label="Close">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      <button className="lightbox-btn lightbox-close" onClick={onClose} aria-label="Close (Esc)">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
       </button>
       {items.length > 1 && (
         <button className="lightbox-btn lightbox-arrow lightbox-prev" onClick={(e) => { e.stopPropagation(); go(-1) }} aria-label="Previous">
@@ -736,14 +758,16 @@ function Lightbox({
         className="lightbox-img"
         src={`${basePath}/${encodeURIComponent(items[index])}`}
         alt={alt}
-        onClick={(e) => e.stopPropagation()}
       />
       {items.length > 1 && (
         <button className="lightbox-btn lightbox-arrow lightbox-next" onClick={(e) => { e.stopPropagation(); go(1) }} aria-label="Next">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
         </button>
       )}
-      <div className="lightbox-count">{index + 1} / {items.length}</div>
+      <div className="lightbox-count">
+        {items.length > 1 && <span>{index + 1} / {items.length}</span>}
+        <span className="lightbox-hint">Tap anywhere to close</span>
+      </div>
     </div>
   )
 }
@@ -957,7 +981,7 @@ function Home() {
   const [expandedCampaigns, setExpandedCampaigns] = useState<Set<number>>(new Set())
   const [expandedFlows, setExpandedFlows] = useState<Set<number>>(new Set())
   const [savingField, setSavingField] = useState<string | null>(null)
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set())
   const compactChart = useCompactChart()
 
   // Fetch prospect data when slug changes
@@ -1898,14 +1922,18 @@ function Home() {
               <div key={i}>
                 <h3>
                   <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    aria-expanded={openFaq === i}
+                    onClick={() => setOpenFaqs(prev => {
+                      const next = new Set(prev)
+                      next.has(i) ? next.delete(i) : next.add(i)
+                      return next
+                    })}
+                    aria-expanded={openFaqs.has(i)}
                     aria-controls={`faq-panel-${i}`}
                     className="w-full flex items-start justify-between text-left gap-6 py-6 group"
                   >
                     <span className="text-lg font-normal text-white group-hover:text-purple-200 transition-colors duration-200">{item.q}</span>
                     <svg
-                      className={`w-6 h-6 mt-0.5 shrink-0 transition-[transform,color] duration-300 ease-out ${openFaq === i ? 'rotate-180 text-purple-400' : 'text-gray-600 group-hover:text-gray-400'}`}
+                      className={`w-6 h-6 mt-0.5 shrink-0 transition-[transform,color] duration-300 ease-out ${openFaqs.has(i) ? 'rotate-180 text-purple-400' : 'text-gray-600 group-hover:text-gray-400'}`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -1918,7 +1946,7 @@ function Home() {
                 <div
                   id={`faq-panel-${i}`}
                   className="grid transition-[grid-template-rows] duration-300 ease-out"
-                  style={{ gridTemplateRows: openFaq === i ? '1fr' : '0fr' }}
+                  style={{ gridTemplateRows: openFaqs.has(i) ? '1fr' : '0fr' }}
                 >
                   <div className="overflow-hidden">
                     <p className="pb-6 pr-10 text-gray-400 leading-[1.7] max-w-[68ch]">{item.a}</p>
