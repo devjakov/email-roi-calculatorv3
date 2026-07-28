@@ -1429,7 +1429,7 @@ function Home() {
 
           {/* Headline */}
           <h1 className="text-[2rem] sm:text-5xl lg:text-[3.75rem] font-extrabold text-white leading-[1.05] tracking-[-0.03em] glow-text-purple mb-5 text-balance">
-            We&rsquo;ll Add <span className="text-purple-300">$50,000-$100,000</span> Per Month in New Email Revenue in 90 Days{' '}
+            We&rsquo;ll Add <span className="key-result">$50,000-$100,000</span> Per Month in New Email Revenue in 90 Days{' '}
             <span className="whitespace-nowrap border-b-[3px] border-purple-500 pb-1">or You Don&rsquo;t Pay</span>
           </h1>
 
@@ -1503,7 +1503,8 @@ function Home() {
               {
                 brand: 'PATCHED',
                 folder: 'patched',
-                headlineBig: '$776K in email revenue in 6 months.',
+                keyResult: '$776K',
+                headlineBig: ' in email revenue in 6 months.',
                 headlineSub: 'From a brand that had been burned by an unfit agency, a 0.12% spam rate, and zero campaigns ever sent.',
                 href: 'https://gamma.app/docs/PATCHED-Email-Marketing-Case-Study-v159pr7e7irgoww?mode=doc',
                 cta: 'Read the full PATCHED case study',
@@ -1518,7 +1519,8 @@ function Home() {
               {
                 brand: 'Cerberus Collective',
                 folder: 'cerberus',
-                headlineBig: 'CA$322K in email revenue in 6 months.',
+                keyResult: 'CA$322K',
+                headlineBig: ' in email revenue in 6 months.',
                 headlineSub: 'Built from scratch in 90 days — before they spent a single ad dollar.',
                 href: 'https://gamma.app/docs/Cerberus-Collective-building-an-email-backend-that-captured-eve-3dxhtdgt3v6i97t?mode=doc',
                 cta: 'Read the full Cerberus case study',
@@ -1540,7 +1542,7 @@ function Home() {
                     <span className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">{cs.brand}</span>
                   </div>
                   <h3 className="font-extrabold text-white mb-7">
-                    <span className="block text-[1.7rem] md:text-4xl leading-[1.1] glow-text-purple">{cs.headlineBig}</span>
+                    <span className="block text-[1.7rem] md:text-4xl leading-[1.1]"><span className="key-result">{cs.keyResult}</span><span className="glow-text-purple">{cs.headlineBig}</span></span>
                     <span className="block mt-3 text-base md:text-lg font-semibold text-gray-400 leading-snug">{cs.headlineSub}</span>
                   </h3>
                   <div className="rounded-xl bg-white/5 border border-white/[0.08] p-5 md:p-6">
@@ -2554,21 +2556,21 @@ function Home() {
 
                   <div className={`rounded-lg border p-5 sm:p-6 ${accent.panel}`}>
                     {/* Headline numbers */}
-                    <div className={`flex flex-col gap-2.5 sm:grid sm:grid-cols-3 sm:gap-4 pb-5 border-b ${accent.rule}`}>
-                      <div className="flex items-baseline justify-between sm:block">
-                        <div className="text-xs text-gray-500 sm:mb-1">Email Revenue / mo</div>
+                    <div className={`flex flex-col gap-2.5 pb-5 border-b ${accent.rule}`}>
+                      <div className="flex items-baseline justify-between gap-4">
+                        <div className="text-xs text-gray-500">Email Revenue / mo</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatCurrency(scenario.totalRevenue)}
                         </div>
                       </div>
-                      <div className="flex items-baseline justify-between sm:block">
-                        <div className="text-xs text-gray-500 sm:mb-1">Net Email Profit / mo</div>
+                      <div className="flex items-baseline justify-between gap-4">
+                        <div className="text-xs text-gray-500">Net Email Profit / mo</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatCurrency(scenario.netProfit)}
                         </div>
                       </div>
-                      <div className="flex items-baseline justify-between sm:block">
-                        <div className="text-xs text-gray-500 sm:mb-1">Email ROI</div>
+                      <div className="flex items-baseline justify-between gap-4">
+                        <div className="text-xs text-gray-500">Email ROI</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatNumber(scenario.netROI, 1)}x
                         </div>
@@ -2576,7 +2578,7 @@ function Home() {
                     </div>
 
                     {/* Scannable facts */}
-                    <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 pt-5 text-sm">
+                    <ul className="flex flex-col gap-y-2 pt-5 text-sm">
                       <li className="flex items-start gap-2.5 text-gray-300">
                         <span className={`mt-[0.45rem] w-1 h-1 rounded-full shrink-0 ${accent.dot}`} />
                         <span><span className="font-semibold text-white tabular-nums">{scenario.campaigns}</span> campaigns per month</span>

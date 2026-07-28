@@ -8,6 +8,34 @@
   --bg-dark-2: #0d0d18;
   --purple-glow: rgba(124, 58, 237, 0.35);
   --purple-glow-soft: rgba(124, 58, 237, 0.12);
+  --font-display: "Times New Roman", Times, ui-serif, Georgia, Cambria, serif;
+}
+
+/* Headings carry the serif; body copy and UI stay on the system sans. */
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+/* Key result: the headline money figure. Purple runs from light to the brand
+   #7c3aed the CTAs use, so it reads purple rather than the pale lavender it
+   replaced. Kept on one line, since a clipped gradient restarts per line box. */
+.key-result {
+  font-style: italic;
+  white-space: nowrap;
+  background-image: linear-gradient(100deg, #c084fc 0%, #a855f7 45%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+/* Older engines that cannot clip a background to text get a solid brand purple
+   instead of invisible headline numbers. */
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  .key-result {
+    color: #a855f7;
+    -webkit-text-fill-color: #a855f7;
+  }
 }
 
 html {
