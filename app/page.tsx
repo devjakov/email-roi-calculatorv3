@@ -1286,25 +1286,23 @@ function Home() {
 
       {/* ==================== HERO ==================== */}
       <section id="hero" className="hero-bg pt-16">
-        <div className="max-w-4xl mx-auto px-6 py-8 text-center w-full">
+        <div className="max-w-5xl mx-auto px-6 py-8 text-center w-full">
           {/* Pill tag */}
-          <div className="inline-flex items-center gap-2 bg-purple-950/60 border border-purple-700/40 rounded-full px-4 py-1.5 text-sm text-purple-300 font-medium mb-5">
+          <div className="inline-flex items-center gap-2 bg-purple-950/60 border border-purple-700/40 rounded-full px-4 py-1.5 text-sm text-purple-200 font-medium mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
-            Flows &nbsp;·&nbsp; Campaigns &nbsp;·&nbsp; Broadcasts
+            <span className="font-bold text-white">Attention:</span>
+            Ecommerce brands doing at least $1M-$10M/year
           </div>
 
           {/* Headline */}
-          <h1 className="text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] tracking-tight glow-text-purple mb-3">
-            Full Stack Email Copywriter with{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">
-              $8.5M in Sales
-            </span>{' '}
-            for 8-9 Figure DTC Brands
+          <h1 className="text-[2.5rem] sm:text-5xl lg:text-[3.75rem] font-extrabold text-white leading-[1.05] tracking-[-0.03em] glow-text-purple mb-5 text-balance">
+            We&rsquo;ll Add <span className="text-purple-300">$50,000-$100,000</span> Per Month in New Email Revenue in 90 Days{' '}
+            <span className="whitespace-nowrap border-b-[3px] border-purple-500 pb-1">or You Don&rsquo;t Pay</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-base text-gray-400 mb-6 max-w-2xl mx-auto">
-            Klaviyo emails for wellness, beauty, luxury, health, supplements, and fitness brands.
+          <p className="text-base sm:text-lg text-gray-400 leading-relaxed mb-7 max-w-3xl mx-auto text-balance">
+            Done-for-you email system for ecommerce brands doing at least $1M-$10M/year. No &ldquo;race-to-the-bottom&rdquo; discount strategies. Maximize your existing traffic, no additional ad spend required, <span className="text-white font-semibold">guaranteed results.</span>
           </p>
 
           {/* Video */}
@@ -1606,58 +1604,45 @@ function Home() {
       {/* ==================== FIT SECTION ==================== */}
       <section id="fit" className="bg-[#08080f] py-24 px-6 border-t border-white/5">
         <div className="max-w-4xl mx-auto">
-          <h2 className="reveal text-4xl font-bold text-white text-center mb-12">Is This Right For You?</h2>
-          <div className="reveal grid md:grid-cols-2 gap-6">
-            {/* Good fit */}
-            <div className="card-dark rounded-2xl p-8 border-green-800/40 hover:border-green-700/60 transition-colors" style={{border: '1px solid rgba(22, 101, 52, 0.4)'}}>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-green-400 text-lg">Good fit if...</h3>
-              </div>
-              <ul className="space-y-4">
-                {[
-                  "You're an ecommerce brand doing $50K-$500K+/month",
-                  "You're in wellness, beauty, luxury, health, supplements, or fitness",
-                  "You use Klaviyo or are open to switching",
-                  "You want more email revenue without discounting your margins",
-                  "You're sending fewer than 8 campaigns/month or have under 8 active flows",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                    <span className="mt-0.5 text-green-500 shrink-0">✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <h2 className="reveal text-4xl font-bold text-white mb-14">This is for you if:</h2>
 
-            {/* Not a fit */}
-            <div className="card-dark rounded-2xl p-8" style={{border: '1px solid rgba(153, 27, 27, 0.4)'}}>
-              <div className="flex items-center gap-2 mb-6">
-                <div className="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </div>
-                <h3 className="font-bold text-red-400 text-lg">Not a fit if...</h3>
-              </div>
-              <ul className="space-y-4">
-                {[
-                  "You're not running an ecommerce store",
-                  "You want cheap, templated batch-and-blast emails",
-                  "You need someone to run paid ads",
-                  "You're not open to testing and iterating on copy",
-                ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
-                    <span className="mt-0.5 text-red-500 shrink-0">✕</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <ol className="reveal">
+            {[
+              "You're doing $1M-$10M+ per year and email is stuck around 10% attributed revenune and 80% of it is just the welcome flow, while you know it should be 30-40%",
+              "You're sending 2 campaigns per month because you're afraid of unsubscribes, but your list you paid Meta to acquire is dying from underuse and you're leaving $30K-$50K on the table every single month",
+              "Your agency sends templated batch-and-blast emails with 20% off every other week without understanding your margins, so your profit gets crushed, and you're training customers to never buy unless there's a sale.",
+              "You pay Klaviyo thousands of dollars per month and have 50k-100K+ subscribers but only 20k are engaged because no one's done proper list hygiene, segmentation, or deliverability management in 18 months to lower the Klaviyo bill by 50-80%.",
+              "You have 10-100k website visitors per month but your signup form converts only 1-3% submit rates (should be 10%+ without hurting your on-site conversion rates). Most brands are scared to use signup forms because the myth is they hurt conversions, but that's the case for badly designed signup forms with bad offers.",
+              "You're spending $50K-$500k per month on paid ads to acquire customers, but your email backend isn't built to retain them, so you're bleeding LTV and wondering why CAC keeps climbing.",
+            ].map((item, i) => (
+              <li
+                key={i}
+                className="group flex items-start gap-6 sm:gap-8 py-7 border-t border-white/8 first:border-t-0 first:pt-0"
+              >
+                <span className="shrink-0 w-10 text-2xl font-extrabold tabular-nums text-purple-500/45 leading-snug transition-colors duration-300 group-hover:text-purple-400">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <p className="text-[0.9375rem] sm:text-base text-gray-300 leading-[1.7] max-w-[65ch]">{item}</p>
+              </li>
+            ))}
+          </ol>
+
+          {/* Not a fit */}
+          <div className="reveal mt-16 pt-10 border-t border-red-900/30">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-red-400/80 mb-5">Not a fit if...</h3>
+            <ul className="grid sm:grid-cols-2 gap-x-10 gap-y-3">
+              {[
+                "You're not running an ecommerce store",
+                "You want cheap, templated batch-and-blast emails",
+                "You need someone to run paid ads",
+                "You're not open to testing and iterating on copy",
+              ].map((item, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-gray-500">
+                  <span className="mt-px text-red-500/70 shrink-0">✕</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -1690,7 +1675,7 @@ function Home() {
 
       {/* ==================== FAQ ==================== */}
       <section className="bg-[#08080f] py-24 px-6 border-t border-white/5">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <div className="text-center mb-14">
             <h2 className="text-4xl font-bold text-white mb-3">Frequently Asked Questions</h2>
             <p className="text-gray-500">Everything you need to know before booking a call.</p>
@@ -1698,40 +1683,67 @@ function Home() {
           <div className="divide-y divide-white/8">
             {[
               {
-                q: 'How is Mars Copywriting different from an agency?',
-                a: "We don't view ourselves as an agency. We act as an in-house extension of your team so you don't have to fully hand over control of your brand. We communicate daily and take care of every email operation — strategy, copy, Klaviyo management — without you chasing a project manager every week.",
+                q: 'What if we’re already working with an email agency?',
+                a: "Most of our clients came to us after their previous agency underdelivered. We'll do a free audit of your current setup and show you exactly what's being left on the table. If your current agency is doing a great job, we'll tell you. If they're not, you'll see the difference in the first 30 days.",
               },
               {
-                q: 'What services do you offer?',
-                a: 'Full-service Klaviyo email marketing: campaign copywriting, flow automation, pop-up form optimization, monthly content calendars, list segmentation, and deliverability management. You provide brand assets. We handle everything else.',
+                q: 'How does your guarantee work?',
+                a: 'We only work with brands doing at least $1M per year because the math works. If you’re doing $100,000 per month in store revenue, getting to 20-30% email-attributed revenue means $20,000-$30,000 from email. Our case studies show we consistently hit $50,000-$100,000 in the first 90 days for brands in that range. If we don’t hit $50,000 in attributed revenue as measured in your Klaviyo dashboard, you get every dollar back.',
               },
               {
-                q: 'How often will you send campaigns to my list?',
-                a: "Typically 3–4 campaigns per week to your engaged segment. We adjust based on your list health, seasonal calendar, and revenue goals — more during BFCM, less when needed to protect deliverability.",
+                q: 'Do you require long-term contracts?',
+                a: "No. We work month-to-month. If you're not happy after 90 days and we didn't hit the guarantee, you get a full refund and you can walk away. If we did hit the guarantee and you're making an extra $50,000-$100,000 per month, you'll probably want to keep going.",
               },
               {
-                q: 'What does it cost?',
-                a: 'We work on a flat monthly retainer. Our clients typically invest between $4K–$6K/month depending on project scope. No lock-in contracts on day one — we start with a 60-day pilot and go from there. Book a call to get an exact number for your brand.',
+                q: 'What if our list is small or dead?',
+                a: "We've revived lists with 0.12% spam rates and 100,000 dormant contacts. We've built email programs from scratch for brand new stores before they spent a dollar on ads. List size and health are problems we solve in the first 30 days, not reasons we can't work together.",
+              },
+              {
+                q: 'How many emails will you actually send?',
+                a: 'We send 12-18 campaigns per month, sometimes more. We also build 8-12 automated flows with 30-55 emails total. This is significantly more than most agencies because we know how to do it without burning your list. Our clients maintain 50% open rates and sub-0.02% spam rates even at high frequency.',
+              },
+              {
+                q: 'What industries do you work with?',
+                a: "We love supplements, beauty, skincare, pet products, apparel, and subscription boxes. Our case studies shine here. Basically any ecommerce brand doing $1M-$10M per year with a product people buy more than once. If you're in a different vertical but fit the revenue range, book a call and we'll tell you if we're a good fit.",
+              },
+              {
+                q: 'Do you write the emails or do we?',
+                a: 'We write everything. You approve the strategy briefs and the Figma designs, but we handle all copywriting, design coordination, technical setup, and deployment. You get weekly reports and stay in the loop, but you don’t have to write a single word or touch Klaviyo unless you want to.',
+              },
+              {
+                q: 'What platforms do you work with?',
+                a: "We work primarily with Klaviyo and Omnisend. If you're on a different platform, we can discuss migration or compatibility on a call.",
               },
             ].map((item, i) => (
-              <div key={i} className="py-6">
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between text-left gap-6"
-                >
-                  <span className="text-lg font-semibold text-white">{item.q}</span>
-                  <svg
-                    className={`w-6 h-6 text-green-500 shrink-0 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+              <div key={i}>
+                <h3>
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    aria-expanded={openFaq === i}
+                    aria-controls={`faq-panel-${i}`}
+                    className="w-full flex items-start justify-between text-left gap-6 py-6 group"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {openFaq === i && (
-                  <p className="mt-4 text-gray-400 leading-relaxed">{item.a}</p>
-                )}
+                    <span className="text-lg font-semibold text-white group-hover:text-purple-200 transition-colors duration-200">{item.q}</span>
+                    <svg
+                      className={`w-6 h-6 mt-0.5 shrink-0 transition-[transform,color] duration-300 ease-out ${openFaq === i ? 'rotate-180 text-purple-400' : 'text-gray-600 group-hover:text-gray-400'}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </h3>
+                <div
+                  id={`faq-panel-${i}`}
+                  className="grid transition-[grid-template-rows] duration-300 ease-out"
+                  style={{ gridTemplateRows: openFaq === i ? '1fr' : '0fr' }}
+                >
+                  <div className="overflow-hidden">
+                    <p className="pb-6 pr-10 text-gray-400 leading-[1.7] max-w-[68ch]">{item.a}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
