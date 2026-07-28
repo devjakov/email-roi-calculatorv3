@@ -1946,7 +1946,7 @@ function Home() {
             Email Marketing ROI Calculator
             {prospectSlug && <span className="text-purple-400"> — {prospectName}</span>}
           </h2>
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-400 text-lg max-w-[65ch] mx-auto">
             See where you stand vs industry benchmarks · Based on Klaviyo data from 325B+ emails
           </p>
         </div>
@@ -2334,7 +2334,7 @@ function Home() {
                 )
               })()}
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 mt-4">
-                <p className="text-xs text-gray-500 leading-relaxed">
+                <p className="text-xs text-gray-500 leading-relaxed max-w-[68ch]">
                   <span className="font-semibold text-purple-400">Two performance peaks:</span> Most brands hit a first revenue peak at <strong className="text-white">10–12 campaigns/month</strong> - the sweet spot for list health and engagement. Brands that invest in segmentation and offer testing unlock a <strong className="text-white">second, higher peak at 20–25/month</strong>. Beyond 25, more volume yields diminishing returns; the strategy shifts to targeting fresh segments with new offers, not just higher frequency.
                 </p>
               </div>
@@ -2410,7 +2410,7 @@ function Home() {
                 )
               })()}
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 mt-4">
-                <p className="text-xs text-gray-500 leading-relaxed">
+                <p className="text-xs text-gray-500 leading-relaxed max-w-[68ch]">
                   <span className="font-semibold text-violet-400">40% from the first 8 flows. 60% from going further.</span> The first <strong>8 core flows</strong> (welcome series, abandoned cart, post-purchase, browse abandon, win-back, sunset, and a couple more) build your foundation linearly - each one adds predictable, meaningful revenue. But that only unlocks <strong>40% of what email can do</strong>. The other 60% is hidden revenue that 90% of brands never touch. Top performers keep building flows because that's where true retention lives: cross-sell sequences, upsell flows, different offers for non-buyers, segment-specific win-backs, re-engagement for lapsed customers. Email is uniquely suited for this because you can test different offers with different segments at near-zero cost - no ad spend, no risk.
                 </p>
               </div>
@@ -2425,85 +2425,85 @@ function Home() {
           <h2 className="text-3xl font-bold text-white mb-2">
             🎯 Industry Performance Spectrum
           </h2>
-          <p className="text-base text-gray-400 mb-8">
+          <p className="text-base text-gray-400 mb-8 max-w-[65ch]">
             Campaign revenue scales linearly up to {industry.best.campaigns}/month for most brands
           </p>
 
           <div className="space-y-5">
-            {scenarioData.filter(s => s.key !== 'your').map((scenario) => (
-              <div key={scenario.key} className="relative">
-                <div className="flex justify-between items-center mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${
-                      scenario.color === 'red' ? 'bg-red-500' :
-                      scenario.color === 'blue' ? 'bg-purple-500' :
-                      'bg-green-500'
-                    }`}></div>
+            {scenarioData.filter(s => s.key !== 'your').map((scenario) => {
+              const accent =
+                scenario.color === 'red' ? { dot: 'bg-red-500', panel: 'bg-red-950/25 border-red-900/40', rule: 'border-red-900/40', text: 'text-red-400' } :
+                scenario.color === 'blue' ? { dot: 'bg-purple-500', panel: 'bg-purple-950/25 border-purple-900/40', rule: 'border-purple-900/40', text: 'text-purple-400' } :
+                { dot: 'bg-green-500', panel: 'bg-green-950/25 border-green-900/40', rule: 'border-green-900/40', text: 'text-green-400' }
+              const popup =
+                scenario.key === 'typical' ? { lead: 'Pop-up conversion: 1-3%', body: 'Bad offer, poor design, wrong timing or targeting. Most list growth is slow and expensive. This is the single biggest lever being left untouched.' } :
+                scenario.key === 'good' ? { lead: 'Pop-up conversion: ~5%', body: 'A good offer, clean design, and the basics set in place. List growth is consistent and campaigns have a healthy engaged audience to send to.' } :
+                scenario.key === 'best' ? { lead: 'Pop-up conversion: 10-15% - non-negotiable.', body: 'This is the highest lever you have and the best testing ground for your offer. 10-15% pop-up conversions means higher list growth, a perfect offer/audience match, and more campaign and flow revenue on the bottom line. It all compounds from here - every percentage point increase feeds more subscribers into flows, boosts campaign list size, and amplifies everything downstream.' } :
+                null
+
+              return (
+                <div key={scenario.key}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className={`w-3 h-3 rounded-full shrink-0 ${accent.dot}`} />
                     <span className="text-base font-semibold text-gray-200">
                       {scenario.key === 'typical' ? '90% of Brands & Most Likely Your Current Setup' : scenario.label}
                     </span>
                   </div>
-                  <span className="text-sm text-gray-500">
-                    {scenario.campaigns} campaigns per month - {scenario.flows} flows
-                  </span>
-                </div>
 
-                <div className={`rounded-lg p-5 ${
-                  scenario.color === 'red' ? 'bg-red-950/30 border border-red-800/40' :
-                  scenario.color === 'blue' ? 'bg-purple-950/30 border border-purple-800/40' :
-                  'bg-green-950/30 border border-green-800/40'
-                }`}>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <div className="text-sm text-gray-500">Revenue / mo</div>
-                      <div className="text-lg font-bold text-white">
-                        {formatCurrency(scenario.totalRevenue)}
+                  <div className={`rounded-lg border p-5 sm:p-6 ${accent.panel}`}>
+                    {/* Headline numbers */}
+                    <div className={`grid grid-cols-3 gap-4 pb-5 border-b ${accent.rule}`}>
+                      <div>
+                        <div className="text-xs text-gray-500 mb-1">Revenue / mo</div>
+                        <div className="text-lg font-bold text-white tabular-nums">
+                          {formatCurrency(scenario.totalRevenue)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500 mb-1">Net Profit / mo</div>
+                        <div className="text-lg font-bold text-white tabular-nums">
+                          {formatCurrency(scenario.netProfit)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500 mb-1">ROI</div>
+                        <div className="text-lg font-bold text-white tabular-nums">
+                          {formatNumber(scenario.netROI, 1)}x
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <div className="text-sm text-gray-500">Net Profit / mo</div>
-                      <div className="text-lg font-bold text-white">
-                        {formatCurrency(scenario.netProfit)}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-500">ROI</div>
-                      <div className="text-lg font-bold text-white">
-                        {formatNumber(scenario.netROI, 1)}x
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-500 mt-2">
-                    {formatNumber(scenario.emailPercent, 1)}% of total revenue from email
-                  </div>
-                  {/* Pop-up conversion rate context */}
-                  <div className={`mt-3 pt-3 border-t text-sm ${
-                    scenario.color === 'red' ? 'border-red-900/40 text-red-400' :
-                    scenario.color === 'blue' ? 'border-purple-900/40 text-purple-400' :
-                    'border-green-900/40 text-green-400'
-                  }`}>
-                    {scenario.key === 'typical' && (
-                      <>
-                        <span className="font-semibold">Pop-up conversion: 1-3%</span>
-                        {' '}- Bad offer, poor design, wrong timing or targeting. Most list growth is slow and expensive. This is the single biggest lever being left untouched.
-                      </>
-                    )}
-                    {scenario.key === 'good' && (
-                      <>
-                        <span className="font-semibold">Pop-up conversion: ~5%</span>
-                        {' '}- A good offer, clean design, and the basics set in place. List growth is consistent and campaigns have a healthy engaged audience to send to.
-                      </>
-                    )}
-                    {scenario.key === 'best' && (
-                      <>
-                        <span className="font-semibold">Pop-up conversion: 10-15% - non-negotiable.</span>
-                        {' '}This is the highest lever you have and the best testing ground for your offer. 10-15% pop-up conversions means higher list growth, a perfect offer/audience match, and more campaign and flow revenue on the bottom line. It all compounds from here - every percentage point increase feeds more subscribers into flows, boosts campaign list size, and amplifies everything downstream.
-                      </>
+
+                    {/* Scannable facts */}
+                    <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-2 pt-5 text-sm">
+                      <li className="flex items-start gap-2.5 text-gray-300">
+                        <span className={`mt-[0.45rem] w-1 h-1 rounded-full shrink-0 ${accent.dot}`} />
+                        <span><span className="font-semibold text-white tabular-nums">{scenario.campaigns}</span> campaigns per month</span>
+                      </li>
+                      <li className="flex items-start gap-2.5 text-gray-300">
+                        <span className={`mt-[0.45rem] w-1 h-1 rounded-full shrink-0 ${accent.dot}`} />
+                        <span><span className="font-semibold text-white tabular-nums">{scenario.flows}</span> flows</span>
+                      </li>
+                      <li className="flex items-start gap-2.5 text-gray-300">
+                        <span className={`mt-[0.45rem] w-1 h-1 rounded-full shrink-0 ${accent.dot}`} />
+                        <span><span className="font-semibold text-white tabular-nums">{formatNumber(scenario.emailPercent, 1)}%</span> of total revenue from email</span>
+                      </li>
+                      {popup && (
+                        <li className="flex items-start gap-2.5 text-gray-300">
+                          <span className={`mt-[0.45rem] w-1 h-1 rounded-full shrink-0 ${accent.dot}`} />
+                          <span className={`font-semibold ${accent.text}`}>{popup.lead}</span>
+                        </li>
+                      )}
+                    </ul>
+
+                    {popup && (
+                      <p className={`mt-5 pt-5 border-t text-sm text-gray-400 leading-relaxed max-w-[65ch] ${accent.rule}`}>
+                        {popup.body}
+                      </p>
                     )}
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="mt-10 pt-8 border-t border-white/[0.08]">
@@ -2548,7 +2548,7 @@ function Home() {
                   <div className="bg-white/20 rounded-full px-4 py-2 font-bold text-sm whitespace-nowrap">14 Days</div>
                   <div className="flex-1">
                     <div className="font-bold text-lg">Initial Setup Complete</div>
-                    <div className="text-white/90 text-base mt-1">
+                    <div className="text-white/90 text-base mt-1 max-w-[62ch]">
                       Copywriting → Design → Your Approval. All deliverables implemented.
                     </div>
                   </div>
@@ -2558,7 +2558,7 @@ function Home() {
                   <div className="bg-white/20 rounded-full px-4 py-2 font-bold text-sm whitespace-nowrap">1-2 Months</div>
                   <div className="flex-1">
                     <div className="font-bold text-lg">Good Performance Level</div>
-                    <div className="text-white/90 text-base mt-1">
+                    <div className="text-white/90 text-base mt-1 max-w-[62ch]">
                       Optimized campaigns, core flows dialed in, revenue accelerating.
                     </div>
                   </div>
@@ -2568,7 +2568,7 @@ function Home() {
                   <div className="bg-white/20 rounded-full px-4 py-2 font-bold text-sm whitespace-nowrap">3-6 Months</div>
                   <div className="flex-1">
                     <div className="font-bold text-lg">Best-in-Class (Top 1%)</div>
-                    <div className="text-white/90 text-base mt-1">
+                    <div className="text-white/90 text-base mt-1 max-w-[62ch]">
                       Advanced segmentation, full flow suite, maximized email revenue.
                     </div>
                   </div>
@@ -2581,14 +2581,14 @@ function Home() {
         {/* Bottom Line - Full Width */}
         <div className="mt-6 bg-gradient-to-br from-purple-900 to-violet-950 rounded-xl border border-purple-700/40 p-10 text-white glow-purple-sm">
           <h3 className="text-3xl font-bold mb-5">✅ Bottom Line</h3>
-          <p className="leading-relaxed text-2xl font-semibold">
+          <p className="leading-relaxed text-2xl font-semibold max-w-[38ch]">
             Your email could be generating between{' '}
             <span className="font-extrabold text-4xl">{formatCurrency(scenarioData[2].netProfit)}</span>
             {' '}and{' '}
             <span className="font-extrabold text-4xl">{formatCurrency(scenarioData[3].netProfit)}</span>
             {' '}in monthly profit - a {formatNumber(scenarioData[2].netROI, 1)}x to {formatNumber(scenarioData[3].netROI, 1)}x net ROI.
           </p>
-          <div className="mt-6 space-y-4 text-xl text-white/90 leading-relaxed">
+          <div className="mt-6 space-y-4 text-xl text-white/90 leading-relaxed max-w-[62ch]">
             <p>
               If you're sending just {industry.typical.campaigns} campaigns per month, you're missing out on{' '}
               <span className="font-bold text-white">{formatCurrency(scenarioData[2].netProfit - scenarioData[0].netProfit)} every single month</span>{' '}
@@ -2609,7 +2609,7 @@ function Home() {
         {/* Per $1 Invested Callout */}
         <div className="mt-6 rounded-xl border border-white/[0.08] bg-[#0b0b16] p-8 text-center">
           <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-3">Your Email ROI</p>
-          <p className="text-2xl text-gray-300 leading-relaxed">
+          <p className="text-2xl text-gray-300 leading-relaxed max-w-[44ch] mx-auto">
             For every{' '}
             <span className="font-bold text-white">$1</span>
             {' '}invested in email marketing, you get back{' '}
