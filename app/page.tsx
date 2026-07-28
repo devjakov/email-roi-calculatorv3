@@ -2316,26 +2316,27 @@ function Home() {
                     const emailW = (calculations.incrementalEmailRevenue / calculations.trueNewTotalRevenue) * 100
                     return (
                       <>
-                        {/* Bar stays proportional at every width; the labels only
-                            sit inside it once there is room for them. */}
-                        <div className="flex rounded-lg overflow-hidden h-3 sm:h-8 mb-2" style={{ gap: '2px' }}>
+                        {/* Bar carries the proportion only. Labels live underneath at
+                            every width, since a small email segment leaves no room
+                            to render its figure legibly inside. */}
+                        <div className="flex rounded-full overflow-hidden h-3 mb-3" style={{ gap: '2px' }}>
                           <div
-                            className="bg-white/20 flex items-center justify-center text-xs font-semibold overflow-hidden whitespace-nowrap sm:px-2 shrink-0"
+                            className="bg-white/25 shrink-0"
                             style={{ width: `${Math.max(baseW, 18)}%` }}
-                          >
-                            <span className="hidden sm:inline">Base {formatNumber(baseW, 0)}%</span>
-                          </div>
-                          <div className="flex-1 bg-gradient-to-r from-green-400 via-emerald-400 to-green-300 flex items-center justify-center text-xs font-bold text-emerald-900 overflow-hidden whitespace-nowrap sm:px-2">
-                            <span className="hidden sm:inline">
-                              +{formatCurrency(calculations.incrementalEmailRevenue)} email&nbsp;·&nbsp;{formatNumber(calculations.emailAttributedPercent, 1)}% of total
-                            </span>
-                          </div>
+                          />
+                          <div className="flex-1 bg-gradient-to-r from-green-400 via-emerald-400 to-green-300" />
                         </div>
-                        {/* Same figures, given their own line where the bar is too short to hold them */}
-                        <div className="sm:hidden text-xs mb-2 space-y-0.5">
-                          <div className="opacity-80">Base {formatNumber(baseW, 0)}%</div>
-                          <div className="font-semibold text-green-300">
-                            +{formatCurrency(calculations.incrementalEmailRevenue)} email · {formatNumber(calculations.emailAttributedPercent, 1)}% of total
+                        {/* Bullet colors key back to their segment in the bar above. */}
+                        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-y-1.5 gap-x-6 text-xs mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-white/25 shrink-0" />
+                            <span className="opacity-80">Base {formatNumber(baseW, 0)}%</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
+                            <span className="font-semibold text-green-300">
+                              +{formatCurrency(calculations.incrementalEmailRevenue)} email · {formatNumber(calculations.emailAttributedPercent, 1)}% of total
+                            </span>
                           </div>
                         </div>
                       </>
@@ -2354,31 +2355,30 @@ function Home() {
                   <div className="text-xs opacity-75 mt-1">retainer + Klaviyo</div>
                 </div>
 
-                <div className="bg-white/10 rounded-lg p-4 backdrop-blur">
-                  <div className="text-sm opacity-90 mb-1">Gross ROI</div>
-                  <div className="text-2xl font-bold">{formatNumber(calculations.grossROI, 1)}x</div>
-                  <div className="text-xs opacity-75 mt-1">revenue</div>
+                <div className="bg-green-400/15 border border-green-400/30 rounded-lg p-4 backdrop-blur">
+                  <div className="text-sm text-green-200/90 mb-1">Gross ROI</div>
+                  <div className="text-2xl font-bold text-green-300 tabular-nums">{formatNumber(calculations.grossROI, 1)}x</div>
+                  <div className="text-xs text-green-200/70 mt-1">revenue</div>
                 </div>
 
-                <div className="bg-white/10 rounded-lg p-4 backdrop-blur sm:col-span-2">
-                  <div className="text-sm opacity-90 mb-1">Net Profit from Email</div>
-                  <div className="text-3xl font-bold">{formatCurrency(calculations.netProfitFromEmail)}</div>
-                  <div className="text-xs opacity-75 mt-1">
+                <div className="bg-green-400/15 border border-green-400/30 rounded-lg p-4 backdrop-blur sm:col-span-2">
+                  <div className="text-sm text-green-200/90 mb-1">Net Profit from Email</div>
+                  <div className="text-3xl font-bold text-green-300 tabular-nums">{formatCurrency(calculations.netProfitFromEmail)}</div>
+                  <div className="text-xs text-green-200/70 mt-1">
                     {formatNumber(calculations.netROI, 1)}x net ROI (profit-based)
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-6">
             {/* Campaign Revenue Chart */}
             <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-6">
               <h2 className="text-xl font-semibold text-white mb-2">
                 📈 Campaign Volume vs Revenue
               </h2>
               {(() => {
-                const PAD_L = 68, PAD_R = 14, PAD_T = 46, PAD_B = 36
-                const W = 440, H = 240
+                const PAD_L = 74, PAD_R = 18, PAD_T = 48, PAD_B = 40
+                const W = 620, H = 260
                 const CW = W - PAD_L - PAD_R
                 const CH = H - PAD_T - PAD_B
                 const maxRev = Math.max(...campaignChartData.map(p => p.revenue))
@@ -2396,7 +2396,8 @@ function Home() {
                 const p1x1 = toX(9), p1x2 = toX(13)
                 const p2x1 = toX(19), p2x2 = toX(26)
                 return (
-                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: '260px' }}>
+                  <div className="overflow-x-auto">
+                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto min-w-[560px]" role="img">
                     <defs>
                       <linearGradient id="campGrad" x1="0" y1={PAD_T} x2="0" y2={PAD_T + CH} gradientUnits="userSpaceOnUse">
                         <stop offset="0%" stopColor="#a855f7" stopOpacity="0.5" />
@@ -2439,6 +2440,7 @@ function Home() {
                     <circle cx={curX} cy={curY} r="6" fill="#ef4444" stroke="white" strokeWidth="2.5" />
                     <text x={cur > 25 ? curX - 9 : curX + 9} y={Math.max(curY - 7, PAD_T + 13)} textAnchor={cur > 25 ? 'end' : 'start'} fill="#ef4444" fontSize="10" fontWeight="700">You</text>
                   </svg>
+                  </div>
                 )
               })()}
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 mt-4">
@@ -2454,8 +2456,8 @@ function Home() {
                 ⚙️ Flow Count vs Revenue
               </h2>
               {(() => {
-                const PAD_L = 68, PAD_R = 14, PAD_T = 36, PAD_B = 36
-                const W = 440, H = 240
+                const PAD_L = 74, PAD_R = 18, PAD_T = 40, PAD_B = 40
+                const W = 620, H = 260
                 const CW = W - PAD_L - PAD_R
                 const CH = H - PAD_T - PAD_B
                 const maxRev = Math.max(...flowChartData.map(p => p.revenue))
@@ -2472,7 +2474,8 @@ function Home() {
                 const xTicks = [0, 6, 12, 18, 24, 30]
                 const phaseX = toX(8)
                 return (
-                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: '260px' }}>
+                  <div className="overflow-x-auto">
+                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto min-w-[560px]" role="img">
                     <defs>
                       <linearGradient id="flowGrad" x1="0" y1={PAD_T} x2="0" y2={PAD_T + CH} gradientUnits="userSpaceOnUse">
                         <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.45" />
@@ -2515,6 +2518,7 @@ function Home() {
                     <circle cx={curX} cy={curY} r="6" fill="#ef4444" stroke="white" strokeWidth="2.5" />
                     <text x={cur > 25 ? curX - 9 : curX + 9} y={Math.max(curY - 7, PAD_T + 13)} textAnchor={cur > 25 ? 'end' : 'start'} fill="#ef4444" fontSize="10" fontWeight="700">You</text>
                   </svg>
+                  </div>
                 )
               })()}
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 mt-4">
@@ -2523,7 +2527,6 @@ function Home() {
                 </p>
               </div>
             </div>
-            </div>{/* end chart pair */}
 
           </div>
         </div>
