@@ -347,26 +347,47 @@ body {
 
 /* Trusted-by logos: normalize mixed dark/light/colored marks to a uniform white
    silhouette so they read on the dark strip. */
+/* Trusted-by strip: a continuous marquee of two identical panels. */
+.tb-viewport {
+  overflow: hidden;
+  /* min-width:0 lets it shrink inside the flex row instead of forcing overflow */
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  touch-action: pan-y;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.tb-viewport:active { cursor: grabbing; }
+.tb-track {
+  display: flex;
+  column-gap: 44px;
+  width: max-content;
+  will-change: transform;
+}
+.tb-panel {
+  display: flex;
+  align-items: center;
+  gap: 44px;
+}
+/* Sized by a box rather than a fixed height, so a 5:1 wordmark and a square
+   crest end up optically comparable instead of wildly different widths.
+   The assets are already grayscale; the filter also covers any that are not. */
 .tb-logo {
-  height: 28px;
+  max-width: 128px;
+  max-height: 34px;
   width: auto;
-  max-width: 150px;
+  height: auto;
   object-fit: contain;
-  filter: brightness(0) invert(1);
-  opacity: 0.62;
+  filter: grayscale(1);
+  opacity: 0.68;
   transition: opacity 200ms ease;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
-.tb-logo:hover {
-  opacity: 1;
+.tb-viewport:hover .tb-logo { opacity: 0.85; }
+.tb-logo--tall {
+  max-width: 64px;
+  max-height: 52px;
 }
-/* Logos with a baked solid background can't be silhouetted; show them on a light chip. */
-.tb-logo--chip {
-  filter: none;
-  opacity: 0.9;
-  height: 34px;
-  padding: 5px 8px;
-  border-radius: 8px;
-  background: #f1f1f4;
-  box-sizing: border-box;
-}
-.tb-logo--chip:hover { opacity: 1; }

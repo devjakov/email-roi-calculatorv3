@@ -479,20 +479,15 @@ function SocialProofCarousels() {
   )
 }
 
-function MosaicMarquee({
-  items,
-  folder,
-  label,
-  direction,
-  alt,
-  onOpen,
-}: {
-  items: string[]
-  folder: string
-  label: string
+/* Continuous marquee engine shared by the proof mosaics and the logo strip.
+   Owns the loop, the pointer drag with inertia, and optional wheel scrubbing.
+   Returns the refs the caller must attach plus the hover speed controls. */
+function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel = true }: {
+  active: boolean
   direction: 'left' | 'right'
-  alt: string
-  onOpen: (index: number) => void
+  baseSpeed?: number
+  hoverSpeed?: number
+  wheel?: boolean
 }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -505,11 +500,11 @@ function MosaicMarquee({
   const inertiaRef = useRef(0)
   const suppressClickRef = useRef(false)
 
-  const BASE_SPEED = 40 // px/sec at rest
-  const HOVER_SPEED = 10 // px/sec while hovered (slows, never stops)
+  const BASE_SPEED = baseSpeed
+  const HOVER_SPEED = hoverSpeed
 
   useEffect(() => {
-    if (!items.length) return
+    if (!active) return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const dirSign = direction === 'left' ? 1 : -1
     targetRef.current = reduce ? 0 : BASE_SPEED
@@ -617,7 +612,7 @@ function MosaicMarquee({
       e.stopPropagation()
     }
 
-    viewport?.addEventListener('wheel', onWheel, { passive: false })
+    if (wheel) viewport?.addEventListener('wheel', onWheel, { passive: false })
     viewport?.addEventListener('pointerdown', onPointerDown)
     viewport?.addEventListener('pointermove', onPointerMove)
     viewport?.addEventListener('pointerup', endDrag)
@@ -634,13 +629,36 @@ function MosaicMarquee({
       viewport?.removeEventListener('pointercancel', endDrag)
       viewport?.removeEventListener('click', onClickCapture, true)
     }
-  }, [direction, items.length])
-
-  if (!items.length) return null
+  }, [active, direction, wheel, BASE_SPEED])
 
   const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const slow = () => { if (!reduce) targetRef.current = HOVER_SPEED }
   const resume = () => { if (!reduce) targetRef.current = BASE_SPEED }
+
+  return { trackRef, panelRef, viewportRef, slow, resume }
+}
+
+function MosaicMarquee({
+  items,
+  folder,
+  label,
+  direction,
+  alt,
+  onOpen,
+}: {
+  items: string[]
+  folder: string
+  label: string
+  direction: 'left' | 'right'
+  alt: string
+  onOpen: (index: number) => void
+}) {
+  const { trackRef, panelRef, viewportRef, slow, resume } = useMarquee({
+    active: items.length > 0,
+    direction,
+  })
+
+  if (!items.length) return null
 
   const renderPanel = (keyPrefix: string, ariaHidden: boolean) => (
     <div ref={ariaHidden ? undefined : panelRef} className="mosaic-panel" aria-hidden={ariaHidden}>
@@ -733,24 +751,49 @@ function Lightbox({
 // Trusted-by logo strip fed by a single flat manifest folder. Shows brand logos when
 // present, otherwise placeholder logo tiles.
 function TrustedByLogos({ images }: { images: string[] }) {
+  // Wheel scrubbing is off here: this is a thin strip, and capturing the wheel
+  // over it would stall the page for anyone whose cursor happens to be passing.
+  const { trackRef, panelRef, viewportRef, slow, resume } = useMarquee({
+    active: images.length > 0,
+    direction: 'left',
+    baseSpeed: 26,
+    hoverSpeed: 6,
+    wheel: false,
+  })
+
   if (!images.length) return null
+
+  // Marks that are intrinsically tall get more height, so a square crest and a
+  // wide wordmark carry similar optical weight rather than similar pixel height.
+  const isTall = (img: string) => /cerberus|newthingslab/i.test(img)
+
+  const panel = (keyPrefix: string, ariaHidden: boolean) => (
+    <div ref={ariaHidden ? undefined : panelRef} className="tb-panel" aria-hidden={ariaHidden}>
+      {images.map((img, i) => (
+        <img
+          key={`${keyPrefix}-${i}`}
+          className={isTall(img) ? 'tb-logo tb-logo--tall' : 'tb-logo'}
+          src={`/images/trusted-by/${encodeURIComponent(img)}`}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+        />
+      ))}
+    </div>
+  )
+
   return (
-    <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-9 gap-y-4">
-      {images.map((img, i) => {
-        // Logos with a baked solid background can't be normalized to a white silhouette,
-        // so they sit on a light chip instead.
-        const chip = /cerberus/i.test(img)
-        return (
-          <img
-            key={i}
-            className={chip ? 'tb-logo tb-logo--chip' : 'tb-logo'}
-            src={`/images/trusted-by/${encodeURIComponent(img)}`}
-            alt="Brand logo"
-            loading="lazy"
-            decoding="async"
-          />
-        )
-      })}
+    <div
+      ref={viewportRef}
+      className="tb-viewport carousel-mask"
+      onMouseEnter={slow}
+      onMouseLeave={resume}
+    >
+      <div ref={trackRef} className="tb-track">
+        {panel('a', false)}
+        {panel('b', true)}
+      </div>
     </div>
   )
 }
@@ -1485,8 +1528,8 @@ function Home() {
       </section>
 
       {/* ==================== TRUSTED BY ==================== */}
-      <section className="bg-[#08080f] py-5 border-b border-white/5">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center gap-8">
+      <section className="bg-[#08080f] py-6 border-b border-white/5 overflow-hidden">
+        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center gap-5 sm:gap-8">
           <span className="text-xs text-gray-600 font-semibold tracking-widest uppercase whitespace-nowrap">Trusted by</span>
           <TrustedByLogos images={trustedImages} />
         </div>
