@@ -1322,10 +1322,9 @@ function Home() {
             {isEditMode && (
               <span className="text-xs bg-orange-900/50 text-orange-300 px-2 py-1 rounded-full">Edit Mode</span>
             )}
-            {/* CLIENT LOGIN — replace href with your actual client portal URL */}
             <a
-              href="#"
-              className="text-sm text-white bg-purple-600 hover:bg-purple-500 font-semibold px-4 py-2 rounded-lg transition-all duration-200"
+              href="https://portal.marscopywriting.co"
+              className="text-sm text-white bg-purple-600 hover:bg-purple-500 font-semibold px-4 py-2.5 rounded-lg transition-all duration-200"
             >
               Client Login
             </a>
@@ -1344,7 +1343,7 @@ function Home() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-[2.5rem] sm:text-5xl lg:text-[3.75rem] font-extrabold text-white leading-[1.05] tracking-[-0.03em] glow-text-purple mb-5 text-balance">
+          <h1 className="text-[2rem] sm:text-5xl lg:text-[3.75rem] font-extrabold text-white leading-[1.05] tracking-[-0.03em] glow-text-purple mb-5 text-balance">
             We&rsquo;ll Add <span className="text-purple-300">$50,000-$100,000</span> Per Month in New Email Revenue in 90 Days{' '}
             <span className="whitespace-nowrap border-b-[3px] border-purple-500 pb-1">or You Don&rsquo;t Pay</span>
           </h1>
@@ -1383,14 +1382,14 @@ function Home() {
       {/* ==================== STATS BAR ==================== */}
       <section className="bg-[#0d0d18] border-y border-purple-900/20">
         <div className="max-w-5xl mx-auto px-6 py-6">
-          <div className="grid grid-cols-3 gap-0 divide-x divide-purple-900/30">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-purple-900/30">
             {[
               { stat: '$8.5M+', label: 'Revenue driven for clients' },
               { stat: '1,025%', label: 'Highest single brand revenue increase' },
               { stat: '+112% YoY', label: 'Fastest brand growth' },
             ].map((item, i) => (
-              <div key={i} className="text-center px-8 py-4">
-                <div className="text-4xl font-extrabold text-white mb-2 glow-text-purple">{item.stat}</div>
+              <div key={i} className="text-center px-4 sm:px-8 py-5 sm:py-4">
+                <div className="text-3xl sm:text-4xl font-extrabold text-white mb-2 glow-text-purple tabular-nums">{item.stat}</div>
                 <div className="text-sm text-gray-500">{item.label}</div>
               </div>
             ))}
@@ -1939,10 +1938,10 @@ function Home() {
       )}
 
       {/* ==================== CALCULATOR SECTION ==================== */}
-    <section id="calculator" className={`bg-[#08080f] py-20 px-6 border-t border-white/5 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
-      <div className="max-w-7xl mx-auto">
+    <section id="calculator" className={`bg-[#08080f] py-16 sm:py-20 px-4 sm:px-6 border-t border-white/5 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
+      <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-bold text-white mb-3">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
             Email Marketing ROI Calculator
             {prospectSlug && <span className="text-purple-400"> — {prospectName}</span>}
           </h2>
@@ -1951,7 +1950,7 @@ function Home() {
           </p>
         </div>
         {/* ---------- STAGE 1: INPUTS ---------- */}
-        <div className="rounded-2xl border border-purple-900/40 bg-[#0b0b16] p-7 sm:p-10">
+        <div className="rounded-2xl border border-purple-900/40 bg-[#0b0b16] p-5 sm:p-10">
 
           {/* Industry */}
           <CalcStep n="01" title="📊 Select Your Industry">
@@ -2218,23 +2217,34 @@ function Home() {
                     const baseW = (totalMonthlyRevenue / calculations.trueNewTotalRevenue) * 100
                     const emailW = (calculations.incrementalEmailRevenue / calculations.trueNewTotalRevenue) * 100
                     return (
-                      <div className="flex rounded-lg overflow-hidden h-8 mb-2" style={{ gap: '2px' }}>
-                        <div
-                          className="bg-white/20 flex items-center justify-center text-xs font-semibold overflow-hidden whitespace-nowrap px-2 shrink-0"
-                          style={{ width: `${Math.max(baseW, 18)}%` }}
-                        >
-                          Base {formatNumber(baseW, 0)}%
+                      <>
+                        {/* Bar stays proportional at every width; the labels only
+                            sit inside it once there is room for them. */}
+                        <div className="flex rounded-lg overflow-hidden h-3 sm:h-8 mb-2" style={{ gap: '2px' }}>
+                          <div
+                            className="bg-white/20 flex items-center justify-center text-xs font-semibold overflow-hidden whitespace-nowrap sm:px-2 shrink-0"
+                            style={{ width: `${Math.max(baseW, 18)}%` }}
+                          >
+                            <span className="hidden sm:inline">Base {formatNumber(baseW, 0)}%</span>
+                          </div>
+                          <div className="flex-1 bg-gradient-to-r from-green-400 via-emerald-400 to-green-300 flex items-center justify-center text-xs font-bold text-emerald-900 overflow-hidden whitespace-nowrap sm:px-2">
+                            <span className="hidden sm:inline">
+                              +{formatCurrency(calculations.incrementalEmailRevenue)} email&nbsp;·&nbsp;{formatNumber(calculations.emailAttributedPercent, 1)}% of total
+                            </span>
+                          </div>
                         </div>
-                        <div
-                          className="flex-1 bg-gradient-to-r from-green-400 via-emerald-400 to-green-300 flex items-center justify-center text-xs font-bold text-emerald-900 overflow-hidden whitespace-nowrap px-2"
-                        >
-                          +{formatCurrency(calculations.incrementalEmailRevenue)} email&nbsp;·&nbsp;{formatNumber(calculations.emailAttributedPercent, 1)}% of total
+                        {/* Same figures, given their own line where the bar is too short to hold them */}
+                        <div className="sm:hidden text-xs mb-2 space-y-0.5">
+                          <div className="opacity-80">Base {formatNumber(baseW, 0)}%</div>
+                          <div className="font-semibold text-green-300">
+                            +{formatCurrency(calculations.incrementalEmailRevenue)} email · {formatNumber(calculations.emailAttributedPercent, 1)}% of total
+                          </div>
                         </div>
-                      </div>
+                      </>
                     )
                   })()}
 
-                  <div className="flex justify-between text-xs opacity-70 mt-1">
+                  <div className="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-4 text-xs opacity-70 mt-1">
                     <span>Business base: {formatCurrency(totalMonthlyRevenue)}</span>
                     <span>Klaviyo gross: {formatCurrency(calculations.totalEmailRevenue)}</span>
                   </div>
@@ -2452,21 +2462,21 @@ function Home() {
 
                   <div className={`rounded-lg border p-5 sm:p-6 ${accent.panel}`}>
                     {/* Headline numbers */}
-                    <div className={`grid grid-cols-3 gap-4 pb-5 border-b ${accent.rule}`}>
-                      <div>
-                        <div className="text-xs text-gray-500 mb-1">Revenue / mo</div>
+                    <div className={`flex flex-col gap-2.5 sm:grid sm:grid-cols-3 sm:gap-4 pb-5 border-b ${accent.rule}`}>
+                      <div className="flex items-baseline justify-between sm:block">
+                        <div className="text-xs text-gray-500 sm:mb-1">Revenue / mo</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatCurrency(scenario.totalRevenue)}
                         </div>
                       </div>
-                      <div>
-                        <div className="text-xs text-gray-500 mb-1">Net Profit / mo</div>
+                      <div className="flex items-baseline justify-between sm:block">
+                        <div className="text-xs text-gray-500 sm:mb-1">Net Profit / mo</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatCurrency(scenario.netProfit)}
                         </div>
                       </div>
-                      <div>
-                        <div className="text-xs text-gray-500 mb-1">ROI</div>
+                      <div className="flex items-baseline justify-between sm:block">
+                        <div className="text-xs text-gray-500 sm:mb-1">ROI</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatNumber(scenario.netROI, 1)}x
                         </div>
@@ -2579,16 +2589,16 @@ function Home() {
         </div>
 
         {/* Bottom Line - Full Width */}
-        <div className="mt-6 bg-gradient-to-br from-purple-900 to-violet-950 rounded-xl border border-purple-700/40 p-10 text-white glow-purple-sm">
-          <h3 className="text-3xl font-bold mb-5">✅ Bottom Line</h3>
-          <p className="leading-relaxed text-2xl font-semibold max-w-[38ch]">
+        <div className="mt-6 bg-gradient-to-br from-purple-900 to-violet-950 rounded-xl border border-purple-700/40 p-6 sm:p-10 text-white glow-purple-sm">
+          <h3 className="text-2xl sm:text-3xl font-bold mb-5">✅ Bottom Line</h3>
+          <p className="leading-relaxed text-xl sm:text-2xl font-semibold max-w-[38ch]">
             Your email could be generating between{' '}
-            <span className="font-extrabold text-4xl">{formatCurrency(scenarioData[2].netProfit)}</span>
+            <span className="font-extrabold text-2xl sm:text-4xl tabular-nums">{formatCurrency(scenarioData[2].netProfit)}</span>
             {' '}and{' '}
-            <span className="font-extrabold text-4xl">{formatCurrency(scenarioData[3].netProfit)}</span>
+            <span className="font-extrabold text-2xl sm:text-4xl tabular-nums">{formatCurrency(scenarioData[3].netProfit)}</span>
             {' '}in monthly profit - a {formatNumber(scenarioData[2].netROI, 1)}x to {formatNumber(scenarioData[3].netROI, 1)}x net ROI.
           </p>
-          <div className="mt-6 space-y-4 text-xl text-white/90 leading-relaxed max-w-[62ch]">
+          <div className="mt-6 space-y-4 text-base sm:text-xl text-white/90 leading-relaxed max-w-[62ch]">
             <p>
               If you're sending just {industry.typical.campaigns} campaigns per month, you're missing out on{' '}
               <span className="font-bold text-white">{formatCurrency(scenarioData[2].netProfit - scenarioData[0].netProfit)} every single month</span>{' '}
@@ -2609,15 +2619,15 @@ function Home() {
         {/* Per $1 Invested Callout */}
         <div className="mt-6 rounded-xl border border-white/[0.08] bg-[#0b0b16] p-8 text-center">
           <p className="text-sm font-semibold text-purple-400 uppercase tracking-widest mb-3">Your Email ROI</p>
-          <p className="text-2xl text-gray-300 leading-relaxed max-w-[44ch] mx-auto">
+          <p className="text-xl sm:text-2xl text-gray-300 leading-relaxed max-w-[44ch] mx-auto">
             For every{' '}
             <span className="font-bold text-white">$1</span>
             {' '}invested in email marketing, you get back{' '}
-            <span className="font-extrabold text-3xl text-purple-300 tabular-nums">
+            <span className="font-extrabold text-2xl sm:text-3xl text-purple-300 tabular-nums">
               ${formatNumber(scenarioData[2].netROI, 2)}
             </span>
             {' '}–{' '}
-            <span className="font-extrabold text-3xl text-purple-300 tabular-nums">
+            <span className="font-extrabold text-2xl sm:text-3xl text-purple-300 tabular-nums">
               ${formatNumber(scenarioData[3].netROI, 2)}
             </span>
           </p>
