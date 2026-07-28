@@ -350,27 +350,6 @@ function getKlaviyoPrice(profiles: number): number {
   return Math.round(profiles * pricePerProfile)
 }
 
-/**
- * LAST-TOUCH ATTRIBUTION CORRECTION
- *
- * Klaviyo uses last-touch attribution, meaning any purchase where the customer
- * clicked an email within the attribution window is credited to email - even if
- * the customer would have purchased anyway (e.g., via a welcome flow).
- *
- * Industry estimate: ~20% of Klaviyo-reported email revenue is "would have happened
- * anyway" revenue. Removing it gives a more honest picture of email's true lift.
- *
- * Impact on the dashboard:
- *   - incrementalEmailRevenue = totalEmailRevenue × 80%  (truly new revenue)
- *   - trueNewTotalRevenue     = businessRevenue + incrementalEmailRevenue
- *   - emailAttributedPercent  = incrementalEmailRevenue / trueNewTotalRevenue
- *
- * Example: $400k business + $400k Klaviyo email revenue
- *   → incrementalEmailRevenue = $320k
- *   → trueNewTotalRevenue     = $720k   (not $800k)
- *   → emailAttributedPercent  = 44.4%  (not 99.1%)
- */
-const LAST_TOUCH_OVERLAP_RATE = 0.20
 
 // ==================== DELIVERABLES TYPES ====================
 
@@ -835,6 +814,20 @@ function ProofMosaic({
   )
 }
 
+/* True below 640px, so the charts can swap to a narrower viewBox rather than
+   scaling their labels down into illegibility. */
+function useCompactChart() {
+  const [compact, setCompact] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 640px)')
+    const apply = () => setCompact(mq.matches)
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
+  }, [])
+  return compact
+}
+
 /* Numbered input stage inside the ROI calculator. Label rail on the left,
    controls on the right; collapses to a single column below lg. */
 function CalcStep({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
@@ -920,6 +913,7 @@ function Home() {
   const [expandedFlows, setExpandedFlows] = useState<Set<number>>(new Set())
   const [savingField, setSavingField] = useState<string | null>(null)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const compactChart = useCompactChart()
 
   // Fetch prospect data when slug changes
   useEffect(() => {
@@ -1155,15 +1149,11 @@ function Home() {
     const totalEmailRevenue = campaignRevenue + flowRevenue
     const totalEmailRPR = totalEmailRevenue / engagedListSize
 
-    // ========== ATTRIBUTION-CORRECTED REVENUE ==========
-    // Apply 20% last-touch discount: purchases that would have occurred without email
-    const incrementalEmailRevenue = totalEmailRevenue * (1 - LAST_TOUCH_OVERLAP_RATE)
-    const lastTouchRevenue = totalEmailRevenue * LAST_TOUCH_OVERLAP_RATE
-    // True total = what the business had PLUS what email genuinely added
-    const trueNewTotalRevenue = totalMonthlyRevenue + incrementalEmailRevenue
-    // Email-attributed % calculated off the correct combined total
+    // ========== COMBINED REVENUE ==========
+    // Base business revenue plus everything Klaviyo attributes to email
+    const trueNewTotalRevenue = totalMonthlyRevenue + totalEmailRevenue
     const emailAttributedPercent = trueNewTotalRevenue > 0
-      ? (incrementalEmailRevenue / trueNewTotalRevenue) * 100
+      ? (totalEmailRevenue / trueNewTotalRevenue) * 100
       : 0
 
     // ========== COSTS ==========
@@ -1197,8 +1187,6 @@ function Home() {
       totalFlowRPR,
       totalEmailRevenue,
       totalEmailRPR,
-      incrementalEmailRevenue,
-      lastTouchRevenue,
       trueNewTotalRevenue,
       emailAttributedPercent,
       totalEmailCost,
@@ -1241,10 +1229,10 @@ function Home() {
 
       let totalRev = campRev + flowRev
 
-      // Override Good and Best-in-Class to target specific email attribution %
-      // emailPercent = (totalRev * 0.8) / (totalMonthlyRevenue + totalRev * 0.8)
-      // Good  ~25%: totalRev = totalMonthlyRevenue * 5/12
-      // Best  ~40%: totalRev = totalMonthlyRevenue * 5/6
+      // Override Good and Best-in-Class to target specific email revenue levels
+      // emailPercent = totalRev / (totalMonthlyRevenue + totalRev)
+      // Good: totalRev = totalMonthlyRevenue * 5/12  (~29% of combined)
+      // Best: totalRev = totalMonthlyRevenue * 5/6   (~45% of combined)
       if (scenario.key === 'good') {
         totalRev = totalMonthlyRevenue * 5 / 12
       } else if (scenario.key === 'best') {
@@ -1254,9 +1242,8 @@ function Home() {
       const grossProf = totalRev * (grossMargin / 100)
       const netProf = grossProf - cost
       const netROI = netProf / cost
-      const incrementalRev = totalRev * (1 - LAST_TOUCH_OVERLAP_RATE)
-      const combinedTotal = totalMonthlyRevenue + incrementalRev
-      const emailPercent = combinedTotal > 0 ? (incrementalRev / combinedTotal) * 100 : 0
+      const combinedTotal = totalMonthlyRevenue + totalRev
+      const emailPercent = combinedTotal > 0 ? (totalRev / combinedTotal) * 100 : 0
 
       return {
         ...scenario,
@@ -2037,7 +2024,7 @@ function Home() {
 
       {/* ==================== CALCULATOR SECTION ==================== */}
     <section id="calculator" className={`bg-[#08080f] py-16 sm:py-20 px-4 sm:px-6 border-t border-white/5 ${prospectSlug && activeSection !== 'calculator' ? 'hidden' : ''}`}>
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
             Email Marketing ROI Calculator
@@ -2310,10 +2297,9 @@ function Home() {
                     {formatCurrency(calculations.trueNewTotalRevenue)}
                   </div>
 
-                  {/* Stacked bar: base revenue (white/translucent) + email increment (green gradient) */}
+                  {/* Stacked bar: base business revenue, then email revenue on top */}
                   {(() => {
                     const baseW = (totalMonthlyRevenue / calculations.trueNewTotalRevenue) * 100
-                    const emailW = (calculations.incrementalEmailRevenue / calculations.trueNewTotalRevenue) * 100
                     return (
                       <>
                         {/* Bar carries the proportion only. Labels live underneath at
@@ -2335,7 +2321,7 @@ function Home() {
                           <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
                             <span className="font-semibold text-green-300">
-                              +{formatCurrency(calculations.incrementalEmailRevenue)} email · {formatNumber(calculations.emailAttributedPercent, 1)}% of total
+                              +{formatCurrency(calculations.totalEmailRevenue)} email · {formatNumber(calculations.emailAttributedPercent, 1)}% of total
                             </span>
                           </div>
                         </div>
@@ -2372,13 +2358,19 @@ function Home() {
             </div>
 
             {/* Campaign Revenue Chart */}
-            <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-6">
+            <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-4 sm:p-6">
               <h2 className="text-xl font-semibold text-white mb-2">
                 📈 Campaign Volume vs Revenue
               </h2>
               {(() => {
-                const PAD_L = 74, PAD_R = 18, PAD_T = 48, PAD_B = 40
-                const W = 620, H = 260
+                const PAD_L = compactChart ? 54 : 74
+                const PAD_R = compactChart ? 10 : 18
+                const PAD_T = compactChart ? 46 : 48
+                const PAD_B = compactChart ? 36 : 40
+                const W = compactChart ? 360 : 620
+                const H = compactChart ? 250 : 260
+                const FS = compactChart ? 11 : 11
+                const FS_SM = compactChart ? 10 : 9
                 const CW = W - PAD_L - PAD_R
                 const CH = H - PAD_T - PAD_B
                 const maxRev = Math.max(...campaignChartData.map(p => p.revenue))
@@ -2392,12 +2384,11 @@ function Home() {
                 const curX = toX(cur)
                 const curY = toY(campaignChartData[cur]?.revenue ?? 0)
                 const yLevels = [1, 0.75, 0.5, 0.25, 0]
-                const xTicks = [0, 6, 12, 18, 24, 30]
+                const xTicks = compactChart ? [0, 10, 20, 30] : [0, 6, 12, 18, 24, 30]
                 const p1x1 = toX(9), p1x2 = toX(13)
                 const p2x1 = toX(19), p2x2 = toX(26)
                 return (
-                  <div className="overflow-x-auto">
-                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto min-w-[560px]" role="img">
+                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img">
                     <defs>
                       <linearGradient id="campGrad" x1="0" y1={PAD_T} x2="0" y2={PAD_T + CH} gradientUnits="userSpaceOnUse">
                         <stop offset="0%" stopColor="#a855f7" stopOpacity="0.5" />
@@ -2418,29 +2409,28 @@ function Home() {
                     {/* Line curve */}
                     <path d={linePath} fill="none" stroke="#a855f7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     {/* Peak zone top labels */}
-                    <text x={(p1x1 + p1x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#059669" fontSize="10" fontWeight="700">Peak 1</text>
-                    <text x={(p1x1 + p1x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#059669" fontSize="9">10–12/mo</text>
-                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#a78bfa" fontSize="10" fontWeight="700">Peak 2</text>
-                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#a78bfa" fontSize="9">20–25/mo</text>
+                    <text x={(p1x1 + p1x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#059669" fontSize={FS} fontWeight="700">Peak 1</text>
+                    <text x={(p1x1 + p1x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#059669" fontSize={FS_SM}>10–12/mo</text>
+                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 17} textAnchor="middle" fill="#a78bfa" fontSize={FS} fontWeight="700">Peak 2</text>
+                    <text x={(p2x1 + p2x2) / 2} y={PAD_T - 5} textAnchor="middle" fill="#a78bfa" fontSize={FS_SM}>20–25/mo</text>
                     {/* Y-axis labels */}
                     {yLevels.map((f, i) => (
-                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#6b7280" fontSize="10">{formatCurrency(f * maxRev)}</text>
+                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#6b7280" fontSize={FS}>{formatCurrency(f * maxRev)}</text>
                     ))}
                     {/* X-axis ticks + labels */}
                     {xTicks.map(v => (
                       <g key={v}>
                         <line x1={toX(v)} y1={PAD_T + CH} x2={toX(v)} y2={PAD_T + CH + 4} stroke="#9ca3af" strokeWidth="1" />
-                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#6b7280" fontSize="10">{v}</text>
+                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#6b7280" fontSize={FS}>{v}</text>
                       </g>
                     ))}
                     {/* X-axis title */}
-                    <text x={PAD_L + CW / 2} y={H - 3} textAnchor="middle" fill="#6b7280" fontSize="11" fontWeight="500">Campaigns per Month</text>
+                    <text x={PAD_L + CW / 2} y={H - 3} textAnchor="middle" fill="#6b7280" fontSize={FS} fontWeight="500">Campaigns per Month</text>
                     {/* Current position */}
                     <line x1={curX} y1={PAD_T} x2={curX} y2={PAD_T + CH} stroke="#ef4444" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.65" />
                     <circle cx={curX} cy={curY} r="6" fill="#ef4444" stroke="white" strokeWidth="2.5" />
-                    <text x={cur > 25 ? curX - 9 : curX + 9} y={Math.max(curY - 7, PAD_T + 13)} textAnchor={cur > 25 ? 'end' : 'start'} fill="#ef4444" fontSize="10" fontWeight="700">You</text>
+                    <text x={cur > 25 ? curX - 9 : curX + 9} y={Math.max(curY - 7, PAD_T + 13)} textAnchor={cur > 25 ? 'end' : 'start'} fill="#ef4444" fontSize={FS} fontWeight="700">You</text>
                   </svg>
-                  </div>
                 )
               })()}
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 mt-4">
@@ -2451,13 +2441,19 @@ function Home() {
             </div>
 
             {/* Flow Revenue Chart */}
-            <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-6">
+            <div className="bg-[#0b0b16] rounded-xl border border-white/[0.08] p-4 sm:p-6">
               <h2 className="text-xl font-semibold text-white mb-2">
                 ⚙️ Flow Count vs Revenue
               </h2>
               {(() => {
-                const PAD_L = 74, PAD_R = 18, PAD_T = 40, PAD_B = 40
-                const W = 620, H = 260
+                const PAD_L = compactChart ? 54 : 74
+                const PAD_R = compactChart ? 10 : 18
+                const PAD_T = compactChart ? 38 : 40
+                const PAD_B = compactChart ? 36 : 40
+                const W = compactChart ? 360 : 620
+                const H = compactChart ? 250 : 260
+                const FS = compactChart ? 11 : 11
+                const FS_SM = compactChart ? 10 : 9
                 const CW = W - PAD_L - PAD_R
                 const CH = H - PAD_T - PAD_B
                 const maxRev = Math.max(...flowChartData.map(p => p.revenue))
@@ -2471,11 +2467,10 @@ function Home() {
                 const curX = toX(cur)
                 const curY = toY(flowChartData[cur]?.revenue ?? 0)
                 const yLevels = [1, 0.75, 0.5, 0.25, 0]
-                const xTicks = [0, 6, 12, 18, 24, 30]
+                const xTicks = compactChart ? [0, 10, 20, 30] : [0, 6, 12, 18, 24, 30]
                 const phaseX = toX(8)
                 return (
-                  <div className="overflow-x-auto">
-                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto min-w-[560px]" role="img">
+                  <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img">
                     <defs>
                       <linearGradient id="flowGrad" x1="0" y1={PAD_T} x2="0" y2={PAD_T + CH} gradientUnits="userSpaceOnUse">
                         <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.45" />
@@ -2498,27 +2493,26 @@ function Home() {
                     {/* Line curve */}
                     <path d={linePath} fill="none" stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                     {/* Phase labels */}
-                    <text x={(PAD_L + phaseX) / 2} y={PAD_T - 8} textAnchor="middle" fill="#7c3aed" fontSize="10" fontWeight="700">Core 40%</text>
-                    <text x={(phaseX + PAD_L + CW) / 2} y={PAD_T - 8} textAnchor="middle" fill="#6366f1" fontSize="10" fontWeight="700">Hidden Revenue - 60% Most Brands Miss</text>
+                    <text x={(PAD_L + phaseX) / 2} y={PAD_T - 8} textAnchor="middle" fill="#7c3aed" fontSize={FS} fontWeight="700">Core 40%</text>
+                    <text x={(phaseX + PAD_L + CW) / 2} y={PAD_T - 8} textAnchor="middle" fill="#6366f1" fontSize={FS_SM} fontWeight="700">Hidden Revenue - 60% Most Brands Miss</text>
                     {/* Y-axis labels */}
                     {yLevels.map((f, i) => (
-                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#6b7280" fontSize="10">{formatCurrency(f * maxRev)}</text>
+                      <text key={i} x={PAD_L - 5} y={toY(f * maxRev) + 4} textAnchor="end" fill="#6b7280" fontSize={FS}>{formatCurrency(f * maxRev)}</text>
                     ))}
                     {/* X-axis ticks + labels */}
                     {xTicks.map(v => (
                       <g key={v}>
                         <line x1={toX(v)} y1={PAD_T + CH} x2={toX(v)} y2={PAD_T + CH + 4} stroke="#9ca3af" strokeWidth="1" />
-                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#6b7280" fontSize="10">{v}</text>
+                        <text x={toX(v)} y={PAD_T + CH + 15} textAnchor="middle" fill="#6b7280" fontSize={FS}>{v}</text>
                       </g>
                     ))}
                     {/* X-axis title */}
-                    <text x={PAD_L + CW / 2} y={H - 3} textAnchor="middle" fill="#6b7280" fontSize="11" fontWeight="500">Number of Active Flows</text>
+                    <text x={PAD_L + CW / 2} y={H - 3} textAnchor="middle" fill="#6b7280" fontSize={FS} fontWeight="500">Number of Active Flows</text>
                     {/* Current position */}
                     <line x1={curX} y1={PAD_T} x2={curX} y2={PAD_T + CH} stroke="#ef4444" strokeWidth="1.5" strokeDasharray="3,3" opacity="0.65" />
                     <circle cx={curX} cy={curY} r="6" fill="#ef4444" stroke="white" strokeWidth="2.5" />
-                    <text x={cur > 25 ? curX - 9 : curX + 9} y={Math.max(curY - 7, PAD_T + 13)} textAnchor={cur > 25 ? 'end' : 'start'} fill="#ef4444" fontSize="10" fontWeight="700">You</text>
+                    <text x={cur > 25 ? curX - 9 : curX + 9} y={Math.max(curY - 7, PAD_T + 13)} textAnchor={cur > 25 ? 'end' : 'start'} fill="#ef4444" fontSize={FS} fontWeight="700">You</text>
                   </svg>
-                  </div>
                 )
               })()}
               <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 mt-4">
@@ -2531,14 +2525,11 @@ function Home() {
           </div>
         </div>
 
-        {/* Industry Performance Spectrum - Full Width */}
+        {/* You Vs Other Brands - Full Width */}
         <div className="mt-8 bg-[#0b0b16] rounded-xl border border-white/[0.08] p-7 sm:p-9">
           <h2 className="text-3xl font-bold text-white mb-2">
-            🎯 Industry Performance Spectrum
+            🎯 You Vs Other Brands
           </h2>
-          <p className="text-base text-gray-400 mb-8 max-w-[65ch]">
-            Campaign revenue scales linearly up to {industry.best.campaigns}/month for most brands
-          </p>
 
           <div className="space-y-5">
             {scenarioData.filter(s => s.key !== 'your').map((scenario) => {
@@ -2565,19 +2556,19 @@ function Home() {
                     {/* Headline numbers */}
                     <div className={`flex flex-col gap-2.5 sm:grid sm:grid-cols-3 sm:gap-4 pb-5 border-b ${accent.rule}`}>
                       <div className="flex items-baseline justify-between sm:block">
-                        <div className="text-xs text-gray-500 sm:mb-1">Revenue / mo</div>
+                        <div className="text-xs text-gray-500 sm:mb-1">Email Revenue / mo</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatCurrency(scenario.totalRevenue)}
                         </div>
                       </div>
                       <div className="flex items-baseline justify-between sm:block">
-                        <div className="text-xs text-gray-500 sm:mb-1">Net Profit / mo</div>
+                        <div className="text-xs text-gray-500 sm:mb-1">Net Email Profit / mo</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatCurrency(scenario.netProfit)}
                         </div>
                       </div>
                       <div className="flex items-baseline justify-between sm:block">
-                        <div className="text-xs text-gray-500 sm:mb-1">ROI</div>
+                        <div className="text-xs text-gray-500 sm:mb-1">Email ROI</div>
                         <div className="text-lg font-bold text-white tabular-nums">
                           {formatNumber(scenario.netROI, 1)}x
                         </div>
@@ -2618,7 +2609,7 @@ function Home() {
           </div>
 
           <div className="mt-10 pt-8 border-t border-white/[0.08]">
-            <div className="font-bold text-purple-300 mb-4 text-2xl">💡 Opportunity Analysis</div>
+            <div className="font-bold text-purple-300 mb-4 text-2xl">💡 What You&rsquo;re Missing Out On</div>
 
             <div className="space-y-3 mb-5">
               <div className="bg-white/[0.03] rounded-lg p-4 border border-white/[0.08]">
