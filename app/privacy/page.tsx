@@ -78,7 +78,7 @@ export default function PrivacyPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#08080f] border-t border-white/8 px-6 pt-8 pb-6">
+      <footer className="bg-[#08080f] border-t border-white/[0.08] px-6 pt-8 pb-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-5 mb-6">
             <Link href="/" className="font-bold text-white text-lg tracking-tight">Mars Copywriting</Link>
