@@ -3,7 +3,7 @@
 Build the client logo kit from the live site assets.
 
 Reads public/images/trusted-by/ (mixed PNG and SVG, sized for the page) and
-writes public/images/logo-kit/{dark,light}/ as a uniform export set: PNG,
+writes public/images/trusted-by/{dark,light}/ as a uniform export set: PNG,
 1200x400, transparent, grayscale.
 
   dark/   light artwork, for dark slides
@@ -32,7 +32,7 @@ except ImportError as exc:  # pragma: no cover
     sys.exit(f"missing dependency: {exc}. Install with: pip install pillow cairosvg")
 
 SRC = os.path.join("public", "images", "trusted-by")
-OUT = os.path.join("public", "images", "logo-kit")
+OUT = SRC  # dark/ and light/ live alongside the live assets
 CANVAS = (1200, 400)
 BOX_WIDE = (1000, 260)   # wordmarks
 BOX_TALL = (500, 340)    # square-ish crests and stacked marks
@@ -62,7 +62,10 @@ def main() -> None:
         sys.exit(f"no source folder at {SRC}; run from the project root")
 
     names = sorted(
-        f for f in os.listdir(SRC) if f.lower().endswith((".png", ".svg"))
+        f
+        for f in os.listdir(SRC)
+        if f.lower().endswith((".png", ".svg"))
+        and os.path.isfile(os.path.join(SRC, f))
     )
     for variant in ("dark", "light"):
         os.makedirs(os.path.join(OUT, variant), exist_ok=True)
