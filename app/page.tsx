@@ -788,16 +788,20 @@ function TrustedByLogos({ images }: { images: string[] }) {
 
   if (!images.length) return null
 
-  // Marks that are intrinsically tall get more height, so a square crest and a
-  // wide wordmark carry similar optical weight rather than similar pixel height.
-  const isTall = (img: string) => /cerberus|newthingslab/i.test(img)
+  // Optical weight, not pixel height: a square crest needs more height and a
+  // very wide wordmark needs more width to sit at the same visual weight as a
+  // typical 3:1 mark.
+  const sizeClass = (img: string) =>
+    /cerberus|newthingslab/i.test(img) ? 'tb-logo tb-logo--tall'
+    : /brandlux/i.test(img) ? 'tb-logo tb-logo--wide'
+    : 'tb-logo'
 
   const panel = (keyPrefix: string, ariaHidden: boolean) => (
     <div ref={ariaHidden ? undefined : panelRef} className="tb-panel" aria-hidden={ariaHidden}>
       {images.map((img, i) => (
         <img
           key={`${keyPrefix}-${i}`}
-          className={isTall(img) ? 'tb-logo tb-logo--tall' : 'tb-logo'}
+          className={sizeClass(img)}
           src={`/images/trusted-by/${encodeURIComponent(img)}`}
           alt=""
           loading="lazy"

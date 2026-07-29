@@ -411,3 +411,9 @@ body {
   max-width: 64px;
   max-height: 52px;
 }
+/* A ~10:1 wordmark hits the width cap while still only ~12px tall, which reads
+   far lighter than its neighbours; give it room to carry its weight. */
+.tb-logo--wide {
+  max-width: 164px;
+  max-height: 34px;
+}
