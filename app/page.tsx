@@ -775,33 +775,32 @@ function Lightbox({
 
 // Trusted-by logo strip fed by a single flat manifest folder. Shows brand logos when
 // present, otherwise placeholder logo tiles.
-function TrustedByLogos({ images }: { images: string[] }) {
-  // Wheel scrubbing is off here: this is a thin strip, and capturing the wheel
-  // over it would stall the page for anyone whose cursor happens to be passing.
-  const { trackRef, panelRef, viewportRef, slow, resume } = useMarquee({
+// Optical weight, not pixel height: a square crest needs more height and a
+// very wide wordmark needs more width to sit at the same visual weight as a
+// typical 3:1 mark.
+function tbSizeClass(img: string) {
+  if (/cerberus|newthingslab/i.test(img)) return 'tb-logo tb-logo--tall'
+  if (/brandlux/i.test(img)) return 'tb-logo tb-logo--wide'
+  return 'tb-logo'
+}
+
+function TrustedByRow({ images, direction }: { images: string[]; direction: 'left' | 'right' }) {
+  // No slow/resume wired up: hovering must not brake these rows. Wheel
+  // scrubbing stays off too, since capturing the wheel over a thin strip would
+  // stall the page for anyone whose cursor is merely passing through.
+  const { trackRef, panelRef, viewportRef } = useMarquee({
     active: images.length > 0,
-    direction: 'left',
+    direction,
     baseSpeed: 26,
-    hoverSpeed: 6,
     wheel: false,
   })
-
-  if (!images.length) return null
-
-  // Optical weight, not pixel height: a square crest needs more height and a
-  // very wide wordmark needs more width to sit at the same visual weight as a
-  // typical 3:1 mark.
-  const sizeClass = (img: string) =>
-    /cerberus|newthingslab/i.test(img) ? 'tb-logo tb-logo--tall'
-    : /brandlux/i.test(img) ? 'tb-logo tb-logo--wide'
-    : 'tb-logo'
 
   const panel = (keyPrefix: string, ariaHidden: boolean) => (
     <div ref={ariaHidden ? undefined : panelRef} className="tb-panel" aria-hidden={ariaHidden}>
       {images.map((img, i) => (
         <img
           key={`${keyPrefix}-${i}`}
-          className={sizeClass(img)}
+          className={tbSizeClass(img)}
           src={`/images/trusted-by/${encodeURIComponent(img)}`}
           alt=""
           loading="lazy"
@@ -813,16 +812,23 @@ function TrustedByLogos({ images }: { images: string[] }) {
   )
 
   return (
-    <div
-      ref={viewportRef}
-      className="tb-viewport carousel-mask"
-      onMouseEnter={slow}
-      onMouseLeave={resume}
-    >
+    <div ref={viewportRef} className="tb-viewport carousel-mask">
       <div ref={trackRef} className="tb-track">
         {panel('a', false)}
         {panel('b', true)}
       </div>
+    </div>
+  )
+}
+
+function TrustedByLogos({ images }: { images: string[] }) {
+  if (!images.length) return null
+  // The second row runs the other way over a reversed list, so the two rows
+  // never sit logo-for-logo above each other and more of the set is on screen.
+  return (
+    <div className="tb-rows">
+      <TrustedByRow images={images} direction="left" />
+      <TrustedByRow images={[...images].reverse()} direction="right" />
     </div>
   )
 }
@@ -1558,9 +1564,9 @@ function Home() {
       </section>
 
       {/* ==================== TRUSTED BY ==================== */}
-      <section className="bg-[#08080f] py-6 border-b border-white/5 overflow-hidden">
-        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center gap-5 sm:gap-8">
-          <span className="text-xs text-gray-600 font-semibold tracking-widest uppercase whitespace-nowrap">Trusted by</span>
+      <section className="bg-[#08080f] py-7 border-b border-white/5 overflow-hidden">
+        <div className="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+          <span className="text-xs text-gray-600 font-semibold tracking-widest uppercase whitespace-nowrap self-center sm:self-auto">Trusted by</span>
           <TrustedByLogos images={trustedImages} />
         </div>
       </section>
