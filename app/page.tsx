@@ -481,14 +481,15 @@ function SocialProofCarousels() {
 }
 
 /* Continuous marquee engine shared by the proof mosaics and the logo strip.
-   Owns the loop, the pointer drag with inertia, and optional wheel scrubbing.
+   Owns the loop and the pointer drag with inertia. Deliberately no wheel
+   handling: scrubbing on wheel means calling preventDefault, which stalls the
+   page for anyone whose cursor happens to be over a carousel.
    Returns the refs the caller must attach plus the hover speed controls. */
-function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel = true }: {
+function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10 }: {
   active: boolean
   direction: 'left' | 'right'
   baseSpeed?: number
   hoverSpeed?: number
-  wheel?: boolean
 }) {
   const trackRef = useRef<HTMLDivElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -524,7 +525,7 @@ function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel 
     if (panel) ro.observe(panel)
 
     // Offset is wrapped into [0, d) so the two identical panels loop seamlessly
-    // no matter how far a drag or a wheel throw pushes it.
+    // no matter how far a drag or its release throw pushes it.
     const wrap = (v: number) => {
       const d = distanceRef.current
       return d > 0 ? ((v % d) + d) % d : v
@@ -552,17 +553,6 @@ function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel 
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
-
-    // Wheel. Trackpad horizontal swipes report deltaX; a plain wheel reports
-    // deltaY, and we scrub with whichever axis the gesture leans on.
-    const onWheel = (e: WheelEvent) => {
-      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
-      if (!delta) return
-      e.preventDefault()
-      inertiaRef.current = 0
-      offsetRef.current = wrap(offsetRef.current + delta)
-      draw()
-    }
 
     // Pointer drag covers mouse and touch alike. touch-action: pan-y on the
     // viewport keeps vertical page scrolling with the browser, so only the
@@ -635,7 +625,6 @@ function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel 
       e.stopPropagation()
     }
 
-    if (wheel) viewport?.addEventListener('wheel', onWheel, { passive: false })
     viewport?.addEventListener('pointerdown', onPointerDown)
     viewport?.addEventListener('pointermove', onPointerMove)
     viewport?.addEventListener('pointerup', endDrag)
@@ -645,14 +634,13 @@ function useMarquee({ active, direction, baseSpeed = 40, hoverSpeed = 10, wheel 
     return () => {
       cancelAnimationFrame(raf)
       ro.disconnect()
-      viewport?.removeEventListener('wheel', onWheel)
       viewport?.removeEventListener('pointerdown', onPointerDown)
       viewport?.removeEventListener('pointermove', onPointerMove)
       viewport?.removeEventListener('pointerup', endDrag)
       viewport?.removeEventListener('pointercancel', endDrag)
       viewport?.removeEventListener('click', onClickCapture, true)
     }
-  }, [active, direction, wheel, BASE_SPEED])
+  }, [active, direction, BASE_SPEED])
 
   const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const slow = () => { if (!reduce) targetRef.current = HOVER_SPEED }
@@ -785,14 +773,11 @@ function tbSizeClass(img: string) {
 }
 
 function TrustedByRow({ images, direction }: { images: string[]; direction: 'left' | 'right' }) {
-  // No slow/resume wired up: hovering must not brake these rows. Wheel
-  // scrubbing stays off too, since capturing the wheel over a thin strip would
-  // stall the page for anyone whose cursor is merely passing through.
+  // No slow/resume wired up: hovering must not brake these rows.
   const { trackRef, panelRef, viewportRef } = useMarquee({
     active: images.length > 0,
     direction,
     baseSpeed: 26,
-    wheel: false,
   })
 
   const panel = (keyPrefix: string, ariaHidden: boolean) => (
