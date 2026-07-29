@@ -822,13 +822,17 @@ function TrustedByRow({ images, direction }: { images: string[]; direction: 'lef
 }
 
 function TrustedByLogos({ images }: { images: string[] }) {
+  // Two rows on phones, where a single strip shows only a couple of logos at a
+  // time; one row on desktop, where the strip is already wide enough. The
+  // second row is not rendered above 640px rather than hidden with CSS, so it
+  // never runs an animation frame loop no one can see.
+  const twoRows = useMediaQuery(MOBILE)
   if (!images.length) return null
-  // The second row runs the other way over a reversed list, so the two rows
-  // never sit logo-for-logo above each other and more of the set is on screen.
   return (
     <div className="tb-rows">
       <TrustedByRow images={images} direction="left" />
-      <TrustedByRow images={[...images].reverse()} direction="right" />
+      {/* Reversed, so the rows never sit logo-for-logo above each other. */}
+      {twoRows && <TrustedByRow images={[...images].reverse()} direction="right" />}
     </div>
   )
 }
@@ -894,17 +898,19 @@ function ProofMosaic({
 
 /* True below 640px, so the charts can swap to a narrower viewBox rather than
    scaling their labels down into illegibility. */
-function useCompactChart() {
-  const [compact, setCompact] = useState(false)
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(false)
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 640px)')
-    const apply = () => setCompact(mq.matches)
+    const mq = window.matchMedia(query)
+    const apply = () => setMatches(mq.matches)
     apply()
     mq.addEventListener('change', apply)
     return () => mq.removeEventListener('change', apply)
-  }, [])
-  return compact
+  }, [query])
+  return matches
 }
+
+const MOBILE = '(max-width: 640px)'
 
 /* Numbered input stage inside the ROI calculator. Label rail on the left,
    controls on the right; collapses to a single column below lg. */
@@ -994,7 +1000,7 @@ function Home() {
   const [expandedFlows, setExpandedFlows] = useState<Set<number>>(new Set())
   const [savingField, setSavingField] = useState<string | null>(null)
   const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set())
-  const compactChart = useCompactChart()
+  const compactChart = useMediaQuery(MOBILE)
 
   // Fetch prospect data when slug changes
   useEffect(() => {
