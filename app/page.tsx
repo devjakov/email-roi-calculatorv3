@@ -949,6 +949,66 @@ function CalcSlider({ label, display, value, min, max, step = 1, minLabel, maxLa
 }
 
 
+/**
+ * BOOKING
+ *
+ * Active Calendly event type: "Done For You Email Marketing - Discovery Call",
+ * 30 min, Google Meet, on the jacob-marscopywriting profile.
+ */
+const BOOKING_URL = 'https://calendly.com/jacob-marscopywriting/done-for-you-email-marketing-discovery-call'
+
+const CALENDLY_SCRIPT_SRC = 'https://assets.calendly.com/assets/external/widget.js'
+
+// Colors match the page so the scheduler does not land as a white slab.
+const CALENDLY_EMBED_URL = `${BOOKING_URL}?hide_gdpr_banner=1&background_color=0d0d18&text_color=ffffff&primary_color=9333ea`
+
+declare global {
+  interface Window {
+    Calendly?: {
+      initInlineWidget: (opts: { url: string; parentElement: HTMLElement }) => void
+    }
+  }
+}
+
+/**
+ * Inline Calendly scheduler.
+ *
+ * The page renders client side inside a Suspense boundary, so the widget script
+ * can finish loading before this container is ever in the DOM. Its own scan for
+ * .calendly-inline-widget would then find nothing and leave an empty box, so we
+ * load the script once and initialize against our own ref instead.
+ */
+function CalendlyInline({ className = '' }: { className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const mount = () => {
+      const el = ref.current
+      if (!window.Calendly || !el) return
+      // Guard against a second run from React strict mode remounting the effect.
+      el.innerHTML = ''
+      window.Calendly.initInlineWidget({ url: CALENDLY_EMBED_URL, parentElement: el })
+    }
+
+    if (window.Calendly) {
+      mount()
+      return
+    }
+
+    let script = document.querySelector<HTMLScriptElement>(`script[src="${CALENDLY_SCRIPT_SRC}"]`)
+    if (!script) {
+      script = document.createElement('script')
+      script.src = CALENDLY_SCRIPT_SRC
+      script.async = true
+      document.body.appendChild(script)
+    }
+    script.addEventListener('load', mount)
+    return () => script?.removeEventListener('load', mount)
+  }, [])
+
+  return <div ref={ref} className={className} style={{ minWidth: 320, height: 700 }} />
+}
+
 export default function Page() {
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>}>
@@ -1526,7 +1586,7 @@ function Home() {
 
           {/* CTA */}
           <a
-            href="https://calendly.com/jacob-marscopywriting/done-for-you-email-marketing-discovery-call"
+            href={BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white font-bold px-7 py-3.5 rounded-xl text-base transition-all duration-200 glow-purple-sm hover:glow-purple mb-2"
@@ -1534,6 +1594,9 @@ function Home() {
             Book a Free Call →
           </a>
           <p className="text-xs text-gray-600 mt-2">No contract lock-in. Cancel any time. Billed month-to-month.</p>
+
+          {/* Inline scheduler */}
+          <CalendlyInline className="mt-10 max-w-3xl mx-auto rounded-2xl overflow-hidden border border-purple-800/40" />
         </div>
       </section>
 
@@ -2762,7 +2825,7 @@ function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://calendly.com/jacob-marscopywriting/done-for-you-email-marketing-discovery-call"
+              href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-8 py-4 rounded-xl transition-colors duration-200 text-lg"
@@ -2776,6 +2839,10 @@ function Home() {
               Run the Numbers First
             </a>
           </div>
+
+          {/* Inline scheduler */}
+          <CalendlyInline className="mt-10 rounded-2xl overflow-hidden border border-white/10" />
+
           <p className="mt-6 text-sm text-gray-600">No commitment required. 30-minute call. Real answers.</p>
         </div>
       </section>
