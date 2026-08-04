@@ -1597,7 +1597,7 @@ function Home() {
           <p className="text-xs text-gray-600 mt-2">No contract lock-in. Cancel any time. Billed month-to-month.</p>
 
           {/* Inline scheduler */}
-          <CalendlyInline className="mt-10 max-w-3xl mx-auto rounded-2xl overflow-hidden border border-purple-800/40" />
+          <CalendlyInline className="mt-10 max-w-3xl mx-auto" />
         </div>
       </section>
 
@@ -2842,7 +2842,7 @@ function Home() {
           </div>
 
           {/* Inline scheduler */}
-          <CalendlyInline className="mt-10 rounded-2xl overflow-hidden border border-white/10" />
+          <CalendlyInline className="mt-10" />
 
           <p className="mt-6 text-sm text-gray-600">No commitment required. 30-minute call. Real answers.</p>
         </div>
