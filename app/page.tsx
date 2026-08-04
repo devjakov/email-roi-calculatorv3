@@ -959,8 +959,9 @@ const BOOKING_URL = 'https://calendly.com/jacob-marscopywriting/done-for-you-ema
 
 const CALENDLY_SCRIPT_SRC = 'https://assets.calendly.com/assets/external/widget.js'
 
-// Colors match the page so the scheduler does not land as a white slab.
-const CALENDLY_EMBED_URL = `${BOOKING_URL}?hide_gdpr_banner=1&background_color=0d0d18&text_color=ffffff&primary_color=9333ea`
+// No color params: Calendly's default light theme is deliberate, it contrasts
+// against the dark page.
+const CALENDLY_EMBED_URL = `${BOOKING_URL}?hide_gdpr_banner=1`
 
 declare global {
   interface Window {
