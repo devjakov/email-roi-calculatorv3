@@ -1525,9 +1525,10 @@ function Home() {
           </div>
 
           {/* CTA */}
-          {/* BOOK CALL — replace href with your Calendly or booking link */}
           <a
-            href="#"
+            href="https://calendly.com/jacob-marscopywriting/done-for-you-email-marketing-discovery-call"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-600 text-white font-bold px-7 py-3.5 rounded-xl text-base transition-all duration-200 glow-purple-sm hover:glow-purple mb-2"
           >
             Book a Free Call →
@@ -2761,7 +2762,7 @@ function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://calendly.com/jacobjakobi/strategy"
+              href="https://calendly.com/jacob-marscopywriting/done-for-you-email-marketing-discovery-call"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-8 py-4 rounded-xl transition-colors duration-200 text-lg"
