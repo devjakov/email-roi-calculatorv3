@@ -93,6 +93,14 @@ body {
   text-shadow: 0 0 60px rgba(167, 139, 250, 0.6);
 }
 
+/* Wistia VSL: blurred thumbnail placeholder until the web component upgrades */
+wistia-player[media-id='gaasfic790']:not(:defined) {
+  background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/gaasfic790/swatch');
+  display: block;
+  filter: blur(5px);
+  padding-top: 56.25%;
+}
+
 .hero-bg {
   background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(109, 40, 217, 0.18) 0%, transparent 70%), var(--bg-dark);
 }

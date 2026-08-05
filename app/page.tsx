@@ -17,8 +17,21 @@
 
 import { useState, useMemo, useEffect, useCallback, useRef, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
+import Script from 'next/script'
 import { marked } from 'marked'
 import { FAQS, CASE_STUDIES } from './content'
+
+// <wistia-player> is a custom element, so TypeScript needs it declared by hand.
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'wistia-player': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        'media-id': string
+        aspect?: string
+      }
+    }
+  }
+}
 
 /**
  * INDUSTRY BENCHMARKS
@@ -1572,16 +1585,11 @@ function Home() {
           </p>
 
           {/* Video */}
+          <Script src="https://fast.wistia.com/player.js" strategy="afterInteractive" />
+          <Script src="https://fast.wistia.com/embed/gaasfic790.js" strategy="afterInteractive" type="module" />
           <div className="relative max-w-2xl mx-auto mb-6">
-            <div className="aspect-video bg-[#0d0d18] border border-purple-800/40 rounded-2xl flex flex-col items-center justify-center glow-purple-sm overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-transparent pointer-events-none" />
-              <div className="w-16 h-16 rounded-full bg-white/10 border-2 border-white/30 flex items-center justify-center backdrop-blur-sm">
-                <svg className="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-              </div>
-              {/* EMBED VIDEO — paste your Wistia or Vimeo iframe src here */}
-              <p className="absolute bottom-3 text-xs text-gray-600 font-mono">[ YOUR VSL GOES HERE ]</p>
+            <div className="aspect-video bg-[#0d0d18] border border-purple-800/40 rounded-2xl glow-purple-sm overflow-hidden">
+              <wistia-player media-id="gaasfic790" aspect="1.7777777777777777" />
             </div>
           </div>
 
