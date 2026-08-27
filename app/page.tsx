@@ -1045,6 +1045,7 @@ function Home() {
   // Calculator prefill params, read once so later edits by the visitor stick
   const industryParam = searchParams.get('industry')
   const monthlyRevenueParam = Number(searchParams.get('monthlyRevenue'))
+  const monthlyTrafficParam = Number(searchParams.get('monthlyTraffic'))
   const setActiveSection = (section: 'deliverables' | 'calculator') => {
     const params = new URLSearchParams(searchParams.toString())
     if (section === 'calculator') {
@@ -1088,6 +1089,19 @@ function Home() {
         setProspectLoading(false)
       })
   }, [prospectSlug])
+
+  // ?view=roi lands ON the calculator instead of the top of the page. The Mars
+  // Portal outreach panel links straight here with a prospect's own numbers
+  // prefilled, and the calculator sits below eight marketing sections.
+  useEffect(() => {
+    if (activeSection !== 'calculator') return
+    const jump = () => document.getElementById('calculator')?.scrollIntoView({ block: 'start' })
+    const raf = requestAnimationFrame(jump)
+    // images above the calculator settle on load and would otherwise push it
+    // down past wherever the first jump landed
+    window.addEventListener('load', jump)
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('load', jump) }
+  }, [activeSection])
 
   // Scroll-reveal: fade elements up as they enter the viewport (skipped for reduced-motion)
   useEffect(() => {
@@ -1189,7 +1203,11 @@ function Home() {
   const [averageOrderValue, setAverageOrderValue] = useState(95) // AOV (determines flow RPR benchmarks)
   
   // Traffic-based calculator (NEW: Flow revenue = new subscribers × RPR)
-  const [monthlyTraffic, setMonthlyTraffic] = useState(300000) // Monthly website visitors
+  // ?monthlyTraffic=<visits per month> prefills it from the prospect's Storeleads
+  // estimated monthly visits, which drives the whole flow-revenue half of the model
+  const [monthlyTraffic, setMonthlyTraffic] = useState(
+    monthlyTrafficParam > 0 ? Math.round(monthlyTrafficParam) : 300000
+  ) // Monthly website visitors
   const [popupConversionRate, setPopupConversionRate] = useState(2.5) // Pop-up conversion % (1-20%)
   
   // Manual campaign override (optional - allows user to input actual campaign revenue)
