@@ -1041,6 +1041,10 @@ function Home() {
 
   // Active section is derived from ?view=roi URL param so browser back works
   const activeSection = searchParams.get('view') === 'roi' ? 'calculator' : 'deliverables'
+
+  // Calculator prefill params, read once so later edits by the visitor stick
+  const industryParam = searchParams.get('industry')
+  const monthlyRevenueParam = Number(searchParams.get('monthlyRevenue'))
   const setActiveSection = (section: 'deliverables' | 'calculator') => {
     const params = new URLSearchParams(searchParams.toString())
     if (section === 'calculator') {
@@ -1161,8 +1165,14 @@ function Home() {
 
   // ==================== STATE MANAGEMENT ====================
 
-  // Industry selection (determines campaign RPR baseline)
-  const [selectedIndustry, setSelectedIndustry] = useState<keyof typeof INDUSTRY_BENCHMARKS>('health-beauty')
+  // Industry selection (determines campaign RPR baseline).
+  // ?industry=<key> prefills it — the Mars Portal outreach panel builds that link
+  // from the prospect's Storeleads category.
+  const [selectedIndustry, setSelectedIndustry] = useState<keyof typeof INDUSTRY_BENCHMARKS>(
+    industryParam && industryParam in INDUSTRY_BENCHMARKS
+      ? (industryParam as keyof typeof INDUSTRY_BENCHMARKS)
+      : 'health-beauty'
+  )
   
   // Email list configuration
   const [emailListSize, setEmailListSize] = useState(150000) // Total profiles in Klaviyo
@@ -1172,7 +1182,10 @@ function Home() {
   // Business metrics
   const [monthlyRetainer, setMonthlyRetainer] = useState(5000) // Mars Copywriting fee
   const [grossMargin, setGrossMargin] = useState(50) // Profit margin % (for net ROI calculation)
-  const [totalMonthlyRevenue, setTotalMonthlyRevenue] = useState(1280000) // Total business revenue
+  // ?monthlyRevenue=<USD per month> prefills it from the prospect's Storeleads estimated sales
+  const [totalMonthlyRevenue, setTotalMonthlyRevenue] = useState(
+    monthlyRevenueParam > 0 ? Math.round(monthlyRevenueParam) : 1280000
+  ) // Total business revenue
   const [averageOrderValue, setAverageOrderValue] = useState(95) // AOV (determines flow RPR benchmarks)
   
   // Traffic-based calculator (NEW: Flow revenue = new subscribers × RPR)
